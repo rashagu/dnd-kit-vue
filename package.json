@@ -1,0 +1,16 @@
+{
+  "name": "root",
+  "private": true,
+  "scripts": {
+    "dev": "lerna run --scope @kousum/semi-ui-vue dev"
+  },
+  "workspaces": [
+    "packages/core"
+  ],
+  "devDependencies": {
+    "@babel/core": "^7.16.5",
+    "@types/node": "^17.0.0",
+    "babel-jest": "^27.4.5",
+    "lerna": "^4.0.0"
+  }
+}
