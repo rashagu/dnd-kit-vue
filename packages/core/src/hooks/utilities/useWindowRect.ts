@@ -1,9 +1,7 @@
-import {useMemo} from 'react';
 
 import {getWindowClientRect} from '../../utilities/rect';
+import {computed} from "vue";
 
 export function useWindowRect(element: typeof window | null) {
-  return useMemo(() => (element ? getWindowClientRect(element) : null), [
-    element,
-  ]);
+  return computed(() => (element ? getWindowClientRect(element) : null));
 }

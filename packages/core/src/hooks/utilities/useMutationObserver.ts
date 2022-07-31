@@ -1,5 +1,6 @@
-import {useEffect, useMemo} from 'react';
-import {useEvent} from '@dnd-kit/utilities';
+
+import {useEvent} from '@kousum/utilities';
+import {computed, watchEffect} from "vue";
 
 interface Arguments {
   callback: MutationCallback;
@@ -12,7 +13,7 @@ interface Arguments {
  */
 export function useMutationObserver({callback, disabled}: Arguments) {
   const handleMutations = useEvent(callback);
-  const mutationObserver = useMemo(() => {
+  const mutationObserver = computed(() => {
     if (
       disabled ||
       typeof window === 'undefined' ||
@@ -24,11 +25,11 @@ export function useMutationObserver({callback, disabled}: Arguments) {
     const {MutationObserver} = window;
 
     return new MutationObserver(handleMutations);
-  }, [handleMutations, disabled]);
+  });
 
-  useEffect(() => {
-    return () => mutationObserver?.disconnect();
-  }, [mutationObserver]);
+  watchEffect(() => {
+    return () => mutationObserver.value?.disconnect();
+  });
 
   return mutationObserver;
 }

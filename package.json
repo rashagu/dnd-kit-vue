@@ -1,65 +1,21 @@
 {
-  "name": "dnd-kit",
-  "description": "dnd kit – a lightweight React library for building performant and accessible drag and drop experiences",
-  "author": "Claudéric Demers",
-  "license": "MIT",
+  "name": "dnd-kit-vue",
   "private": true,
-  "workspaces": [
-    "packages/*"
-  ],
+  "version": "0.0.0",
+  "type": "module",
   "scripts": {
-    "lerna": "lerna",
-    "start": "lerna run start --stream --parallel",
-    "test": "lerna run test --",
-    "lint": "lerna run lint -- --fix",
-    "build": "lerna run build",
-    "build:storybook": "build-storybook",
-    "prepublish": "lerna run prepublish",
-    "start:playground": "yarn run build && yarn --cwd playground && yarn --cwd playground start",
-    "start:storybook": "start-storybook -p 6006",
-    "cypress": "cypress run",
-    "cypress:open": "cypress open",
-    "changeset": "changeset",
-    "release": "changeset publish",
-    "version:next": "changeset version --snapshot next",
-    "release:next": "changeset publish --tag next"
+    "dev": "vite",
+    "build": "vue-tsc --noEmit && vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "@vitejs/plugin-vue-jsx": "^2.0.0",
+    "vue": "^3.2.37"
   },
   "devDependencies": {
-    "@changesets/changelog-github": "^0.4.0",
-    "@changesets/cli": "^2.16.0",
-    "@storybook/addon-essentials": "^6.5.5",
-    "@storybook/addon-info": "^5.3.21",
-    "@storybook/addon-links": "^6.5.5",
-    "@storybook/addons": "^6.5.5",
-    "@storybook/react": "^6.5.5",
-    "@types/classnames": "^2.2.11",
-    "@types/react": "^16.9.43",
-    "@types/react-dom": "^16.9.8",
-    "babel-jest": "^27.0.2",
-    "babel-loader": "^8.2.1",
-    "chromatic": "^5.4.0",
-    "classnames": "^2.2.6",
-    "css-loader": "^2.0.0",
-    "cypress": "^9.5.2",
-    "framer-motion": "^3.1.1",
-    "lerna": "^3.15.0",
-    "postcss": "^8.1.10",
-    "postcss-loader": "^4.1.0",
-    "postcss-nested": "^5.0.1",
-    "postcss-simple-vars": "^6.0.1",
-    "react": "^18.1.0",
-    "react-dom": "^18.1.0",
-    "react-tiny-virtual-list": "^2.2.0",
-    "style-loader": "^2.0.0",
-    "tsdx": "^0.14.1",
-    "typescript": "^4.6.4"
-  },
-  "resolutions": {
-    "prettier": "^2.2.0",
-    "**/@typescript-eslint/eslint-plugin": "^4.8.2",
-    "**/@typescript-eslint/parser": "^4.8.2",
-    "**/typescript": "^4.6.4",
-    "jest": "^27.0.5",
-    "ts-jest": "^27.0.3"
+    "@vitejs/plugin-vue": "^3.0.0",
+    "typescript": "^4.6.4",
+    "vite": "^3.0.0",
+    "vue-tsc": "^0.38.4"
   }
 }

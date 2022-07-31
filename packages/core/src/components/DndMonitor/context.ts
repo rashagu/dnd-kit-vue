@@ -1,5 +1,6 @@
-import {createContext} from 'react';
 
-import type {RegisterListener} from './types';
+import DndMonitorContextProvider from "../../CreateContextVueVNode/DndMonitorContextProvider";
 
-export const DndMonitorContext = createContext<RegisterListener | null>(null);
+export const DndMonitorContext = {
+  Provider: DndMonitorContextProvider
+}

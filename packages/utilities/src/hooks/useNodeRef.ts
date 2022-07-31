@@ -1,6 +1,6 @@
-import {useRef, useCallback} from 'react';
 
 import {useEvent} from './useEvent';
+import {ref} from "vue";
 
 export function useNodeRef(
   onChange?: (
@@ -9,18 +9,14 @@ export function useNodeRef(
   ) => void
 ) {
   const onChangeHandler = useEvent(onChange);
-  const node = useRef<HTMLElement | null>(null);
-  const setNodeRef = useCallback(
-    (element: HTMLElement | null) => {
-      if (element !== node.current) {
-        onChangeHandler?.(element, node.current);
-      }
+  const node = ref<HTMLElement | null>(null);
+  const setNodeRef = (element: HTMLElement | null) => {
+    if (element !== node.value) {
+      onChangeHandler?.(element, node.value);
+    }
 
-      node.current = element;
-    },
-    //eslint-disable-next-line
-    []
-  );
+    node.value = element;
+  }
 
   return [node, setNodeRef] as const;
 }

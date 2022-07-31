@@ -1,7 +1,5 @@
-import React, {useEffect, useMemo, useState} from 'react';
-import {createPortal} from 'react-dom';
-import {useUniqueId} from '@dnd-kit/utilities';
-import {HiddenText, LiveRegion, useAnnouncement} from '@dnd-kit/accessibility';
+import {useUniqueId} from '@kousum/utilities';
+import {HiddenText, LiveRegion, useAnnouncement} from '@kousum/accessibility';
 
 import {DndMonitorListener, useDndMonitor} from '../DndMonitor';
 
@@ -10,6 +8,7 @@ import {
   defaultAnnouncements,
   defaultScreenReaderInstructions,
 } from './defaults';
+import {ref, watchEffect, Teleport} from "vue";
 
 interface Props {
   announcements?: Announcements;
@@ -26,36 +25,31 @@ export function Accessibility({
 }: Props) {
   const {announce, announcement} = useAnnouncement();
   const liveRegionId = useUniqueId(`DndLiveRegion`);
-  const [mounted, setMounted] = useState(false);
+  const mounted = ref(false);
 
-  useEffect(() => {
-    setMounted(true);
-  }, []);
+  watchEffect(() => {
+    mounted.value = true
+  });
 
-  useDndMonitor(
-    useMemo<DndMonitorListener>(
-      () => ({
-        onDragStart({active}) {
-          announce(announcements.onDragStart({active}));
-        },
-        onDragMove({active, over}) {
-          if (announcements.onDragMove) {
-            announce(announcements.onDragMove({active, over}));
-          }
-        },
-        onDragOver({active, over}) {
-          announce(announcements.onDragOver({active, over}));
-        },
-        onDragEnd({active, over}) {
-          announce(announcements.onDragEnd({active, over}));
-        },
-        onDragCancel({active, over}) {
-          announce(announcements.onDragCancel({active, over}));
-        },
-      }),
-      [announce, announcements]
-    )
-  );
+  useDndMonitor({
+    onDragStart({active}) {
+      announce(announcements.onDragStart({active}));
+    },
+    onDragMove({active, over}) {
+      if (announcements.onDragMove) {
+        announce(announcements.onDragMove({active, over}));
+      }
+    },
+    onDragOver({active, over}) {
+      announce(announcements.onDragOver({active, over}));
+    },
+    onDragEnd({active, over}) {
+      announce(announcements.onDragEnd({active, over}));
+    },
+    onDragCancel({active, over}) {
+      announce(announcements.onDragCancel({active, over}));
+    },
+  });
 
   if (!mounted) {
     return null;
@@ -67,9 +61,10 @@ export function Accessibility({
         id={hiddenTextDescribedById}
         value={screenReaderInstructions.draggable}
       />
-      <LiveRegion id={liveRegionId} announcement={announcement} />
+      <LiveRegion id={liveRegionId.value} announcement={announcement.value} />
     </>
   );
 
-  return container ? createPortal(markup, container) : markup;
+
+  return container ? <Teleport to={container}>{markup}</Teleport> : markup;
 }

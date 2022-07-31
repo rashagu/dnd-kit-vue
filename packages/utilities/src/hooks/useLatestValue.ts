@@ -1,18 +1,19 @@
-import {useRef} from 'react';
+import {Ref, ref} from 'vue';
 
 import {useIsomorphicLayoutEffect} from './useIsomorphicLayoutEffect';
 
 export function useLatestValue<T extends any>(
   value: T,
   dependencies = [value]
-) {
-  const valueRef = useRef<T>(value);
+):Ref<T> {
+  const valueRef = ref<T>(value);
 
   useIsomorphicLayoutEffect(() => {
-    if (valueRef.current !== value) {
-      valueRef.current = value;
+    if (valueRef.value !== value) {
+      // @ts-ignore
+      valueRef.value = value;
     }
-  }, dependencies);
+  });
 
-  return valueRef;
+  return valueRef as Ref<T>;
 }

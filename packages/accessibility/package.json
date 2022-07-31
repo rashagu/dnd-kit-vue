@@ -1,5 +1,5 @@
 {
-  "name": "@dnd-kit/accessibility",
+  "name": "@kousum/accessibility",
   "version": "3.0.1",
   "description": "A generic toolkit to help with accessibility",
   "author": "Claudéric Demers",
@@ -16,19 +16,15 @@
     "lint": "tsdx lint",
     "prepublish": "npm run build"
   },
-  "main": "dist/index.js",
-  "module": "dist/accessibility.esm.js",
-  "typings": "dist/index.d.ts",
+  "main": "src/index.ts",
+  "module": "src/index.ts",
   "files": [
     "README.md",
     "CHANGELOG.md",
     "dist"
   ],
-  "peerDependencies": {
-    "react": ">=16.8.0"
-  },
   "dependencies": {
-    "tslib": "^2.0.0"
+    "vue": "^3.2.37"
   },
   "publishConfig": {
     "access": "public"

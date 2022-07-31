@@ -1,35 +1,32 @@
-import {useEffect, useRef} from 'react';
-import {Coordinates, subtract} from '@dnd-kit/utilities';
+import {Coordinates, subtract} from '@kousum/utilities';
 
 import {defaultCoordinates} from '../../utilities';
+import {ref, watchEffect} from "vue";
 
 export function useScrollOffsetsDelta(
   scrollOffsets: Coordinates,
   dependencies: any[] = []
 ) {
-  const initialScrollOffsets = useRef<Coordinates | null>(null);
+  const initialScrollOffsets = ref<Coordinates | null>(null);
 
-  useEffect(
+  watchEffect(
     () => {
-      initialScrollOffsets.current = null;
-    },
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    dependencies
-  );
+      initialScrollOffsets.value = null;
+    });
 
-  useEffect(() => {
+  watchEffect(() => {
     const hasScrollOffsets = scrollOffsets !== defaultCoordinates;
 
-    if (hasScrollOffsets && !initialScrollOffsets.current) {
-      initialScrollOffsets.current = scrollOffsets;
+    if (hasScrollOffsets && !initialScrollOffsets.value) {
+      initialScrollOffsets.value = scrollOffsets;
     }
 
-    if (!hasScrollOffsets && initialScrollOffsets.current) {
-      initialScrollOffsets.current = null;
+    if (!hasScrollOffsets && initialScrollOffsets.value) {
+      initialScrollOffsets.value = null;
     }
-  }, [scrollOffsets]);
+  });
 
-  return initialScrollOffsets.current
-    ? subtract(scrollOffsets, initialScrollOffsets.current)
+  return initialScrollOffsets.value
+    ? subtract(scrollOffsets, initialScrollOffsets.value)
     : defaultCoordinates;
 }

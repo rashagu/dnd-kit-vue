@@ -1,4 +1,5 @@
-import {useLazyMemo} from '@dnd-kit/utilities';
+import {useLazyMemo} from '@kousum/utilities';
+import {ComputedRef} from "vue";
 
 type AnyFunction = (...args: any) => any;
 
@@ -8,7 +9,7 @@ export function useInitialValue<
 >(
   value: T | null,
   computeFn?: U
-): U extends AnyFunction ? ReturnType<U> | null : T | null {
+): ComputedRef<U extends AnyFunction ? ReturnType<U> | null : T | null> {
   return useLazyMemo(
     (previousValue) => {
       if (!value) {

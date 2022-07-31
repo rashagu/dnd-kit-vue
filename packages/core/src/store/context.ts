@@ -1,9 +1,9 @@
-import {createContext} from 'react';
-
 import {noop} from '../utilities/other';
 import {defaultMeasuringConfiguration} from '../components/DndContext/defaults';
 import {DroppableContainersMap} from './constructors';
 import type {InternalContextDescriptor, PublicContextDescriptor} from './types';
+import InternalContextProvider from "../CreateContextVueVNode/InternalContextProvider";
+import PublicContextProvider from "../CreateContextVueVNode/PublicContextProvider";
 
 export const defaultPublicContext: PublicContextDescriptor = {
   activatorEvent: null,
@@ -45,10 +45,10 @@ export const defaultInternalContext: InternalContextDescriptor = {
   measureDroppableContainers: noop,
 };
 
-export const InternalContext = createContext<InternalContextDescriptor>(
-  defaultInternalContext
-);
+export const InternalContext = {
+  Provider: InternalContextProvider
+};
 
-export const PublicContext = createContext<PublicContextDescriptor>(
-  defaultPublicContext
-);
+export const PublicContext = {
+  Provider: PublicContextProvider
+};

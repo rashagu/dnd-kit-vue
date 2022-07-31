@@ -1,4 +1,4 @@
-import {getWindow} from '@dnd-kit/utilities';
+import {getWindow} from '@kousum/utilities';
 
 export function isFixed(
   node: HTMLElement,

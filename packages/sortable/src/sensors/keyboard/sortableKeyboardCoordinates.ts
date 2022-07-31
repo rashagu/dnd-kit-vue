@@ -5,8 +5,8 @@ import {
   KeyboardCode,
   DroppableContainer,
   KeyboardCoordinateGetter,
-} from '@dnd-kit/core';
-import {subtract} from '@dnd-kit/utilities';
+} from '@kousum/core';
+import {subtract} from '@kousum/utilities';
 
 import {hasSortableData} from '../../types';
 

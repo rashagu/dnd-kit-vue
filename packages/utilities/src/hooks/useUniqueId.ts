@@ -1,9 +1,9 @@
-import {useMemo} from 'react';
+import {computed} from "vue";
 
 let ids: Record<string, number> = {};
 
 export function useUniqueId(prefix: string, value?: string) {
-  return useMemo(() => {
+  return computed(() => {
     if (value) {
       return value;
     }
@@ -12,5 +12,5 @@ export function useUniqueId(prefix: string, value?: string) {
     ids[prefix] = id;
 
     return `${prefix}-${id}`;
-  }, [prefix, value]);
+  });
 }

@@ -1,24 +1,19 @@
-import {useCallback, useState} from 'react';
+
 
 import type {DndMonitorListener, DndMonitorEvent} from './types';
+import {ref} from "vue";
 
 export function useDndMonitorProvider() {
-  const [listeners] = useState(() => new Set<DndMonitorListener>());
+  const listeners = ref(new Set<DndMonitorListener>());
 
-  const registerListener = useCallback(
-    (listener) => {
-      listeners.add(listener);
-      return () => listeners.delete(listener);
-    },
-    [listeners]
-  );
+  const registerListener = (listener:any) => {
+    listeners.value.add(listener);
+    return () => listeners.value.delete(listener);
+  };
 
-  const dispatch = useCallback(
-    ({type, event}: DndMonitorEvent) => {
-      listeners.forEach((listener) => listener[type]?.(event as any));
-    },
-    [listeners]
-  );
+  const dispatch = ({type, event}: DndMonitorEvent) => {
+    listeners.value.forEach((listener) => listener[type]?.(event as any));
+  };
 
   return [dispatch, registerListener] as const;
 }

@@ -1,4 +1,7 @@
-import type {MutableRefObject} from 'react';
+// import type {MutableRefObject} from 'react';
+import {ComputedRef} from "vue";
+
+type MutableRefObject<T> = any
 import type {
   Active,
   Over,
@@ -24,7 +27,7 @@ export enum Response {
 
 export type SensorContext = {
   activatorEvent: Event | null;
-  active: Active | null;
+  active: ComputedRef<Active | null> | null;
   activeNode: HTMLElement | null;
   collisionRect: ClientRect | null;
   collisions: Collision[] | null;
@@ -87,6 +90,6 @@ export type SensorDescriptor<T> = {
 };
 
 export type SensorHandler = (
-  event: React.SyntheticEvent,
+  event: any,
   active: UniqueIdentifier
 ) => boolean | void;

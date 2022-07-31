@@ -1,4 +1,4 @@
-import {getEventCoordinates} from '@dnd-kit/utilities';
+import {getEventCoordinates} from '@kousum/utilities';
 import type {ClientRect} from '../../types';
 
 export function getRelativeTransformOrigin(

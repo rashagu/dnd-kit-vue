@@ -4,9 +4,9 @@ import {
   useDroppable,
   UseDraggableArguments,
   UseDroppableArguments,
-} from '@dnd-kit/core';
-import type {Data} from '@dnd-kit/core';
-import {CSS, isKeyboardEvent, useCombinedRefs} from '@dnd-kit/utilities';
+} from '@kousum/core';
+import type {Data} from '@kousum/core';
+import {CSS, isKeyboardEvent, useCombinedRefs} from '@kousum/utilities';
 
 import {Context} from '../components';
 import type {Disabled, SortableData, SortingStrategy} from '../types';

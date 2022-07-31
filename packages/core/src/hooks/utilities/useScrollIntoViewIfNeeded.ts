@@ -1,4 +1,4 @@
-import {useIsomorphicLayoutEffect} from '@dnd-kit/utilities';
+import {useIsomorphicLayoutEffect} from '@kousum/utilities';
 
 import {scrollIntoViewIfNeeded} from '../../utilities/scroll';
 
@@ -7,5 +7,5 @@ export function useScrollIntoViewIfNeeded(
 ) {
   useIsomorphicLayoutEffect(() => {
     scrollIntoViewIfNeeded(element);
-  }, [element]);
+  });
 }

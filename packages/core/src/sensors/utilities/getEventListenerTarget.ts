@@ -1,4 +1,4 @@
-import {getOwnerDocument, getWindow} from '@dnd-kit/utilities';
+import {getOwnerDocument, getWindow} from '@kousum/utilities';
 
 export function getEventListenerTarget(
   target: EventTarget | null

@@ -1,6 +1,6 @@
-import type {Without} from '@dnd-kit/utilities';
+import type {Without} from '@kousum/utilities';
 
 export type SyntheticEventName = keyof Without<
-  React.DOMAttributes<any>,
+  any,
   'children' | 'dangerouslySetInnerHTML'
 >;

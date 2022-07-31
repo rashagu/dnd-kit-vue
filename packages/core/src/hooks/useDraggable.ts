@@ -1,16 +1,17 @@
-import {createContext, useContext, useMemo} from 'react';
 import {
   Transform,
   useNodeRef,
   useIsomorphicLayoutEffect,
   useLatestValue,
   useUniqueId,
-} from '@dnd-kit/utilities';
+} from '@kousum/utilities';
 
-import {InternalContext, Data} from '../store';
+import {InternalContext, Data, InternalContextDescriptor, defaultInternalContext} from '../store';
 import type {UniqueIdentifier} from '../types';
 import {ActiveDraggableContext} from '../components/DndContext';
 import {useSyntheticListeners, SyntheticListenerMap} from './utilities';
+import {computed, ComputedRef, inject, ref, watch} from "vue";
+import {defaultCoordinates} from "../utilities";
 
 export interface UseDraggableArguments {
   id: UniqueIdentifier;
@@ -34,8 +35,6 @@ export interface DraggableAttributes {
 
 export type DraggableSyntheticListeners = SyntheticListenerMap | undefined;
 
-const NullContext = createContext<any>(null);
-
 const defaultRole = 'button';
 
 const ID_PREFIX = 'Droppable';
@@ -47,70 +46,60 @@ export function useDraggable({
   attributes,
 }: UseDraggableArguments) {
   const key = useUniqueId(ID_PREFIX);
-  const {
-    activators,
-    activatorEvent,
-    active,
-    activeNodeRect,
-    ariaDescribedById,
-    draggableNodes,
-    over,
-  } = useContext(InternalContext);
+  const internalContext = inject('InternalContext', ref<InternalContextDescriptor>(defaultInternalContext));
+
+
   const {role = defaultRole, roleDescription = 'draggable', tabIndex = 0} =
     attributes ?? {};
-  const isDragging = active?.id === id;
-  const transform: Transform | null = useContext(
-    isDragging ? ActiveDraggableContext : NullContext
-  );
+  const isDragging = computed(()=>{
+    return internalContext.value.active?.id === id
+  });
+  const transform= computed<Transform | null >(()=>{
+    console.log(inject('DndContext'))
+    return  isDragging.value ? inject('DndContext', ref<Transform>({
+      ...defaultCoordinates,
+      scaleX: 1,
+      scaleY: 1,
+    })).value : null;
+  })
   const [node, setNodeRef] = useNodeRef();
   const [activatorNode, setActivatorNodeRef] = useNodeRef();
-  const listeners = useSyntheticListeners(activators, id);
+  const listeners = useSyntheticListeners(internalContext.value.activators, id);
+
   const dataRef = useLatestValue(data);
 
   useIsomorphicLayoutEffect(
     () => {
-      draggableNodes.set(id, {id, key, node, activatorNode, data: dataRef});
+      internalContext.value.draggableNodes.set(id, {id, key: key.value, node, activatorNode, data: dataRef});
 
       return () => {
-        const node = draggableNodes.get(id);
+        const node = internalContext.value.draggableNodes.get(id);
 
-        if (node && node.key === key) {
-          draggableNodes.delete(id);
+        if (node && node.key === key.value) {
+          internalContext.value.draggableNodes.delete(id);
         }
       };
-    },
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [draggableNodes, id]
+    }
   );
 
-  const memoizedAttributes: DraggableAttributes = useMemo(
-    () => ({
-      role,
-      tabIndex,
-      'aria-disabled': disabled,
-      'aria-pressed': isDragging && role === defaultRole ? true : undefined,
-      'aria-roledescription': roleDescription,
-      'aria-describedby': ariaDescribedById.draggable,
-    }),
-    [
-      disabled,
-      role,
-      tabIndex,
-      isDragging,
-      roleDescription,
-      ariaDescribedById.draggable,
-    ]
-  );
+  const memoizedAttributes: ComputedRef<DraggableAttributes> = computed(
+    () => {
+      return {
+        role,
+        tabIndex,
+        'aria-disabled': disabled,
+        'aria-pressed': isDragging.value && role === defaultRole ? true : undefined,
+        'aria-roledescription': roleDescription,
+        'aria-describedby': internalContext.value.ariaDescribedById.draggable,
+      }
+    });
 
   return {
-    active,
-    activatorEvent,
-    activeNodeRect,
-    attributes: memoizedAttributes,
+    internalContext:internalContext,
     isDragging,
+    attributes: memoizedAttributes,
     listeners: disabled ? undefined : listeners,
     node,
-    over,
     setNodeRef,
     setActivatorNodeRef,
     transform,

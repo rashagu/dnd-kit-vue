@@ -1,10 +1,10 @@
-import {useMemo} from 'react';
 
 import type {SyntheticEventName, UniqueIdentifier} from '../../types';
+import {computed, ComputedRef} from "vue";
 
 export type SyntheticListener = {
   eventName: SyntheticEventName;
-  handler: (event: React.SyntheticEvent, id: UniqueIdentifier) => void;
+  handler: (event: any, id: UniqueIdentifier) => void;
 };
 
 export type SyntheticListeners = SyntheticListener[];
@@ -14,11 +14,12 @@ export type SyntheticListenerMap = Record<string, Function>;
 export function useSyntheticListeners(
   listeners: SyntheticListeners,
   id: UniqueIdentifier
-): SyntheticListenerMap {
-  return useMemo(() => {
+): ComputedRef<SyntheticListenerMap> {
+  return computed(() => {
     return listeners.reduce<SyntheticListenerMap>(
       (acc, {eventName, handler}) => {
-        acc[eventName] = (event: React.SyntheticEvent) => {
+        // @ts-ignore
+        acc[eventName] = (event: any) => {
           handler(event, id);
         };
 
@@ -26,5 +27,5 @@ export function useSyntheticListeners(
       },
       {} as SyntheticListenerMap
     );
-  }, [listeners, id]);
+  });
 }

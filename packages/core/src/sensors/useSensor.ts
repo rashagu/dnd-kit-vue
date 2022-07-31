@@ -1,17 +1,13 @@
-import {useMemo} from 'react';
-
 import type {Sensor, SensorDescriptor, SensorOptions} from './types';
+import {computed, ComputedRef} from "vue";
 
 export function useSensor<T extends SensorOptions>(
   sensor: Sensor<T>,
   options?: T
-): SensorDescriptor<T> {
-  return useMemo(
-    () => ({
+): ComputedRef<SensorDescriptor<T>> {
+  return computed(() => ({
       sensor,
       options: options ?? ({} as T),
-    }),
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [sensor, options]
+    })
   );
 }

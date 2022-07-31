@@ -3,7 +3,7 @@ function createAdjustmentFn(modifier: number) {
     object: T,
     ...adjustments: Partial<T>[]
   ): T => {
-    return adjustments.reduce<T>(
+    const value = adjustments.reduce<T>(
       (accumulator, adjustment) => {
         const entries = Object.entries(adjustment) as [U, number][];
 
@@ -21,6 +21,7 @@ function createAdjustmentFn(modifier: number) {
         ...object,
       }
     );
+    return value
   };
 }
 

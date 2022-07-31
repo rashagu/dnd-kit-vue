@@ -1,5 +1,5 @@
 {
-  "name": "@dnd-kit/utilities",
+  "name": "@kousum/utilities",
   "version": "3.2.0",
   "description": "Internal utilities to bee shared between `@dnd-kit` packages",
   "author": "Claudéric Demers",
@@ -16,9 +16,8 @@
     "lint": "tsdx lint",
     "prepublish": "npm run build"
   },
-  "main": "dist/index.js",
-  "module": "dist/utilities.esm.js",
-  "typings": "dist/index.d.ts",
+  "main": "src/index.ts",
+  "module": "src/index.ts",
   "files": [
     "README.md",
     "CHANGELOG.md",
@@ -26,10 +25,7 @@
     "dist"
   ],
   "dependencies": {
-    "tslib": "^2.0.0"
-  },
-  "peerDependencies": {
-    "react": ">=16.8.0"
+    "vue": "^3.2.37"
   },
   "publishConfig": {
     "access": "public"

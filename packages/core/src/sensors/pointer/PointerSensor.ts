@@ -1,5 +1,5 @@
-import type {PointerEvent} from 'react';
-import {getOwnerDocument} from '@dnd-kit/utilities';
+
+import {getOwnerDocument} from '@kousum/utilities';
 
 import type {SensorProps} from '../types';
 import {
@@ -29,9 +29,9 @@ export class PointerSensor extends AbstractPointerSensor {
 
   static activators = [
     {
-      eventName: 'onPointerDown' as const,
+      eventName: 'onPointerdown' as const,
       handler: (
-        {nativeEvent: event}: PointerEvent,
+        event: PointerEvent,
         {onActivation}: PointerSensorOptions
       ) => {
         if (!event.isPrimary || event.button !== 0) {

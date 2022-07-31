@@ -1,10 +1,10 @@
-import {useEffect} from 'react';
-import {canUseDOM} from '@dnd-kit/utilities';
+import {canUseDOM} from '@kousum/utilities';
 
 import type {SensorDescriptor} from '../../sensors';
+import {watchEffect} from "vue";
 
 export function useSensorSetup(sensors: SensorDescriptor<any>[]) {
-  useEffect(
+  watchEffect(
     () => {
       if (!canUseDOM) {
         return;
@@ -17,9 +17,5 @@ export function useSensorSetup(sensors: SensorDescriptor<any>[]) {
           teardown?.();
         }
       };
-    },
-    // TO-DO: Sensors length could theoretically change which would not be a valid dependency
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    sensors.map(({sensor}) => sensor)
-  );
+    });
 }

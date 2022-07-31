@@ -1,12 +1,13 @@
-import {useEffect, useRef} from 'react';
-import {useLazyMemo} from '@dnd-kit/utilities';
+
+import {useLazyMemo} from '@kousum/utilities';
 
 import {getScrollableAncestors} from '../../utilities';
+import {ref, watchEffect} from "vue";
 
 const defaultValue: Element[] = [];
 
 export function useScrollableAncestors(node: HTMLElement | null) {
-  const previousNode = useRef(node);
+  const previousNode = ref(node);
 
   const ancestors = useLazyMemo<Element[]>(
     (previousValue) => {
@@ -18,8 +19,8 @@ export function useScrollableAncestors(node: HTMLElement | null) {
         previousValue &&
         previousValue !== defaultValue &&
         node &&
-        previousNode.current &&
-        node.parentNode === previousNode.current.parentNode
+        previousNode.value &&
+        node.parentNode === previousNode.value.parentNode
       ) {
         return previousValue;
       }
@@ -29,9 +30,9 @@ export function useScrollableAncestors(node: HTMLElement | null) {
     [node]
   );
 
-  useEffect(() => {
-    previousNode.current = node;
-  }, [node]);
+  watchEffect(() => {
+    previousNode.value = node;
+  });
 
   return ancestors;
 }

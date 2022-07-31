@@ -1,9 +1,10 @@
-import {useCallback, useEffect, useMemo, useRef} from 'react';
-import {useInterval, useLazyMemo, usePrevious} from '@dnd-kit/utilities';
+
+import {useInterval, useLazyMemo, usePrevious} from '@kousum/utilities';
 
 import {getScrollDirectionAndSpeed} from '../../utilities';
 import {Direction} from '../../types';
 import type {Coordinates, ClientRect} from '../../types';
+import {computed, ComputedRef, ref, watchEffect} from "vue";
 
 export type ScrollAncestorSortingFn = (ancestors: Element[]) => Element[];
 
@@ -68,9 +69,9 @@ export function useAutoScroller({
 }: Arguments) {
   const scrollIntent = useScrollIntent({delta, disabled: !enabled});
   const [setAutoScrollInterval, clearAutoScrollInterval] = useInterval();
-  const scrollSpeed = useRef<Coordinates>({x: 0, y: 0});
-  const scrollDirection = useRef<ScrollDirection>({x: 0, y: 0});
-  const rect = useMemo(() => {
+  const scrollSpeed = ref<Coordinates>({x: 0, y: 0});
+  const scrollDirection = ref<ScrollDirection>({x: 0, y: 0});
+  const rect = computed(() => {
     switch (activator) {
       case AutoScrollActivator.Pointer:
         return pointerCoordinates
@@ -84,36 +85,34 @@ export function useAutoScroller({
       case AutoScrollActivator.DraggableRect:
         return draggingRect;
     }
-  }, [activator, draggingRect, pointerCoordinates]);
-  const scrollContainerRef = useRef<Element | null>(null);
-  const autoScroll = useCallback(() => {
-    const scrollContainer = scrollContainerRef.current;
+  });
+  const scrollContainerRef = ref<Element | null>(null);
+  const autoScroll = () => {
+    const scrollContainer = scrollContainerRef.value;
 
     if (!scrollContainer) {
       return;
     }
 
-    const scrollLeft = scrollSpeed.current.x * scrollDirection.current.x;
-    const scrollTop = scrollSpeed.current.y * scrollDirection.current.y;
+    const scrollLeft = scrollSpeed.value.x * scrollDirection.value.x;
+    const scrollTop = scrollSpeed.value.y * scrollDirection.value.y;
 
     scrollContainer.scrollBy(scrollLeft, scrollTop);
-  }, []);
-  const sortedScrollableAncestors = useMemo(
+  }
+  const sortedScrollableAncestors = computed(
     () =>
       order === TraversalOrder.TreeOrder
         ? [...scrollableAncestors].reverse()
-        : scrollableAncestors,
-    [order, scrollableAncestors]
-  );
+        : scrollableAncestors);
 
-  useEffect(
+  watchEffect(
     () => {
       if (!enabled || !scrollableAncestors.length || !rect) {
         clearAutoScrollInterval();
         return;
       }
 
-      for (const scrollContainer of sortedScrollableAncestors) {
+      for (const scrollContainer of sortedScrollableAncestors.value) {
         if (canScroll?.(scrollContainer) === false) {
           continue;
         }
@@ -128,13 +127,13 @@ export function useAutoScroller({
         const {direction, speed} = getScrollDirectionAndSpeed(
           scrollContainer,
           scrollContainerRect,
-          rect,
+          rect.value,
           acceleration,
           threshold
         );
 
         for (const axis of ['x', 'y'] as const) {
-          if (!scrollIntent[axis][direction[axis] as Direction]) {
+          if (!scrollIntent.value[axis][direction[axis] as Direction]) {
             speed[axis] = 0;
             direction[axis] = 0;
           }
@@ -143,40 +142,20 @@ export function useAutoScroller({
         if (speed.x > 0 || speed.y > 0) {
           clearAutoScrollInterval();
 
-          scrollContainerRef.current = scrollContainer;
+          scrollContainerRef.value = scrollContainer;
           setAutoScrollInterval(autoScroll, interval);
 
-          scrollSpeed.current = speed;
-          scrollDirection.current = direction;
+          scrollSpeed.value = speed;
+          scrollDirection.value = direction;
 
           return;
         }
       }
 
-      scrollSpeed.current = {x: 0, y: 0};
-      scrollDirection.current = {x: 0, y: 0};
+      scrollSpeed.value = {x: 0, y: 0};
+      scrollDirection.value = {x: 0, y: 0};
       clearAutoScrollInterval();
-    },
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [
-      acceleration,
-      autoScroll,
-      canScroll,
-      clearAutoScrollInterval,
-      enabled,
-      interval,
-      // eslint-disable-next-line react-hooks/exhaustive-deps
-      JSON.stringify(rect),
-      // eslint-disable-next-line react-hooks/exhaustive-deps
-      JSON.stringify(scrollIntent),
-      setAutoScrollInterval,
-      scrollableAncestors,
-      sortedScrollableAncestors,
-      scrollableAncestorRects,
-      // eslint-disable-next-line react-hooks/exhaustive-deps
-      JSON.stringify(threshold),
-    ]
-  );
+    });
 }
 
 interface ScrollIntent {
@@ -195,7 +174,7 @@ function useScrollIntent({
 }: {
   delta: Coordinates;
   disabled: boolean;
-}): ScrollIntent {
+}): ComputedRef {
   const previousDelta = usePrevious(delta);
 
   return useLazyMemo<ScrollIntent>(

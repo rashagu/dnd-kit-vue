@@ -1,8 +1,8 @@
-import {useReducer} from 'react';
-import {useIsomorphicLayoutEffect} from '@dnd-kit/utilities';
+
+import {useIsomorphicLayoutEffect} from '@kousum/utilities';
 
 import type {ClientRect} from '../../types';
-import {getClientRect, Rect} from '../../utilities';
+import {getClientRect, Rect, useReducer} from '../../utilities';
 
 import {useMutationObserver} from './useMutationObserver';
 import {useResizeObserver} from './useResizeObserver';
@@ -16,7 +16,7 @@ export function useRect(
   measure: (element: HTMLElement) => ClientRect = defaultMeasure,
   fallbackRect?: ClientRect | null
 ) {
-  const [rect, measureRect] = useReducer(reducer, null);
+  let [rect, measureRect] = useReducer(reducer, null);
 
   const mutationObserver = useMutationObserver({
     callback(records) {
@@ -44,16 +44,16 @@ export function useRect(
     measureRect();
 
     if (element) {
-      resizeObserver?.observe(element);
-      mutationObserver?.observe(document.body, {
+      resizeObserver.value?.observe(element);
+      mutationObserver.value?.observe(document.body, {
         childList: true,
         subtree: true,
       });
     } else {
-      resizeObserver?.disconnect();
-      mutationObserver?.disconnect();
+      resizeObserver.value?.disconnect();
+      mutationObserver.value?.disconnect();
     }
-  }, [element]);
+  });
 
   return rect;
 

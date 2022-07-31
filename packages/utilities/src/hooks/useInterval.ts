@@ -1,18 +1,18 @@
-import {useCallback, useRef} from 'react';
+import {ref} from 'vue';
 
 export function useInterval() {
-  const intervalRef = useRef<number | null>(null);
+  const intervalRef = ref<number | null>(null);
 
-  const set = useCallback((listener: Function, duration: number) => {
-    intervalRef.current = setInterval(listener, duration);
-  }, []);
+  const set = (listener: Function, duration: number) => {
+    intervalRef.value = setInterval(listener, duration);
+  }
 
-  const clear = useCallback(() => {
-    if (intervalRef.current !== null) {
-      clearInterval(intervalRef.current);
-      intervalRef.current = null;
+  const clear = () => {
+    if (intervalRef.value !== null) {
+      clearInterval(intervalRef.value);
+      intervalRef.value = null;
     }
-  }, []);
+  }
 
   return [set, clear] as const;
 }

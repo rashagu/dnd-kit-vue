@@ -1,4 +1,4 @@
-import type {Coordinates} from '@dnd-kit/utilities';
+import type {Coordinates} from '@kousum/utilities';
 
 export type {Coordinates};
 

@@ -1,5 +1,5 @@
-import type {Modifier} from '@dnd-kit/core';
-import {getEventCoordinates} from '@dnd-kit/utilities';
+import type {Modifier} from '@kousum/core';
+import {getEventCoordinates} from '@kousum/utilities';
 
 export const snapCenterToCursor: Modifier = ({
   activatorEvent,

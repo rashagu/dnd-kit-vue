@@ -1,13 +1,14 @@
-import {useMemo} from 'react';
-import type {DeepRequired} from '@dnd-kit/utilities';
+
+import type {DeepRequired} from '@kousum/utilities';
 
 import {defaultMeasuringConfiguration} from '../defaults';
 import type {MeasuringConfiguration} from '../types';
+import {computed, ComputedRef} from "vue";
 
 export function useMeasuringConfiguration(
   config: MeasuringConfiguration | undefined
-): DeepRequired<MeasuringConfiguration> {
-  return useMemo(
+): ComputedRef<DeepRequired<MeasuringConfiguration>> {
+  return computed(
     () => ({
       draggable: {
         ...defaultMeasuringConfiguration.draggable,
@@ -21,8 +22,5 @@ export function useMeasuringConfiguration(
         ...defaultMeasuringConfiguration.dragOverlay,
         ...config?.dragOverlay,
       },
-    }),
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [config?.draggable, config?.droppable, config?.dragOverlay]
-  );
+    }));
 }

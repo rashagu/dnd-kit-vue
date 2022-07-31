@@ -1,4 +1,4 @@
-import React from 'react';
+import {CSSProperties} from "vue";
 
 export interface Props {
   id: string;
@@ -6,7 +6,7 @@ export interface Props {
 }
 
 // Hide element visually but keep it readable by screen readers
-const visuallyHidden: React.CSSProperties = {
+const visuallyHidden: CSSProperties = {
   position: 'fixed',
   width: 1,
   height: 1,

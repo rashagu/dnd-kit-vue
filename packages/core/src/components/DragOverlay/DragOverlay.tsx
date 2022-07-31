@@ -1,4 +1,3 @@
-import React, {useContext} from 'react';
 
 import {applyModifiers, Modifiers} from '../../modifiers';
 import {ActiveDraggableContext} from '../DndContext';
@@ -14,11 +13,14 @@ import type {PositionedOverlayProps} from './components';
 
 import {useDropAnimation, useKey} from './hooks';
 import type {DropAnimation} from './hooks';
+import {inject, ref, useSlots} from "vue";
+import {defaultCoordinates} from "../../utilities";
+import {Transform} from "@kousum/utilities/src";
 
 export interface Props
   extends Pick<
     PositionedOverlayProps,
-    'adjustScale' | 'children' | 'className' | 'style' | 'transition'
+    'adjustScale' | 'className' | 'style' | 'transition'
   > {
   dropAnimation?: DropAnimation | null | undefined;
   modifiers?: Modifiers;
@@ -26,18 +28,17 @@ export interface Props
   zIndex?: number;
 }
 
-export const DragOverlay = React.memo(
+export const DragOverlay =
   ({
-    adjustScale = false,
-    children,
-    dropAnimation: dropAnimationConfig,
-    style,
-    transition,
-    modifiers,
-    wrapperElement = 'div',
-    className,
-    zIndex = 999,
-  }: Props) => {
+     adjustScale = false,
+     dropAnimation: dropAnimationConfig,
+     style,
+     transition,
+     modifiers,
+     wrapperElement = 'div',
+     className,
+     zIndex = 999,
+   }: Props) => {
     const {
       activatorEvent,
       active,
@@ -52,7 +53,12 @@ export const DragOverlay = React.memo(
       scrollableAncestorRects,
       windowRect,
     } = useDndContext();
-    const transform = useContext(ActiveDraggableContext);
+
+    const transform = inject('DndContext', ref<Transform>({
+      ...defaultCoordinates,
+      scaleX: 1,
+      scaleY: 1,
+    }))
     const key = useKey(active?.id);
     const modifiedTransform = applyModifiers(modifiers, {
       activatorEvent,
@@ -64,7 +70,7 @@ export const DragOverlay = React.memo(
       overlayNodeRect: dragOverlay.rect,
       scrollableAncestors,
       scrollableAncestorRects,
-      transform,
+      transform:transform.value,
       windowRect,
     });
     const initialRect = useInitialValue(activeNodeRect);
@@ -76,33 +82,34 @@ export const DragOverlay = React.memo(
     });
     // We need to wait for the active node to be measured before connecting the drag overlay ref
     // otherwise collisions can be computed against a mispositioned drag overlay
-    const ref = initialRect ? dragOverlay.setRef : undefined;
+    const ref_ = initialRect ? dragOverlay.setRef : undefined;
 
+    const slots = useSlots()
     return (
       <NullifiedContextProvider>
         <AnimationManager animation={dropAnimation}>
-          {active && key ? (
+          {active && key && key.value ? (
             <PositionedOverlay
-              key={key}
+              key={key.value}
               id={active.id}
-              ref={ref}
+              ref={ref_}
               as={wrapperElement}
               activatorEvent={activatorEvent}
               adjustScale={adjustScale}
               className={className}
               transition={transition}
-              rect={initialRect}
+              rect={initialRect.value}
               style={{
                 zIndex,
                 ...style,
               }}
               transform={modifiedTransform}
             >
-              {children}
+              {slots.default?.()}
             </PositionedOverlay>
           ) : null}
         </AnimationManager>
       </NullifiedContextProvider>
     );
   }
-);
+;

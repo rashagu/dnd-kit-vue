@@ -1,12 +1,12 @@
-import {useCallback, useState} from 'react';
+import {ref} from "vue";
 
 export function useAnnouncement() {
-  const [announcement, setAnnouncement] = useState('');
-  const announce = useCallback((value: string | undefined) => {
+  const announcement = ref('')
+  const announce = (value: string | undefined) => {
     if (value != null) {
-      setAnnouncement(value);
+      announcement.value = value
     }
-  }, []);
+  }
 
   return {announce, announcement} as const;
 }

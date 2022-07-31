@@ -1,20 +1,21 @@
-import {useContext, useEffect} from 'react';
 
 import {DndMonitorContext} from './context';
 import type {DndMonitorListener} from './types';
+import {inject, ref, watchEffect} from "vue";
+import {RegisterListener} from "./types";
 
 export function useDndMonitor(listener: DndMonitorListener) {
-  const registerListener = useContext(DndMonitorContext);
+  const registerListener = inject('DndMonitorContext', ref<RegisterListener | null>(null))
 
-  useEffect(() => {
-    if (!registerListener) {
+  watchEffect(() => {
+    if (!registerListener.value) {
       throw new Error(
         'useDndMonitor must be used within a children of <DndContext>'
       );
     }
 
-    const unsubscribe = registerListener(listener);
+    const unsubscribe = registerListener.value(listener);
 
     return unsubscribe;
-  }, [listener, registerListener]);
+  });
 }

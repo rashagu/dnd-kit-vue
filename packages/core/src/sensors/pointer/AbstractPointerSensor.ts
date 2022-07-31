@@ -3,7 +3,7 @@ import {
   getEventCoordinates,
   getOwnerDocument,
   getWindow,
-} from '@dnd-kit/utilities';
+} from '@kousum/utilities';
 
 import {defaultCoordinates} from '../../utilities';
 import {
@@ -62,7 +62,7 @@ export class AbstractPointerSensor implements SensorInstance {
   private document: Document;
   private activated: boolean = false;
   private initialCoordinates: Coordinates;
-  private timeoutId: NodeJS.Timeout | null = null;
+  private timeoutId: any;
   private listeners: Listeners;
   private documentListeners: Listeners;
   private windowListeners: Listeners;
@@ -177,6 +177,7 @@ export class AbstractPointerSensor implements SensorInstance {
 
     const coordinates = getEventCoordinates(event) ?? defaultCoordinates;
     const delta = getCoordinatesDelta(initialCoordinates, coordinates);
+
 
     if (!activated && activationConstraint) {
       // Constraint validation

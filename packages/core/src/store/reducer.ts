@@ -32,6 +32,7 @@ export function reducer(state: State, action: Actions): State {
         return state;
       }
 
+
       return {
         ...state,
         draggable: {

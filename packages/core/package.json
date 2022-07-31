@@ -1,5 +1,5 @@
 {
-  "name": "@dnd-kit/core",
+  "name": "@kousum/core",
   "version": "6.0.5",
   "description": "dnd kit – a lightweight React library for building performant and accessible drag and drop experiences",
   "author": "Claudéric Demers",
@@ -16,9 +16,8 @@
     "lint": "tsdx lint",
     "prepublish": "npm run build"
   },
-  "main": "dist/index.js",
-  "module": "dist/core.esm.js",
-  "typings": "dist/index.d.ts",
+  "main": "src/index.ts",
+  "module": "src/index.ts",
   "files": [
     "README.md",
     "CHANGELOG.md",
@@ -26,13 +25,12 @@
     "dist"
   ],
   "peerDependencies": {
-    "react": ">=16.8.0",
-    "react-dom": ">=16.8.0"
+    "vue": "^3.2.37"
   },
   "dependencies": {
     "tslib": "^2.0.0",
-    "@dnd-kit/accessibility": "^3.0.0",
-    "@dnd-kit/utilities": "^3.2.0"
+    "@kousum/accessibility": "^3.0.0",
+    "@kousum/utilities": "^3.2.0"
   },
   "publishConfig": {
     "access": "public"

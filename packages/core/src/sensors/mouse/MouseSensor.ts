@@ -1,5 +1,5 @@
-import type {MouseEvent} from 'react';
-import {getOwnerDocument} from '@dnd-kit/utilities';
+
+import {getOwnerDocument} from '@kousum/utilities';
 
 import type {SensorProps} from '../types';
 import {
@@ -28,9 +28,9 @@ export class MouseSensor extends AbstractPointerSensor {
 
   static activators = [
     {
-      eventName: 'onMouseDown' as const,
+      eventName: 'onMousedown' as const,
       handler: (
-        {nativeEvent: event}: MouseEvent,
+        event: MouseEvent,
         {onActivation}: MouseSensorOptions
       ) => {
         if (event.button === MouseButton.RightClick) {

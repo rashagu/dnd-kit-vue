@@ -4,7 +4,7 @@ import {
   getOwnerDocument,
   getWindow,
   isKeyboardEvent,
-} from '@dnd-kit/utilities';
+} from '@kousum/utilities';
 
 import type {Coordinates} from '../../types';
 import {
@@ -276,13 +276,13 @@ export class KeyboardSensor implements SensorInstance {
 
   static activators: Activators<KeyboardSensorOptions> = [
     {
-      eventName: 'onKeyDown' as const,
+      eventName: 'onKeydown' as const,
       handler: (
-        event: React.KeyboardEvent,
+        event: KeyboardEvent,
         {keyboardCodes = defaultKeyboardCodes, onActivation},
         {active}
       ) => {
-        const {code} = event.nativeEvent;
+        const {code} = event;
 
         if (keyboardCodes.start.includes(code)) {
           const activator = active.activatorNode.current;
@@ -293,7 +293,7 @@ export class KeyboardSensor implements SensorInstance {
 
           event.preventDefault();
 
-          onActivation?.({event: event.nativeEvent});
+          onActivation?.({event: event});
 
           return true;
         }

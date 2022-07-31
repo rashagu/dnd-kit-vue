@@ -1,12 +1,10 @@
-import React from 'react';
-import type {Transform} from '@dnd-kit/utilities';
+
+import type {Transform} from '@kousum/utilities';
 
 import {InternalContext, defaultInternalContext} from '../../../../store';
 import {ActiveDraggableContext} from '../../../DndContext';
+import {useSlots} from "vue";
 
-interface Props {
-  children: React.ReactNode;
-}
 
 const defaultTransform: Transform = {
   x: 0,
@@ -15,11 +13,12 @@ const defaultTransform: Transform = {
   scaleY: 1,
 };
 
-export function NullifiedContextProvider({children}: Props) {
+export function NullifiedContextProvider() {
+  const slota = useSlots()
   return (
     <InternalContext.Provider value={defaultInternalContext}>
       <ActiveDraggableContext.Provider value={defaultTransform}>
-        {children}
+        {slota.default?.()}
       </ActiveDraggableContext.Provider>
     </InternalContext.Provider>
   );

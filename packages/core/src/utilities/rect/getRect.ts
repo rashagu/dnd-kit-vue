@@ -1,4 +1,4 @@
-import {getWindow} from '@dnd-kit/utilities';
+import {getWindow} from '@kousum/utilities';
 
 import type {ClientRect} from '../../types';
 import {inverseTransform} from '../transform';

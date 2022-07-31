@@ -1,15 +1,15 @@
-import {useCallback, useRef} from 'react';
+import {ref} from 'vue';
 
 import {useIsomorphicLayoutEffect} from './useIsomorphicLayoutEffect';
 
 export function useEvent<T extends Function>(handler: T | undefined) {
-  const handlerRef = useRef<T | undefined>(handler);
+  const handlerRef = ref<T | undefined>(handler);
 
   useIsomorphicLayoutEffect(() => {
-    handlerRef.current = handler;
+    handlerRef.value = handler;
   });
 
-  return useCallback(function (...args: any) {
-    return handlerRef.current?.(...args);
-  }, []);
+  return function (...args: any) {
+    return handlerRef.value?.(...args);
+  }
 }

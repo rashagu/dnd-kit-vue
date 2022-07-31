@@ -1,11 +1,12 @@
-import {useRef, useEffect} from 'react';
+
+import {ref, watchEffect} from "vue";
 
 export function usePrevious<T>(value: T) {
-  const ref = useRef<T>();
+  const ref1 = ref<T>();
 
-  useEffect(() => {
-    ref.current = value;
-  }, [value]);
+  watchEffect(() => {
+    ref1.value = value;
+  });
 
-  return ref.current;
+  return ref1.value;
 }

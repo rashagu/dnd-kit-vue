@@ -1,12 +1,13 @@
-import {useLazyMemo} from '@dnd-kit/utilities';
+import {useLazyMemo} from '@kousum/utilities';
 
 import type {DraggableNode, DraggableNodes} from '../../store';
 import type {UniqueIdentifier} from '../../types';
+import {ComputedRef} from "vue";
 
 export function useCachedNode(
   draggableNodes: DraggableNodes,
   id: UniqueIdentifier | null
-): DraggableNode['node']['current'] {
+): ComputedRef<DraggableNode['node']['current']> {
   const draggableNode = id !== null ? draggableNodes.get(id) : undefined;
   const node = draggableNode ? draggableNode.node.current : null;
 

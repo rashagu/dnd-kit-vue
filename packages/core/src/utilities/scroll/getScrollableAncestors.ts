@@ -3,7 +3,7 @@ import {
   isDocument,
   isHTMLElement,
   isSVGElement,
-} from '@dnd-kit/utilities';
+} from '@kousum/utilities';
 
 import {isFixed} from './isFixed';
 import {isScrollable} from './isScrollable';
@@ -13,7 +13,6 @@ export function getScrollableAncestors(
   limit?: number
 ): Element[] {
   const scrollParents: Element[] = [];
-
   function findScrollableAncestors(node: Node | null): Element[] {
     if (limit != null && scrollParents.length >= limit) {
       return scrollParents;
@@ -22,6 +21,7 @@ export function getScrollableAncestors(
     if (!node) {
       return scrollParents;
     }
+
 
     if (
       isDocument(node) &&

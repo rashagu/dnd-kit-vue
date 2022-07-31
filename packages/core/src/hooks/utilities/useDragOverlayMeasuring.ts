@@ -1,10 +1,11 @@
-import {useMemo, useCallback, useState} from 'react';
-import {isHTMLElement, useNodeRef} from '@dnd-kit/utilities';
+
+import {isHTMLElement, useNodeRef} from '@kousum/utilities';
 
 import {useResizeObserver} from './useResizeObserver';
 import {getMeasurableNode} from '../../utilities/nodes';
 import type {PublicContextDescriptor} from '../../store';
 import type {ClientRect} from '../../types';
+import {computed, ComputedRef, Ref, ref} from "vue";
 
 interface Arguments {
   measure(element: HTMLElement): ClientRect;
@@ -12,48 +13,38 @@ interface Arguments {
 
 export function useDragOverlayMeasuring({
   measure,
-}: Arguments): PublicContextDescriptor['dragOverlay'] {
-  const [rect, setRect] = useState<ClientRect | null>(null);
-  const handleResize = useCallback(
-    (entries: ResizeObserverEntry[]) => {
-      for (const {target} of entries) {
-        if (isHTMLElement(target)) {
-          setRect((rect) => {
-            const newRect = measure(target);
+}: Arguments): ComputedRef<{ rect: Ref<ClientRect | null>; setRef: any; nodeRef: any }> {
+  const rect = ref<ClientRect | null>(null);
+  const handleResize = (entries: ResizeObserverEntry[]) => {
+    for (const {target} of entries) {
+      if (isHTMLElement(target)) {
+        const newRect = measure(target);
 
-            return rect
-              ? {...rect, width: newRect.width, height: newRect.height}
-              : newRect;
-          });
-          break;
-        }
+        rect.value =  rect.value
+          ? {...rect.value, width: newRect.width, height: newRect.height}
+          : newRect;
+        break;
       }
-    },
-    [measure]
-  );
+    }
+  };
   const resizeObserver = useResizeObserver({callback: handleResize});
-  const handleNodeChange = useCallback(
-    (element) => {
+  const handleNodeChange = (element:any) => {
       const node = getMeasurableNode(element);
 
-      resizeObserver?.disconnect();
+      resizeObserver.value?.disconnect();
 
       if (node) {
-        resizeObserver?.observe(node);
+        resizeObserver.value?.observe(node);
       }
 
-      setRect(node ? measure(node) : null);
-    },
-    [measure, resizeObserver]
-  );
+      rect.value = node ? measure(node) : null
+    };
   const [nodeRef, setRef] = useNodeRef(handleNodeChange);
 
-  return useMemo(
+  return computed(
     () => ({
       nodeRef,
       rect,
       setRef,
-    }),
-    [rect, nodeRef, setRef]
-  );
+    }) );
 }

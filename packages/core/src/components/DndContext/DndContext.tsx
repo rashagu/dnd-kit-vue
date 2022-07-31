@@ -1,14 +1,3 @@
-import React, {
-  memo,
-  createContext,
-  useCallback,
-  useEffect,
-  useMemo,
-  useReducer,
-  useRef,
-  useState,
-} from 'react';
-import {unstable_batchedUpdates} from 'react-dom';
 import {
   add,
   getEventCoordinates,
@@ -16,8 +5,7 @@ import {
   useLatestValue,
   useIsomorphicLayoutEffect,
   useUniqueId,
-} from '@dnd-kit/utilities';
-import type {Transform} from '@dnd-kit/utilities';
+} from '@kousum/utilities';
 
 import {
   Action,
@@ -59,7 +47,7 @@ import {
   defaultCoordinates,
   getAdjustedRect,
   getFirstCollision,
-  rectIntersection,
+  rectIntersection, useReducer,
 } from '../../utilities';
 import {applyModifiers, Modifiers} from '../../modifiers';
 import type {Active, Over} from '../../store/types';
@@ -84,6 +72,8 @@ import {
   useMeasuringConfiguration,
 } from './hooks';
 import type {MeasuringConfiguration} from './types';
+import DndContextProvider from "../../CreateContextVueVNode/DndContextProvider";
+import {computed, defineComponent, ref, useSlots, watch, watchEffect} from "vue";
 
 export interface Props {
   id?: string;
@@ -95,19 +85,24 @@ export interface Props {
   };
   autoScroll?: boolean | AutoScrollOptions;
   cancelDrop?: CancelDrop;
-  children?: React.ReactNode;
   collisionDetection?: CollisionDetection;
   measuring?: MeasuringConfiguration;
   modifiers?: Modifiers;
   sensors?: SensorDescriptor<any>[];
+
   onDragStart?(event: DragStartEvent): void;
+
   onDragMove?(event: DragMoveEvent): void;
+
   onDragOver?(event: DragOverEvent): void;
+
   onDragEnd?(event: DragEndEvent): void;
+
   onDragCancel?(event: DragCancelEvent): void;
 }
 
-export interface CancelDropArguments extends DragEndEvent {}
+export interface CancelDropArguments extends DragEndEvent {
+}
 
 export type CancelDrop = (
   args: CancelDropArguments
@@ -119,11 +114,9 @@ interface DndEvent extends Event {
   };
 }
 
-export const ActiveDraggableContext = createContext<Transform>({
-  ...defaultCoordinates,
-  scaleX: 1,
-  scaleY: 1,
-});
+export const ActiveDraggableContext = {
+  Provider: DndContextProvider
+};
 
 enum Status {
   Uninitialized,
@@ -131,93 +124,117 @@ enum Status {
   Initialized,
 }
 
-export const DndContext = memo(function DndContext({
-  id,
-  accessibility,
-  autoScroll = true,
-  children,
-  sensors = defaultSensors,
-  collisionDetection = rectIntersection,
-  measuring,
-  modifiers,
-  ...props
-}: Props) {
+export const vuePropsType = {
+  id: String,
+  accessibility: Object,
+  autoScroll: [Object, Array, Boolean],
+  cancelDrop: [Object, Array,],
+  collisionDetection: [Object, Array,],
+  measuring: [Object, Array,],
+  modifiers: [Object, Array,],
+  sensors: Object,
+
+  onDragStart: Function,
+
+  onDragMove: Function,
+
+  onDragOver: Function,
+
+  onDragEnd: Function,
+
+  onDragCancel: Function,
+}
+const DndContext = defineComponent<Props>((props_) => {
+  const {
+    id,
+    accessibility,
+    autoScroll = true,
+    sensors = defaultSensors,
+    collisionDetection = rectIntersection,
+    measuring,
+    modifiers,
+    ...props
+  } = props_
+
+
   const store = useReducer(reducer, undefined, getInitialState);
   const [state, dispatch] = store;
   const [dispatchMonitorEvent, registerMonitorListener] =
     useDndMonitorProvider();
-  const [status, setStatus] = useState<Status>(Status.Uninitialized);
-  const isInitialized = status === Status.Initialized;
+  const status = ref<Status>(Status.Uninitialized);
+  const isInitialized = status.value === Status.Initialized;
   const {
-    draggable: {active: activeId, nodes: draggableNodes, translate},
+    draggable: {active: activeId, nodes: draggableNodes, },
     droppable: {containers: droppableContainers},
-  } = state;
+  } = state.value;
+
   const node = activeId ? draggableNodes.get(activeId) : null;
-  const activeRects = useRef<Active['rect']['current']>({
+  const activeRects = ref<Active['rect']['current']>({
     initial: null,
     translated: null,
   });
-  const active = useMemo<Active | null>(
-    () =>
-      activeId != null
+  const active = computed<Active | null>(
+    () => {
+      return state.value.draggable.active != null
         ? {
-            id: activeId,
-            // It's possible for the active node to unmount while dragging
-            data: node?.data ?? defaultData,
-            rect: activeRects,
-          }
-        : null,
-    [activeId, node]
+          id: state.value.draggable.active,
+          // It's possible for the active node to unmount while dragging
+          data: node?.data ?? defaultData,
+          rect: activeRects.value,
+        } : null
+    }
   );
-  const activeRef = useRef<UniqueIdentifier | null>(null);
-  const [activeSensor, setActiveSensor] = useState<SensorInstance | null>(null);
-  const [activatorEvent, setActivatorEvent] = useState<Event | null>(null);
+  const activeRef = ref<UniqueIdentifier | null>(null);
+  const activeSensor = ref<SensorInstance | null>(null);
+  const activatorEvent = ref<Event | null>(null);
+  function setActivatorEvent(val: Event | null) {
+    activatorEvent.value = val
+  }
+
   const latestProps = useLatestValue(props, Object.values(props));
   const draggableDescribedById = useUniqueId(`DndDescribedBy`, id);
-  const enabledDroppableContainers = useMemo(
-    () => droppableContainers.getEnabled(),
-    [droppableContainers]
+  const enabledDroppableContainers = computed(
+    () => state.value.droppable.containers.getEnabled(),
   );
   const measuringConfiguration = useMeasuringConfiguration(measuring);
   const {droppableRects, measureDroppableContainers, measuringScheduled} =
-    useDroppableMeasuring(enabledDroppableContainers, {
+    useDroppableMeasuring(enabledDroppableContainers.value, {
       dragging: isInitialized,
-      dependencies: [translate.x, translate.y],
-      config: measuringConfiguration.droppable,
+      dependencies: [state.value.draggable.translate.x, state.value.draggable.translate.y],
+      config: measuringConfiguration.value.droppable,
     });
   const activeNode = useCachedNode(draggableNodes, activeId);
-  const activationCoordinates = useMemo(
-    () => (activatorEvent ? getEventCoordinates(activatorEvent) : null),
-    [activatorEvent]
+  const activationCoordinates = computed(
+    () => (activatorEvent.value ? getEventCoordinates(activatorEvent.value) : null)
   );
   const autoScrollOptions = getAutoScrollerOptions();
   const initialActiveNodeRect = useInitialRect(
-    activeNode,
-    measuringConfiguration.draggable.measure
+    activeNode.value,
+    measuringConfiguration.value.draggable.measure
   );
 
   useLayoutShiftScrollCompensation({
     activeNode: activeId ? draggableNodes.get(activeId) : null,
     config: autoScrollOptions.layoutShiftCompensation,
-    initialRect: initialActiveNodeRect,
-    measure: measuringConfiguration.draggable.measure,
+    initialRect: initialActiveNodeRect.value,
+    measure: measuringConfiguration.value.draggable.measure,
   });
 
   const activeNodeRect = useRect(
-    activeNode,
-    measuringConfiguration.draggable.measure,
-    initialActiveNodeRect
-  );
+    activeNode.value,
+    measuringConfiguration.value.draggable.measure,
+    initialActiveNodeRect.value
+  )
   const containerNodeRect = useRect(
-    activeNode ? activeNode.parentElement : null
-  );
-  const sensorContext = useRef<SensorContext>({
+    activeNode.value ? activeNode.value.parentElement : null
+  )
+  const sensorContext = ref<SensorContext>({
     activatorEvent: null,
     active: null,
-    activeNode,
+    activeNode: activeNode.value,
     collisionRect: null,
     collisions: null,
-    droppableRects,
+    droppableRects: droppableRects.value,
     draggableNodes,
     draggingNode: null,
     draggingNodeRect: null,
@@ -227,23 +244,23 @@ export const DndContext = memo(function DndContext({
     scrollAdjustedTranslate: null,
   });
   const overNode = droppableContainers.getNodeFor(
-    sensorContext.current.over?.id
+    sensorContext.value.over?.id
   );
   const dragOverlay = useDragOverlayMeasuring({
-    measure: measuringConfiguration.dragOverlay.measure,
+    measure: measuringConfiguration.value.dragOverlay.measure,
   });
 
   // Use the rect of the drag overlay if it is mounted
-  const draggingNode = dragOverlay.nodeRef.current ?? activeNode;
+  const draggingNode = dragOverlay.value.nodeRef.value ?? activeNode.value;
   const draggingNodeRect = isInitialized
-    ? dragOverlay.rect ?? activeNodeRect
+    ? dragOverlay.value.rect ?? activeNodeRect.value
     : null;
   const usesDragOverlay = Boolean(
-    dragOverlay.nodeRef.current && dragOverlay.rect
+    dragOverlay.value.nodeRef.value && dragOverlay.value.rect
   );
   // The delta between the previous and new position of the draggable node
   // is only relevant when there is no drag overlay
-  const nodeRectDelta = useRectDelta(usesDragOverlay ? null : activeNodeRect);
+  const nodeRectDelta = useRectDelta(usesDragOverlay ? null : activeNodeRect.value);
 
   // Get the window rect of the dragging node
   const windowRect = useWindowRect(
@@ -252,236 +269,227 @@ export const DndContext = memo(function DndContext({
 
   // Get scrollable ancestors of the dragging node
   const scrollableAncestors = useScrollableAncestors(
-    isInitialized ? overNode ?? activeNode : null
+    isInitialized ? overNode ?? activeNode.value : null
   );
-  const scrollableAncestorRects = useRects(scrollableAncestors);
+  const scrollableAncestorRects = useRects(scrollableAncestors.value);
 
   // Apply modifiers
-  const modifiedTranslate = applyModifiers(modifiers, {
-    transform: {
-      x: translate.x - nodeRectDelta.x,
-      y: translate.y - nodeRectDelta.y,
-      scaleX: 1,
-      scaleY: 1,
-    },
-    activatorEvent,
-    active,
-    activeNodeRect,
-    containerNodeRect,
-    draggingNodeRect,
-    over: sensorContext.current.over,
-    overlayNodeRect: dragOverlay.rect,
-    scrollableAncestors,
-    scrollableAncestorRects,
-    windowRect,
+  const modifiedTranslate = computed(()=>{
+    console.log(state.value.draggable.translate.x, nodeRectDelta.x)
+    return applyModifiers(modifiers, {
+      transform: {
+        x: state.value.draggable.translate.x - nodeRectDelta.x,
+        y: state.value.draggable.translate.y - nodeRectDelta.y,
+        scaleX: 1,
+        scaleY: 1,
+      },
+      activatorEvent: activatorEvent.value,
+      active: active.value,
+      activeNodeRect:activeNodeRect.value,
+      containerNodeRect:containerNodeRect.value,
+      draggingNodeRect: draggingNodeRect?.value,
+      over: sensorContext.value.over,
+      overlayNodeRect: dragOverlay.value.rect,
+      scrollableAncestors: scrollableAncestors.value,
+      scrollableAncestorRects,
+      windowRect: windowRect.value,
+    })
   });
-
-  const pointerCoordinates = activationCoordinates
-    ? add(activationCoordinates, translate)
+  const pointerCoordinates = activationCoordinates.value
+    ? add(activationCoordinates.value, state.value.draggable.translate)
     : null;
 
-  const scrollOffsets = useScrollOffsets(scrollableAncestors);
+  const scrollOffsets = useScrollOffsets(scrollableAncestors.value);
   // Represents the scroll delta since dragging was initiated
-  const scrollAdjustment = useScrollOffsetsDelta(scrollOffsets);
+  const scrollAdjustment = useScrollOffsetsDelta(scrollOffsets.value);
   // Represents the scroll delta since the last time the active node rect was measured
-  const activeNodeScrollDelta = useScrollOffsetsDelta(scrollOffsets, [
-    activeNodeRect,
+  const activeNodeScrollDelta = useScrollOffsetsDelta(scrollOffsets.value, [
+    activeNodeRect.value,
   ]);
 
-  const scrollAdjustedTranslate = add(modifiedTranslate, scrollAdjustment);
-
-  const collisionRect = draggingNodeRect
-    ? getAdjustedRect(draggingNodeRect, modifiedTranslate)
+  const scrollAdjustedTranslate = computed(()=>{
+    return add(modifiedTranslate.value, scrollAdjustment)
+  });
+  const collisionRect = draggingNodeRect && draggingNodeRect.value
+    ? getAdjustedRect(draggingNodeRect.value, modifiedTranslate.value)
     : null;
 
   const collisions =
-    active && collisionRect
+    active.value && collisionRect
       ? collisionDetection({
-          active,
-          collisionRect,
-          droppableRects,
-          droppableContainers: enabledDroppableContainers,
-          pointerCoordinates,
-        })
+        active: active.value,
+        collisionRect,
+        droppableRects: droppableRects.value,
+        droppableContainers: enabledDroppableContainers.value,
+        pointerCoordinates,
+      })
       : null;
   const overId = getFirstCollision(collisions, 'id');
-  const [over, setOver] = useState<Over | null>(null);
+  const over = ref<Over | null>(null);
+
+  function setOver(val: any) {
+    over.value = val
+  }
 
   // When there is no drag overlay used, we need to account for the
   // window scroll delta
-  const appliedTranslate = usesDragOverlay
-    ? modifiedTranslate
-    : add(modifiedTranslate, activeNodeScrollDelta);
+  const appliedTranslate = computed(()=>{
+    return usesDragOverlay
+      ? modifiedTranslate.value
+      : add(modifiedTranslate.value, activeNodeScrollDelta)
+  });
 
-  const transform = adjustScale(
-    appliedTranslate,
-    over?.rect ?? null,
-    activeNodeRect
-  );
+  const transform = computed(()=>{
+    return adjustScale(
+      appliedTranslate.value,
+      over.value?.rect ?? null,
+      activeNodeRect.value
+    )
+  });
 
-  const instantiateSensor = useCallback(
-    (
-      event: React.SyntheticEvent,
-      {sensor: Sensor, options}: SensorDescriptor<any>
-    ) => {
-      if (activeRef.current == null) {
-        return;
-      }
+  const instantiateSensor = computed(() => (event: any, {sensor: Sensor, options}: SensorDescriptor<any>) => {
+    if (activeRef.value == null) {
+      return;
+    }
 
-      const activeNode = draggableNodes.get(activeRef.current);
+    const activeNode = draggableNodes.get(activeRef.value);
 
-      if (!activeNode) {
-        return;
-      }
+    if (!activeNode) {
+      return;
+    }
 
-      const activatorEvent = event.nativeEvent;
+    const activatorEvent = event;
 
-      const sensorInstance = new Sensor({
-        active: activeRef.current,
-        activeNode,
-        event: activatorEvent,
-        options,
-        // Sensors need to be instantiated with refs for arguments that change over time
-        // otherwise they are frozen in time with the stale arguments
-        context: sensorContext,
-        onStart(initialCoordinates) {
-          const id = activeRef.current;
+    const sensorInstance = new Sensor({
+      active: activeRef.value,
+      activeNode,
+      event: activatorEvent,
+      options,
+      // Sensors need to be instantiated with refs for arguments that change over time
+      // otherwise they are frozen in time with the stale arguments
+      context: sensorContext.value,
+      onStart(initialCoordinates) {
+        const id = activeRef.value;
 
-          if (id == null) {
-            return;
-          }
-
-          const draggableNode = draggableNodes.get(id);
-
-          if (!draggableNode) {
-            return;
-          }
-
-          const {onDragStart} = latestProps.current;
-          const event: DragStartEvent = {
-            active: {id, data: draggableNode.data, rect: activeRects},
-          };
-
-          unstable_batchedUpdates(() => {
-            onDragStart?.(event);
-            setStatus(Status.Initializing);
-            dispatch({
-              type: Action.DragStart,
-              initialCoordinates,
-              active: id,
-            });
-            dispatchMonitorEvent({type: 'onDragStart', event});
-          });
-        },
-        onMove(coordinates) {
-          dispatch({
-            type: Action.DragMove,
-            coordinates,
-          });
-        },
-        onEnd: createHandler(Action.DragEnd),
-        onCancel: createHandler(Action.DragCancel),
-      });
-
-      unstable_batchedUpdates(() => {
-        setActiveSensor(sensorInstance);
-        setActivatorEvent(event.nativeEvent);
-      });
-
-      function createHandler(type: Action.DragEnd | Action.DragCancel) {
-        return async function handler() {
-          const {active, collisions, over, scrollAdjustedTranslate} =
-            sensorContext.current;
-          let event: DragEndEvent | null = null;
-
-          if (active && scrollAdjustedTranslate) {
-            const {cancelDrop} = latestProps.current;
-
-            event = {
-              activatorEvent,
-              active: active,
-              collisions,
-              delta: scrollAdjustedTranslate,
-              over,
-            };
-
-            if (type === Action.DragEnd && typeof cancelDrop === 'function') {
-              const shouldCancel = await Promise.resolve(cancelDrop(event));
-
-              if (shouldCancel) {
-                type = Action.DragCancel;
-              }
-            }
-          }
-
-          activeRef.current = null;
-
-          unstable_batchedUpdates(() => {
-            dispatch({type});
-            setStatus(Status.Uninitialized);
-            setOver(null);
-            setActiveSensor(null);
-            setActivatorEvent(null);
-
-            const eventName =
-              type === Action.DragEnd ? 'onDragEnd' : 'onDragCancel';
-
-            if (event) {
-              const handler = latestProps.current[eventName];
-
-              handler?.(event);
-              dispatchMonitorEvent({type: eventName, event});
-            }
-          });
-        };
-      }
-    },
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [draggableNodes]
-  );
-
-  const bindActivatorToSensorInstantiator = useCallback(
-    (
-      handler: SensorActivatorFunction<any>,
-      sensor: SensorDescriptor<any>
-    ): SyntheticListener['handler'] => {
-      return (event, active) => {
-        const nativeEvent = event.nativeEvent as DndEvent;
-        const activeDraggableNode = draggableNodes.get(active);
-
-        if (
-          // Another sensor is already instantiating
-          activeRef.current !== null ||
-          // No active draggable
-          !activeDraggableNode ||
-          // Event has already been captured
-          nativeEvent.dndKit ||
-          nativeEvent.defaultPrevented
-        ) {
+        if (id == null) {
           return;
         }
 
-        const activationContext = {
-          active: activeDraggableNode,
-        };
-        const shouldActivate = handler(
-          event,
-          sensor.options,
-          activationContext
-        );
+        const draggableNode = draggableNodes.get(id);
 
-        if (shouldActivate === true) {
-          nativeEvent.dndKit = {
-            capturedBy: sensor.sensor,
+        if (!draggableNode) {
+          return;
+        }
+
+        const {onDragStart} = latestProps.value;
+        const event: DragStartEvent = {
+          active: {id, data: draggableNode.data, rect: activeRects.value},
+        };
+
+        onDragStart?.(event);
+        status.value = Status.Initializing
+        dispatch({
+          type: Action.DragStart,
+          initialCoordinates,
+          active: id,
+        });
+        dispatchMonitorEvent({type: 'onDragStart', event});
+      },
+      onMove(coordinates) {
+        console.log(coordinates)
+        dispatch({
+          type: Action.DragMove,
+          coordinates,
+        });
+      },
+      onEnd: createHandler(Action.DragEnd),
+      onCancel: createHandler(Action.DragCancel),
+    });
+
+    activeSensor.value = sensorInstance
+    setActivatorEvent(event);
+
+    function createHandler(type: Action.DragEnd | Action.DragCancel) {
+      return async function handler() {
+        const {collisions, over} = sensorContext.value;
+        let event: DragEndEvent | null = null;
+
+        if (active.value && scrollAdjustedTranslate) {
+          const {cancelDrop} = latestProps.value;
+
+          event = {
+            activatorEvent,
+            active: active.value,
+            collisions,
+            delta: scrollAdjustedTranslate.value,
+            over,
           };
 
-          activeRef.current = active;
-          instantiateSensor(event, sensor);
+          if (type === Action.DragEnd && typeof cancelDrop === 'function') {
+            const shouldCancel = await Promise.resolve(cancelDrop(event));
+
+            if (shouldCancel) {
+              type = Action.DragCancel;
+            }
+          }
+        }
+
+        activeRef.value = null;
+
+        dispatch({type});
+        status.value = Status.Uninitialized
+        setOver(null);
+        activeSensor.value = null
+        setActivatorEvent(null);
+
+        const eventName =
+          type === Action.DragEnd ? 'onDragEnd' : 'onDragCancel';
+        if (event) {
+          const handler = latestProps.value[eventName];
+
+          handler?.(event);
+          dispatchMonitorEvent({type: eventName, event});
         }
       };
-    },
-    [draggableNodes, instantiateSensor]
-  );
+    }
+  })
+
+  const bindActivatorToSensorInstantiator = computed(() => (handler: SensorActivatorFunction<any>, sensor: SensorDescriptor<any>): SyntheticListener['handler'] => {
+    return (event, active) => {
+      const nativeEvent = event as DndEvent;
+      const activeDraggableNode = draggableNodes.get(active);
+
+      if (
+        // Another sensor is already instantiating
+        activeRef.value !== null ||
+        // No active draggable
+        !activeDraggableNode ||
+        // Event has already been captured
+        nativeEvent.dndKit ||
+        nativeEvent.defaultPrevented
+      ) {
+        return;
+      }
+
+      const activationContext = {
+        active: activeDraggableNode,
+      };
+      const shouldActivate = handler(
+        event,
+        sensor.options,
+        activationContext
+      );
+
+      if (shouldActivate === true) {
+        nativeEvent.dndKit = {
+          capturedBy: sensor.sensor,
+        };
+
+        activeRef.value = active;
+        instantiateSensor.value(event, sensor);
+      }
+    };
+  })
 
   const activators = useCombineActivators(
     sensors,
@@ -491,73 +499,66 @@ export const DndContext = memo(function DndContext({
   useSensorSetup(sensors);
 
   useIsomorphicLayoutEffect(() => {
-    if (activeNodeRect && status === Status.Initializing) {
-      setStatus(Status.Initialized);
+    if (activeNodeRect.value && status.value === Status.Initializing) {
+      status.value = Status.Initialized
     }
-  }, [activeNodeRect, status]);
+  });
 
-  useEffect(
-    () => {
-      const {onDragMove} = latestProps.current;
-      const {active, activatorEvent, collisions, over} = sensorContext.current;
 
-      if (!active || !activatorEvent) {
-        return;
-      }
 
-      const event: DragMoveEvent = {
-        active,
-        activatorEvent,
-        collisions,
-        delta: {
-          x: scrollAdjustedTranslate.x,
-          y: scrollAdjustedTranslate.y,
-        },
-        over,
-      };
+  watchEffect(() => {
+    const {onDragMove} = latestProps.value;
+    const {collisions, over} = sensorContext.value;
 
-      unstable_batchedUpdates(() => {
-        onDragMove?.(event);
-        dispatchMonitorEvent({type: 'onDragMove', event});
-      });
-    },
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [scrollAdjustedTranslate.x, scrollAdjustedTranslate.y]
-  );
 
-  useEffect(
-    () => {
+    if (!state.value.draggable.active || !activatorEvent.value) {
+      return;
+    }
+
+    const event: DragMoveEvent = {
+      active:state.value.draggable.active,
+      activatorEvent: activatorEvent.value,
+      collisions,
+      delta: {
+        x: scrollAdjustedTranslate.value.x,
+        y: scrollAdjustedTranslate.value.y,
+      },
+      over,
+    };
+    // console.log(scrollAdjustedTranslate.value)
+    onDragMove?.(event);
+    dispatchMonitorEvent({type: 'onDragMove', event});
+  });
+
+  watchEffect(() => {
       const {
-        active,
-        activatorEvent,
         collisions,
         droppableContainers,
         scrollAdjustedTranslate,
-      } = sensorContext.current;
+      } = sensorContext.value;
 
       if (
-        !active ||
-        activeRef.current == null ||
-        !activatorEvent ||
+        !state.value.draggable.active ||
+        activeRef.value == null ||
+        !activatorEvent.value ||
         !scrollAdjustedTranslate
       ) {
         return;
       }
 
-      const {onDragOver} = latestProps.current;
+      const {onDragOver} = latestProps.value;
       const overContainer = droppableContainers.get(overId);
-      const over =
-        overContainer && overContainer.rect.current
-          ? {
-              id: overContainer.id,
-              rect: overContainer.rect.current,
-              data: overContainer.data,
-              disabled: overContainer.disabled,
-            }
-          : null;
+      const over = overContainer && overContainer.rect.value
+        ? {
+          id: overContainer.id,
+          rect: overContainer.rect.value,
+          data: overContainer.data,
+          disabled: overContainer.disabled,
+        }
+        : null;
       const event: DragOverEvent = {
-        active,
-        activatorEvent,
+        active:state.value.draggable.active,
+        activatorEvent:activatorEvent.value,
         collisions,
         delta: {
           x: scrollAdjustedTranslate.x,
@@ -566,151 +567,92 @@ export const DndContext = memo(function DndContext({
         over,
       };
 
-      unstable_batchedUpdates(() => {
-        setOver(over);
-        onDragOver?.(event);
-        dispatchMonitorEvent({type: 'onDragOver', event});
-      });
-    },
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [overId]
+      setOver(over);
+      onDragOver?.(event);
+      dispatchMonitorEvent({type: 'onDragOver', event});
+    }
   );
 
   useIsomorphicLayoutEffect(() => {
-    sensorContext.current = {
-      activatorEvent,
-      active,
-      activeNode,
+    sensorContext.value = {
+      activatorEvent: activatorEvent.value,
+      active: active.value,
+      activeNode: activeNode.value,
       collisionRect,
       collisions,
-      droppableRects,
+      droppableRects: droppableRects.value,
       draggableNodes,
       draggingNode,
-      draggingNodeRect,
+      draggingNodeRect: draggingNodeRect?.value,
       droppableContainers,
-      over,
-      scrollableAncestors,
-      scrollAdjustedTranslate,
+      over: over.value,
+      scrollableAncestors: scrollableAncestors.value,
+      scrollAdjustedTranslate:scrollAdjustedTranslate.value,
     };
 
-    activeRects.current = {
+    activeRects.value = {
       initial: draggingNodeRect,
       translated: collisionRect,
     };
-  }, [
-    active,
-    activeNode,
-    collisions,
-    collisionRect,
-    draggableNodes,
-    draggingNode,
-    draggingNodeRect,
-    droppableRects,
-    droppableContainers,
-    over,
-    scrollableAncestors,
-    scrollAdjustedTranslate,
-  ]);
+  });
 
   useAutoScroller({
     ...autoScrollOptions,
-    delta: translate,
+    delta: state.value.draggable.translate,
     draggingRect: collisionRect,
     pointerCoordinates,
-    scrollableAncestors,
+    scrollableAncestors: scrollableAncestors.value,
     scrollableAncestorRects,
   });
 
-  const publicContext = useMemo(() => {
+  const publicContext = computed(() => {
     const context: PublicContextDescriptor = {
-      active,
-      activeNode,
-      activeNodeRect,
-      activatorEvent,
+      active: active.value,
+      activeNode: activeNode.value,
+      activeNodeRect:activeNodeRect.value,
+      activatorEvent: activatorEvent.value,
       collisions,
-      containerNodeRect,
-      dragOverlay,
+      containerNodeRect:containerNodeRect.value,
+      dragOverlay: dragOverlay.value,
       draggableNodes,
       droppableContainers,
-      droppableRects,
-      over,
+      droppableRects: droppableRects.value,
+      over: over.value,
       measureDroppableContainers,
-      scrollableAncestors,
+      scrollableAncestors: scrollableAncestors.value,
       scrollableAncestorRects,
-      measuringConfiguration,
+      measuringConfiguration: measuringConfiguration.value,
       measuringScheduled,
-      windowRect,
+      windowRect: windowRect.value,
     };
 
     return context;
-  }, [
-    active,
-    activeNode,
-    activeNodeRect,
-    activatorEvent,
-    collisions,
-    containerNodeRect,
-    dragOverlay,
-    draggableNodes,
-    droppableContainers,
-    droppableRects,
-    over,
-    measureDroppableContainers,
-    scrollableAncestors,
-    scrollableAncestorRects,
-    measuringConfiguration,
-    measuringScheduled,
-    windowRect,
-  ]);
+  });
 
-  const internalContext = useMemo(() => {
+  const internalContext = computed(() => {
     const context: InternalContextDescriptor = {
-      activatorEvent,
-      activators,
-      active,
-      activeNodeRect,
+      activatorEvent: activatorEvent.value,
+      activators: activators.value,
+      active: active.value,
+      activeNodeRect:activeNodeRect.value,
       ariaDescribedById: {
-        draggable: draggableDescribedById,
+        draggable: draggableDescribedById.value,
       },
       dispatch,
       draggableNodes,
-      over,
+      over: over.value,
       measureDroppableContainers,
     };
+    // console.log(context)
 
     return context;
-  }, [
-    activatorEvent,
-    activators,
-    active,
-    activeNodeRect,
-    dispatch,
-    draggableDescribedById,
-    draggableNodes,
-    over,
-    measureDroppableContainers,
-  ]);
+  });
 
-  return (
-    <DndMonitorContext.Provider value={registerMonitorListener}>
-      <InternalContext.Provider value={internalContext}>
-        <PublicContext.Provider value={publicContext}>
-          <ActiveDraggableContext.Provider value={transform}>
-            {children}
-          </ActiveDraggableContext.Provider>
-        </PublicContext.Provider>
-        <RestoreFocus disabled={accessibility?.restoreFocus === false} />
-      </InternalContext.Provider>
-      <Accessibility
-        {...accessibility}
-        hiddenTextDescribedById={draggableDescribedById}
-      />
-    </DndMonitorContext.Provider>
-  );
+  const slots = useSlots()
 
   function getAutoScrollerOptions() {
     const activeSensorDisablesAutoscroll =
-      activeSensor?.autoScrollEnabled === false;
+      activeSensor.value?.autoScrollEnabled === false;
     const autoScrollGloballyDisabled =
       typeof autoScroll === 'object'
         ? autoScroll.enabled === false
@@ -729,4 +671,31 @@ export const DndContext = memo(function DndContext({
 
     return {enabled};
   }
-});
+
+  return () => {
+
+    return (
+      <DndMonitorContext.Provider value={registerMonitorListener}>
+        <InternalContext.Provider value={internalContext}>
+          <PublicContext.Provider value={publicContext}>
+            <ActiveDraggableContext.Provider value={transform}>
+              {JSON.stringify(transform.value)}
+              {slots.default?.()}
+            </ActiveDraggableContext.Provider>
+          </PublicContext.Provider>
+          <RestoreFocus disabled={accessibility?.restoreFocus === false}/>
+        </InternalContext.Provider>
+        <Accessibility
+          {...accessibility}
+          hiddenTextDescribedById={draggableDescribedById.value}
+        />
+      </DndMonitorContext.Provider>
+    )
+  };
+})
+
+DndContext.props = vuePropsType
+
+export {
+  DndContext
+}

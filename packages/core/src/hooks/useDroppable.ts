@@ -1,15 +1,16 @@
-import {useCallback, useContext, useEffect, useRef} from 'react';
+
 import {
   useIsomorphicLayoutEffect,
   useLatestValue,
   useNodeRef,
   useUniqueId,
-} from '@dnd-kit/utilities';
+} from '@kousum/utilities';
 
-import {InternalContext, Action, Data} from '../store';
+import {InternalContext, Action, Data, InternalContextDescriptor, defaultInternalContext} from '../store';
 import type {ClientRect, UniqueIdentifier} from '../types';
 
 import {useResizeObserver} from './utilities';
+import {inject, ref, watchEffect} from "vue";
 
 interface ResizeObserverConfig {
   /** Whether the ResizeObserver should be disabled entirely */
@@ -43,13 +44,12 @@ export function useDroppable({
   resizeObserverConfig,
 }: UseDroppableArguments) {
   const key = useUniqueId(ID_PREFIX);
-  const {active, dispatch, over, measureDroppableContainers} = useContext(
-    InternalContext
-  );
-  const previous = useRef({disabled});
-  const resizeObserverConnected = useRef(false);
-  const rect = useRef<ClientRect | null>(null);
-  const callbackId = useRef<NodeJS.Timeout | null>(null);
+  const {active, dispatch, over, measureDroppableContainers} = inject('InternalContext', ref<InternalContextDescriptor>(defaultInternalContext)).value;
+  const previous = ref({disabled});
+  const resizeObserverConnected = ref(false);
+  const rect = ref<ClientRect | null>(null);
+
+  const callbackId = ref<any>(null);
   const {
     disabled: resizeObserverDisabled,
     updateMeasurementsFor,
@@ -59,62 +59,55 @@ export function useDroppable({
     ...resizeObserverConfig,
   };
   const ids = useLatestValue(updateMeasurementsFor ?? id);
-  const handleResize = useCallback(
-    () => {
-      if (!resizeObserverConnected.current) {
-        // ResizeObserver invokes the `handleResize` callback as soon as `observe` is called,
-        // assuming the element is rendered and displayed.
-        resizeObserverConnected.current = true;
-        return;
-      }
+  const handleResize = () => {
+    if (!resizeObserverConnected.value) {
+      // ResizeObserver invokes the `handleResize` callback as soon as `observe` is called,
+      // assuming the element is rendered and displayed.
+      resizeObserverConnected.value = true;
+      return;
+    }
 
-      if (callbackId.current != null) {
-        clearTimeout(callbackId.current);
-      }
+    if (callbackId.current != null) {
+      clearTimeout(callbackId.current);
+    }
 
-      callbackId.current = setTimeout(() => {
-        measureDroppableContainers(
-          Array.isArray(ids.current) ? ids.current : [ids.current]
-        );
-        callbackId.current = null;
-      }, resizeObserverTimeout);
-    },
-    //eslint-disable-next-line react-hooks/exhaustive-deps
-    [resizeObserverTimeout]
-  );
+    callbackId.current = setTimeout(() => {
+      measureDroppableContainers(
+        Array.isArray(ids.value) ? ids.value : [ids.value]
+      );
+      callbackId.current = null;
+    }, resizeObserverTimeout);
+  };
   const resizeObserver = useResizeObserver({
     callback: handleResize,
     disabled: resizeObserverDisabled || !active,
   });
-  const handleNodeChange = useCallback(
-    (newElement: HTMLElement | null, previousElement: HTMLElement | null) => {
+  const handleNodeChange = (newElement: HTMLElement | null, previousElement: HTMLElement | null) => {
       if (!resizeObserver) {
         return;
       }
 
       if (previousElement) {
         resizeObserver.unobserve(previousElement);
-        resizeObserverConnected.current = false;
+        resizeObserverConnected.value = false;
       }
 
       if (newElement) {
         resizeObserver.observe(newElement);
       }
-    },
-    [resizeObserver]
-  );
+    };
   const [nodeRef, setNodeRef] = useNodeRef(handleNodeChange);
   const dataRef = useLatestValue(data);
 
-  useEffect(() => {
-    if (!resizeObserver || !nodeRef.current) {
+  watchEffect(() => {
+    if (!resizeObserver || !nodeRef.value) {
       return;
     }
 
     resizeObserver.disconnect();
-    resizeObserverConnected.current = false;
-    resizeObserver.observe(nodeRef.current);
-  }, [nodeRef, resizeObserver]);
+    resizeObserverConnected.value = false;
+    resizeObserver.observe(nodeRef.value);
+  });
 
   useIsomorphicLayoutEffect(
     () => {
@@ -136,13 +129,11 @@ export function useDroppable({
           key,
           id,
         });
-    },
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [id]
+    }
   );
 
-  useEffect(() => {
-    if (disabled !== previous.current.disabled) {
+  watchEffect(() => {
+    if (disabled !== previous.value.disabled) {
       dispatch({
         type: Action.SetDroppableDisabled,
         id,
@@ -150,9 +141,9 @@ export function useDroppable({
         disabled,
       });
 
-      previous.current.disabled = disabled;
+      previous.value.disabled = disabled;
     }
-  }, [id, key, disabled, dispatch]);
+  });
 
   return {
     active,

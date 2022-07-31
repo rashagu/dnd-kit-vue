@@ -1,5 +1,6 @@
-import {useEffect, useMemo} from 'react';
-import {useEvent} from '@dnd-kit/utilities';
+
+import {useEvent} from '@kousum/utilities';
+import {computed} from "vue";
 
 interface Arguments {
   callback: ResizeObserverCallback;
@@ -12,7 +13,7 @@ interface Arguments {
  */
 export function useResizeObserver({callback, disabled}: Arguments) {
   const handleResize = useEvent(callback);
-  const resizeObserver = useMemo(
+  const resizeObserver = computed(
     () => {
       if (
         disabled ||
@@ -25,14 +26,11 @@ export function useResizeObserver({callback, disabled}: Arguments) {
       const {ResizeObserver} = window;
 
       return new ResizeObserver(handleResize);
-    },
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [disabled]
-  );
+    });
 
-  useEffect(() => {
-    return () => resizeObserver?.disconnect();
-  }, [resizeObserver]);
+  computed(() => {
+    return () => resizeObserver.value?.disconnect();
+  });
 
   return resizeObserver;
 }

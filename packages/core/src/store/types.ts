@@ -1,5 +1,6 @@
-import type {MutableRefObject} from 'react';
-import type {DeepRequired} from '@dnd-kit/utilities';
+// import type {MutableRefObject} from 'react';
+type MutableRefObject<T> = any
+import type {DeepRequired} from '@kousum/utilities';
 
 import type {SyntheticListeners} from '../hooks/utilities';
 import type {Collision} from '../utilities/algorithms';
@@ -106,7 +107,7 @@ export interface InternalContextDescriptor {
   ariaDescribedById: {
     draggable: string;
   };
-  dispatch: React.Dispatch<Actions>;
+  dispatch: any;
   draggableNodes: DraggableNodes;
   over: Over | null;
   measureDroppableContainers(ids: UniqueIdentifier[]): void;

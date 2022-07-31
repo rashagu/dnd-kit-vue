@@ -1,11 +1,11 @@
-import React from 'react';
+import {CSSProperties} from "vue";
 
 interface Props {
   id: string;
   value: string;
 }
 
-const hiddenStyles: React.CSSProperties = {
+const hiddenStyles: CSSProperties = {
   display: 'none',
 };
 

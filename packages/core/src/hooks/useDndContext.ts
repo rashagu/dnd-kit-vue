@@ -1,8 +1,10 @@
-import {ContextType, useContext} from 'react';
-import {PublicContext} from '../store';
+
+import {PublicContext, PublicContextDescriptor} from '../store';
+import {inject, ref} from "vue";
+import {defaultPublicContext} from "../store/context";
 
 export function useDndContext() {
-  return useContext(PublicContext);
+  return inject('PublicContext', ref<PublicContextDescriptor>(defaultPublicContext)).value;
 }
 
-export type UseDndContextReturnValue = ContextType<typeof PublicContext>;
+export type UseDndContextReturnValue = any;

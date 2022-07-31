@@ -1,4 +1,3 @@
-import type {TouchEvent} from 'react';
 
 import {
   AbstractPointerSensor,
@@ -24,9 +23,9 @@ export class TouchSensor extends AbstractPointerSensor {
 
   static activators = [
     {
-      eventName: 'onTouchStart' as const,
+      eventName: 'onTouchstart' as const,
       handler: (
-        {nativeEvent: event}: TouchEvent,
+        event: TouchEvent,
         {onActivation}: TouchSensorOptions
       ) => {
         const {touches} = event;

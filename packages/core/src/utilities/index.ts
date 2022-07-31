@@ -1,3 +1,5 @@
+import {Ref, ref} from "vue";
+
 export {
   closestCenter,
   closestCorners,
@@ -40,3 +42,16 @@ export {
   getScrollPosition,
   isDocumentScrollingElement,
 } from './scroll';
+
+
+
+export function useReducer(reducer:any,initialState:any, init?:(value?:any)=>any):[Ref<any>, (action?:any)=>void] {
+  const state = ref(initialState);
+  if (init){
+    state.value = init()
+  }
+  let dispatch = (action?:any) => {
+    state.value = reducer(state.value,action)
+  }
+  return [state,dispatch]
+}

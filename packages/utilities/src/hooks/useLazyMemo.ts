@@ -1,19 +1,17 @@
-import {useMemo, useRef} from 'react';
+
+import {computed, ComputedRef, ref} from "vue";
 
 export function useLazyMemo<T>(
   callback: (prevValue: T | undefined) => T,
   dependencies: any[]
-) {
-  const valueRef = useRef<T>();
+):ComputedRef {
+  const valueRef = ref<T>();
 
-  return useMemo(
+  return computed(
     () => {
-      const newValue = callback(valueRef.current);
-      valueRef.current = newValue;
+      const newValue = callback(valueRef.value);
+      valueRef.value = newValue;
 
       return newValue;
-    },
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [...dependencies]
-  );
+    });
 }

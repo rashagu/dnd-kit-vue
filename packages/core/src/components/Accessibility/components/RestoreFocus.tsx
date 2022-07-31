@@ -1,23 +1,24 @@
-import {useContext, useEffect} from 'react';
+
 import {
   findFirstFocusableNode,
   isKeyboardEvent,
   usePrevious,
-} from '@dnd-kit/utilities';
+} from '@kousum/utilities';
 
-import {InternalContext} from '../../../store';
+import {defaultInternalContext, InternalContext, InternalContextDescriptor} from '../../../store';
+import {inject, ref, watchEffect} from "vue";
 
 interface Props {
   disabled: boolean;
 }
 
 export function RestoreFocus({disabled}: Props) {
-  const {active, activatorEvent, draggableNodes} = useContext(InternalContext);
+  const {active, activatorEvent, draggableNodes} = inject('InternalContext', ref<InternalContextDescriptor>(defaultInternalContext)).value
   const previousActivatorEvent = usePrevious(activatorEvent);
   const previousActiveId = usePrevious(active?.id);
 
   // Restore keyboard focus on the activator node
-  useEffect(() => {
+  watchEffect(() => {
     if (disabled) {
       return;
     }
@@ -59,13 +60,7 @@ export function RestoreFocus({disabled}: Props) {
         }
       });
     }
-  }, [
-    activatorEvent,
-    disabled,
-    draggableNodes,
-    previousActiveId,
-    previousActivatorEvent,
-  ]);
+  });
 
   return null;
 }
