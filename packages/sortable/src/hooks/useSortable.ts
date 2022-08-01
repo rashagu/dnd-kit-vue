@@ -84,11 +84,11 @@ export function useSortable({
     active,
     activatorEvent,
     activeNodeRect,
+    over,
     attributes,
     setNodeRef: setDraggableNodeRef,
     listeners,
     isDragging,
-    over,
     setActivatorNodeRef,
     transform,
   } = useDraggable({
@@ -100,6 +100,7 @@ export function useSortable({
     },
     disabled: disabled.draggable,
   });
+
   const setNodeRef = useCombinedRefs(setDroppableNodeRef, setDraggableNodeRef);
   const isSorting = Boolean(active);
   const displaceItem =

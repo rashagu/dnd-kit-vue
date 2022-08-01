@@ -75,7 +75,7 @@ export const sortableKeyboardCoordinates: KeyboardCoordinateGetter = (
     });
 
     const collisions = closestCorners({
-      active,
+      active: active.value,
       collisionRect: collisionRect,
       droppableRects,
       droppableContainers: filteredContainers,
@@ -88,7 +88,7 @@ export const sortableKeyboardCoordinates: KeyboardCoordinateGetter = (
     }
 
     if (closestId != null) {
-      const activeDroppable = droppableContainers.get(active.id);
+      const activeDroppable = droppableContainers.get(active.value.id);
       const newDroppable = droppableContainers.get(closestId);
       const newRect = newDroppable ? droppableRects.get(newDroppable.id) : null;
       const newNode = newDroppable?.node.current;
