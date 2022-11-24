@@ -9,6 +9,9 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@kousum/core": "6.0.5",
+    "@kousum/sortable": "7.0.1",
+    "@kousum/modifiers": "6.0.0",
     "@vitejs/plugin-vue-jsx": "^2.0.0",
     "vue": "^3.2.37"
   },

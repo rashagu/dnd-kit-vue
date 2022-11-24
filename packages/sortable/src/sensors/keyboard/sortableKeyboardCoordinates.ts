@@ -33,7 +33,7 @@ export const sortableKeyboardCoordinates: KeyboardCoordinateGetter = (
   if (directions.includes(event.code)) {
     event.preventDefault();
 
-    if (!active || !collisionRect) {
+    if (!active?.value || !collisionRect) {
       return;
     }
 

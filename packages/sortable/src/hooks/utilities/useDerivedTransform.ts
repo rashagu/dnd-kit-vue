@@ -1,12 +1,13 @@
-import {useEffect, useRef, useState} from 'react';
+
 import {getClientRect, ClientRect} from '@kousum/core';
 import {Transform, useIsomorphicLayoutEffect} from '@kousum/utilities';
+import {ref, watchEffect} from "vue";
 
 interface Arguments {
-  rect: React.MutableRefObject<ClientRect | null>;
+  rect: any;
   disabled: boolean;
   index: number;
-  node: React.MutableRefObject<HTMLElement | null>;
+  node: any;
 }
 
 /*
@@ -14,13 +15,15 @@ interface Arguments {
  * we need to temporarily disable the transforms
  */
 export function useDerivedTransform({disabled, index, node, rect}: Arguments) {
-  const [derivedTransform, setDerivedtransform] = useState<Transform | null>(
-    null
-  );
-  const previousIndex = useRef(index);
+  const derivedTransform = ref<Transform | null>(null)
+  function setDerivedtransform(val:any) {
+    derivedTransform.value = val
+  }
+
+  const previousIndex = ref(index);
 
   useIsomorphicLayoutEffect(() => {
-    if (!disabled && index !== previousIndex.current && node.current) {
+    if (!disabled && index !== previousIndex.value && node.current) {
       const initial = rect.current;
 
       if (initial) {
@@ -41,18 +44,18 @@ export function useDerivedTransform({disabled, index, node, rect}: Arguments) {
       }
     }
 
-    if (index !== previousIndex.current) {
-      previousIndex.current = index;
+    if (index !== previousIndex.value) {
+      previousIndex.value = index;
     }
-  }, [disabled, index, node, rect]);
+  });
 
-  useEffect(() => {
-    if (derivedTransform) {
+  watchEffect(() => {
+    if (derivedTransform.value) {
       requestAnimationFrame(() => {
         setDerivedtransform(null);
       });
     }
-  }, [derivedTransform]);
+  });
 
   return derivedTransform;
 }

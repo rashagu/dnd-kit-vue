@@ -20,3 +20,6 @@ export {sortableKeyboardCoordinates} from './sensors';
 export {arrayMove, arraySwap} from './utilities';
 export {hasSortableData} from './types';
 export type {SortableData, SortingStrategy} from './types';
+
+
+

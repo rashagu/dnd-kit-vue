@@ -1,13 +1,14 @@
-import React, {useEffect, useMemo, useRef} from 'react';
+
 import {useDndContext, ClientRect, UniqueIdentifier} from '@kousum/core';
 import {useIsomorphicLayoutEffect, useUniqueId} from '@kousum/utilities';
 
 import type {Disabled, SortingStrategy} from '../types';
 import {getSortedRects, itemsEqual, normalizeDisabled} from '../utilities';
 import {rectSortingStrategy} from '../strategies';
+import {createContext} from "../createContext";
+import {computed, ComputedRef, ref, useSlots, watchEffect} from "vue";
 
 export interface Props {
-  children: React.ReactNode;
   items: (UniqueIdentifier | {id: UniqueIdentifier})[];
   strategy?: SortingStrategy;
   id?: string;
@@ -28,7 +29,7 @@ interface ContextDescriptor {
   strategy: SortingStrategy;
 }
 
-export const Context = React.createContext<ContextDescriptor>({
+export const Context = createContext<ContextDescriptor>({
   activeIndex: -1,
   containerId: ID_PREFIX,
   disableTransforms: false,
@@ -44,7 +45,6 @@ export const Context = React.createContext<ContextDescriptor>({
 });
 
 export function SortableContext({
-  children,
   id,
   items: userDefinedItems,
   strategy = rectSortingStrategy,
@@ -60,64 +60,45 @@ export function SortableContext({
   } = useDndContext();
   const containerId = useUniqueId(ID_PREFIX, id);
   const useDragOverlay = Boolean(dragOverlay.rect !== null);
-  const items = useMemo<UniqueIdentifier[]>(
+  const items = computed<UniqueIdentifier[]>(
     () =>
       userDefinedItems.map((item) =>
         typeof item === 'object' && 'id' in item ? item.id : item
-      ),
-    [userDefinedItems]
+      )
   );
   const isDragging = active != null;
-  const activeIndex = active ? items.indexOf(active.id) : -1;
-  const overIndex = over ? items.indexOf(over.id) : -1;
-  const previousItemsRef = useRef(items);
-  const itemsHaveChanged = !itemsEqual(items, previousItemsRef.current);
-  const disableTransforms =
-    (overIndex !== -1 && activeIndex === -1) || itemsHaveChanged;
+  const activeIndex = computed(()=>active ? items.value.indexOf(active.id) : -1);
+  const overIndex = computed(()=>over ? items.value.indexOf(over.id) : -1);
+  const previousItemsRef = ref(items.value);
+  const itemsHaveChanged = computed(()=>!itemsEqual(items.value, previousItemsRef.value));
+  const disableTransforms = computed(()=>{
+    return (overIndex.value !== -1 && activeIndex.value === -1) || itemsHaveChanged.value
+  });
   const disabled = normalizeDisabled(disabledProp);
 
   useIsomorphicLayoutEffect(() => {
     if (itemsHaveChanged && isDragging && !measuringScheduled) {
-      measureDroppableContainers(items);
+      measureDroppableContainers(items.value);
     }
-  }, [
-    itemsHaveChanged,
-    items,
-    isDragging,
-    measureDroppableContainers,
-    measuringScheduled,
-  ]);
+  });
 
-  useEffect(() => {
-    previousItemsRef.current = items;
-  }, [items]);
+  watchEffect(() => {
+    previousItemsRef.value = items.value;
+  });
 
-  const contextValue = useMemo(
+  const contextValue = computed(
     (): ContextDescriptor => ({
-      activeIndex,
-      containerId,
+      activeIndex:activeIndex.value,
+      containerId:containerId.value,
       disabled,
-      disableTransforms,
-      items,
-      overIndex,
+      disableTransforms:disableTransforms.value,
+      items:items.value,
+      overIndex:overIndex.value,
       useDragOverlay,
-      sortedRects: getSortedRects(items, droppableRects),
+      sortedRects: getSortedRects(items.value, droppableRects),
       strategy,
-    }),
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [
-      activeIndex,
-      containerId,
-      disabled.draggable,
-      disabled.droppable,
-      disableTransforms,
-      items,
-      overIndex,
-      droppableRects,
-      useDragOverlay,
-      strategy,
-    ]
-  );
+    }));
 
-  return <Context.Provider value={contextValue}>{children}</Context.Provider>;
+  const slots = useSlots()
+  return <Context.Provider value={contextValue}>{slots.default?.()}</Context.Provider>;
 }

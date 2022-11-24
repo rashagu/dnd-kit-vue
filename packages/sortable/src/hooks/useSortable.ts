@@ -1,4 +1,4 @@
-import {useContext, useEffect, useMemo, useRef} from 'react';
+
 import {
   useDraggable,
   useDroppable,
@@ -47,6 +47,7 @@ export function useSortable({
   resizeObserverConfig,
   transition = defaultTransition,
 }: Arguments) {
+  
   const {
     items,
     containerId,
@@ -58,6 +59,9 @@ export function useSortable({
     useDragOverlay,
     strategy: globalStrategy,
   } = useContext(Context);
+
+
+
   const disabled: Disabled = normalizeLocalDisabled(
     localDisabled,
     globalDisabled
