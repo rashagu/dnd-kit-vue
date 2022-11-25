@@ -7,9 +7,13 @@ interface ExampleProps {
 
 export const vuePropsType = {
 }
+
+export function usePublicContext() {
+  return inject('PublicContext', ref<PublicContextDescriptor>(defaultPublicContext))
+}
 const PublicContextConsumer = defineComponent<ExampleProps>((props, {}) => {
   const slots = useSlots()
-  const config = inject('PublicContext', ref<PublicContextDescriptor>(defaultPublicContext))
+  const config = usePublicContext()
   return ()=>slots.default?slots.default(config):null
 })
 

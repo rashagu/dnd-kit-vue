@@ -2,26 +2,35 @@ import {useLazyMemo} from '@kousum/utilities';
 
 import type {DraggableNode, DraggableNodes} from '../../store';
 import type {UniqueIdentifier} from '../../types';
-import {ComputedRef} from "vue";
+import {computed, ComputedRef, ref} from "vue";
 
 export function useCachedNode(
-  draggableNodes: DraggableNodes,
-  id: UniqueIdentifier | null
+  draggableNodes: ComputedRef<DraggableNodes>,
+  id: ComputedRef<UniqueIdentifier | null>
 ): ComputedRef<DraggableNode['node']['current']> {
-  const draggableNode = id !== null ? draggableNodes.get(id) : undefined;
-  const node = draggableNode ? draggableNode.node.current : null;
 
-  return useLazyMemo(
-    (cachedNode) => {
-      if (id === null) {
-        return null;
-      }
+  console.debug(draggableNodes.value, id.value)
+  const valueRef = ref();
 
-      // In some cases, the draggable node can unmount while dragging
-      // This is the case for virtualized lists. In those situations,
-      // we fall back to the last known value for that node.
-      return node ?? cachedNode ?? null;
-    },
-    [node, id]
-  );
+  return computed(
+    () => {
+      const draggableNode = id.value !== null ? draggableNodes.value.get(id.value) : undefined;
+      const node = draggableNode ? draggableNode.node.current : null;
+
+      const newValue = () => {
+        if (id === null) {
+          return null;
+        }
+        // In some cases, the draggable node can unmount while dragging
+        // This is the case for virtualized lists. In those situations,
+        // we fall back to the last known value for that node.
+        return node ?? valueRef.value ?? null;
+      };
+
+      valueRef.value = newValue();
+
+      return newValue();
+    });
+
+
 }

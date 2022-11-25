@@ -6,13 +6,14 @@ import {getClientRect, Rect, useReducer} from '../../utilities';
 
 import {useMutationObserver} from './useMutationObserver';
 import {useResizeObserver} from './useResizeObserver';
+import {ComputedRef, watch} from "vue";
 
 function defaultMeasure(element: HTMLElement) {
   return new Rect(getClientRect(element), element);
 }
 
 export function useRect(
-  element: HTMLElement | null,
+  element: ComputedRef<HTMLElement | null>,
   measure: (element: HTMLElement) => ClientRect = defaultMeasure,
   fallbackRect?: ClientRect | null
 ) {
@@ -20,7 +21,7 @@ export function useRect(
 
   const mutationObserver = useMutationObserver({
     callback(records) {
-      if (!element) {
+      if (!element.value) {
         return;
       }
 
@@ -30,7 +31,7 @@ export function useRect(
         if (
           type === 'childList' &&
           target instanceof HTMLElement &&
-          target.contains(element)
+          target.contains(element.value)
         ) {
           measureRect();
           break;
@@ -40,11 +41,11 @@ export function useRect(
   });
   const resizeObserver = useResizeObserver({callback: measureRect});
 
-  useIsomorphicLayoutEffect(() => {
+  watch(()=>element?.value, () => {
     measureRect();
 
-    if (element) {
-      resizeObserver.value?.observe(element);
+    if (element && element.value) {
+      resizeObserver.value?.observe(element.value);
       mutationObserver.value?.observe(document.body, {
         childList: true,
         subtree: true,
@@ -58,17 +59,17 @@ export function useRect(
   return rect;
 
   function reducer(currentRect: ClientRect | null) {
-    if (!element) {
+    if (!element?.value) {
       return null;
     }
 
-    if (element.isConnected === false) {
+    if (element.value.isConnected === false) {
       // Fall back to last rect we measured if the element is
       // no longer connected to the DOM.
       return currentRect ?? fallbackRect ?? null;
     }
 
-    const newRect = measure(element);
+    const newRect = measure(element.value);
 
     if (JSON.stringify(currentRect) === JSON.stringify(newRect)) {
       return currentRect;

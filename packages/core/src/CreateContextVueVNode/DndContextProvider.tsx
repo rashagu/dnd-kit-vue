@@ -1,15 +1,20 @@
 
-import {defineComponent, provide, ref} from "vue";
+import {defineComponent, getCurrentInstance, provide, ref, watch} from "vue";
 import type {Transform} from '@kousum/utilities';
 
 
 
-const DndContextProvider = defineComponent<{value:any}>((props, {slots}) => {
+const DndContextProvider = defineComponent<{value:Transform}>((props, {slots}) => {
     //console.log(props)
     // const DndContext = ref<Transform>(props.value || {});
 
-    provide('DndContext', props.value)
-    return ()=>slots.default?slots.default(props.value):null
+    const context = ref<Transform>(props.value);
+
+    watch(()=>props.value, ()=>{
+        context.value = props.value
+    }, { deep: true})
+    provide('DndContext', context)
+    return ()=>slots.default?slots.default(context.value):null
 })
 DndContextProvider.props = {
     value:Object

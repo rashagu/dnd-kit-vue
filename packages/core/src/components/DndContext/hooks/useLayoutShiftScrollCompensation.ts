@@ -6,7 +6,7 @@ import {getFirstScrollableAncestor} from '../../../utilities/scroll';
 import type {ClientRect} from '../../../types';
 import type {DraggableNode} from '../../../store';
 import type {MeasuringFunction} from '../types';
-import {ref} from "vue";
+import {ref, watchEffect} from "vue";
 
 interface Options {
   activeNode: DraggableNode | null | undefined;
@@ -24,7 +24,7 @@ export function useLayoutShiftScrollCompensation({
   const initialized = ref(false);
   const {x, y} = typeof config === 'boolean' ? {x: config, y: config} : config;
 
-  useIsomorphicLayoutEffect(() => {
+  watchEffect(() => {
     const disabled = !x && !y;
 
     if (disabled || !activeNode) {

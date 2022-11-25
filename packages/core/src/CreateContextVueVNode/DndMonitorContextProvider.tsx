@@ -1,15 +1,20 @@
 
-import {defineComponent, provide, ref} from "vue";
+import {defineComponent, provide, ref, watch} from "vue";
 import {RegisterListener} from "../components/DndMonitor/types";
 
 
 
-const DndMonitorContextProvider = defineComponent<{value:any}>((props, {slots}) => {
+const DndMonitorContextProvider = defineComponent<{value:RegisterListener}>((props, {slots}) => {
     //console.log(props)
-    const DndContext = ref<RegisterListener | null>(props.value || {});
+    const context = ref<RegisterListener | null>(props.value || {});
 
-    provide('DndMonitorContext', DndContext)
-    return ()=>slots.default?slots.default(DndContext.value):null
+
+    watch(()=>props.value, ()=>{
+        context.value = props.value
+    }, { deep: true})
+    provide('DndMonitorContext', context)
+    return ()=>slots.default?slots.default(context.value):null
+
 })
 DndMonitorContextProvider.props = {
     value:Object

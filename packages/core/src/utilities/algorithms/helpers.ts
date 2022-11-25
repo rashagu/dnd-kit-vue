@@ -55,14 +55,17 @@ export function cornersOfRectangle({left, top, height, width}: ClientRect) {
 export function getFirstCollision(
   collisions: Collision[] | null | undefined
 ): Collision | null;
+
 export function getFirstCollision<T extends keyof Collision>(
   collisions: Collision[] | null | undefined,
   property: T
 ): Collision[T] | null;
+
 export function getFirstCollision(
   collisions: Collision[] | null | undefined,
   property?: keyof Collision
 ) {
+  console.log(collisions)
   if (!collisions || collisions.length === 0) {
     return null;
   }

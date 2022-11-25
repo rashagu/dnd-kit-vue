@@ -1,5 +1,5 @@
 {
-  "name": "@dnd-kit/sortable",
+  "name": "@kousum/sortable",
   "version": "7.0.1",
   "description": "Official sortable preset and sensors for dnd kit",
   "author": "Claudéric Demers",
@@ -29,11 +29,16 @@
     "tslib": "^2.0.0"
   },
   "peerDependencies": {
-    "vue": "^3.2.37",
+    "vue": "^3.2.45",
     "@kousum/core": "^6.0.4"
   },
   "devDependencies": {
-    "@kousum/core": "^6.0.4"
+    "@kousum/core": "^6.0.4",
+    "@vitejs/plugin-vue": "^3.2.0",
+    "@vitejs/plugin-vue-jsx": "^2.1.1",
+    "typescript": "^4.9.3",
+    "vite": "^3.2.4",
+    "vue-tsc": "^1.0.9"
   },
   "publishConfig": {
     "access": "public"

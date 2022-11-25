@@ -66,7 +66,7 @@ export function useDraggable({
   const [activatorNode, setActivatorNodeRef] = useNodeRef();
   const listeners = useSyntheticListeners(internalContext.value.activators, id);
 
-  const dataRef = useLatestValue(data);
+  const dataRef = useLatestValue(computed(()=>data));
 
   useIsomorphicLayoutEffect(
     () => {

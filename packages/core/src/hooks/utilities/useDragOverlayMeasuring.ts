@@ -39,6 +39,7 @@ export function useDragOverlayMeasuring({
 
       rect.value = node ? measure(node) : null
     };
+
   const [nodeRef, setRef] = useNodeRef(handleNodeChange);
 
   return computed(

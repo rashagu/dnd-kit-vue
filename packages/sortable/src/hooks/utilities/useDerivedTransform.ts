@@ -1,13 +1,13 @@
 
 import {getClientRect, ClientRect} from '@kousum/core';
 import {Transform, useIsomorphicLayoutEffect} from '@kousum/utilities';
-import {ref, watchEffect} from "vue";
+import {ComputedRef, Ref, ref, watch, watchEffect} from "vue";
 
 interface Arguments {
-  rect: any;
-  disabled: boolean;
-  index: number;
-  node: any;
+  rect: Ref<any>;
+  disabled: ComputedRef<boolean>;
+  index: ComputedRef<number>;
+  node: Ref<any>;
 }
 
 /*
@@ -15,19 +15,23 @@ interface Arguments {
  * we need to temporarily disable the transforms
  */
 export function useDerivedTransform({disabled, index, node, rect}: Arguments) {
+
   const derivedTransform = ref<Transform | null>(null)
   function setDerivedtransform(val:any) {
     derivedTransform.value = val
   }
 
-  const previousIndex = ref(index);
+  const previousIndex = ref(index.value);
 
-  useIsomorphicLayoutEffect(() => {
-    if (!disabled && index !== previousIndex.value && node.current) {
-      const initial = rect.current;
+  watch([disabled, index, node, rect], () => {
+    // console.log(disabled.value, index.value, node.value, rect.value)
+
+    // console.error(index.value, previousIndex.value)
+    if (disabled.value && index.value !== previousIndex.value && node.value) {
+      const initial = rect.value;
 
       if (initial) {
-        const current = getClientRect(node.current, {
+        const current = getClientRect(node.value, {
           ignoreTransform: true,
         });
 
@@ -44,10 +48,10 @@ export function useDerivedTransform({disabled, index, node, rect}: Arguments) {
       }
     }
 
-    if (index !== previousIndex.value) {
-      previousIndex.value = index;
+    if (index.value !== previousIndex.value) {
+      // previousIndex.value = index.value;
     }
-  });
+  }, {immediate: true});
 
   watchEffect(() => {
     if (derivedTransform.value) {

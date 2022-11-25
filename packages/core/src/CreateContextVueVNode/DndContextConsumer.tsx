@@ -7,13 +7,17 @@ interface ExampleProps {
 
 export const vuePropsType = {
 }
-const DndContextConsumer = defineComponent<ExampleProps>((props, {}) => {
-  const slots = useSlots()
-  const config = inject('DndContext', ref<Transform>({
+
+export function useDndContext() {
+  return inject('DndContext', ref<Transform>({
     ...defaultCoordinates,
     scaleX: 1,
     scaleY: 1,
   }))
+}
+const DndContextConsumer = defineComponent<ExampleProps>((props, {}) => {
+  const slots = useSlots()
+  const config = useDndContext()
   return ()=>slots.default?slots.default(config):null
 })
 

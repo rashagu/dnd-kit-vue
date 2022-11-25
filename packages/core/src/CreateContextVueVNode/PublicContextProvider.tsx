@@ -1,15 +1,20 @@
 
-import {defineComponent, provide, ref} from "vue";
+import {defineComponent, provide, ref, watch} from "vue";
 import {PublicContextDescriptor} from "../store";
 
 
 
-const PublicContextProvider = defineComponent<{value:any}>((props, {slots}) => {
+const PublicContextProvider = defineComponent<{value:PublicContextDescriptor}>((props, {slots}) => {
     //console.log(props)
     // const DndContext = ref<PublicContextDescriptor>(props.value || {});
 
-    provide('PublicContext', props.value)
-    return ()=>slots.default?slots.default(props.value):null
+    const context = ref<PublicContextDescriptor>(props.value);
+
+    watch(()=>props.value, ()=>{
+        context.value = props.value
+    }, { deep: true})
+    provide('PublicContext', context)
+    return ()=>slots.default?slots.default(context.value):null
 })
 PublicContextProvider.props = {
     value:Object

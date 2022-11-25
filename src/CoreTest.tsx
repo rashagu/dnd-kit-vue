@@ -13,7 +13,7 @@ interface ExampleProps {
 export const vuePropsType = {
   name: String
 }
-const App = defineComponent<ExampleProps>((props, {slots}) => {
+const CoreTest = defineComponent<ExampleProps>((props, {slots}) => {
 
   const coordinates = ref<Coordinates>(defaultCoordinates);
   function setCoordinates(val:any) {
@@ -47,7 +47,8 @@ const App = defineComponent<ExampleProps>((props, {slots}) => {
   );
 })
 
-App.props = vuePropsType
+CoreTest.props = vuePropsType
+CoreTest.name = 'CoreTest'
 
-export default App
+export default CoreTest
 
