@@ -41,7 +41,7 @@ export function useRect(
   });
   const resizeObserver = useResizeObserver({callback: measureRect});
 
-  watch([element, measure, fallbackRect], () => {
+  watch([element, measure, ()=>fallbackRect?.value], () => {
     measureRect();
 
     if (element && element.value) {

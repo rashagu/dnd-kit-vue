@@ -114,8 +114,8 @@ export function useDroppable({
     resizeObserver.value.observe(nodeRef.value);
   });
 
-  watch([id],
-    (value, oldValue, onCleanup) => {
+  watch([()=>id], (value, oldValue, onCleanup) => {
+    console.log(id)
       internalContext.value.dispatch({
         type: Action.RegisterDroppable,
         element: {
