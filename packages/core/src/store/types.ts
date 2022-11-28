@@ -1,4 +1,6 @@
 // import type {MutableRefObject} from 'react';
+import {Ref} from "vue";
+
 type MutableRefObject<T> = any
 import type {DeepRequired} from '@kousum/utilities';
 
@@ -87,8 +89,8 @@ export interface PublicContextDescriptor {
   droppableRects: RectMap;
   over: Over | null;
   dragOverlay: {
-    nodeRef: MutableRefObject<HTMLElement | null>;
-    rect: ClientRect | null;
+    nodeRef: Ref<MutableRefObject<HTMLElement | null>>;
+    rect: Ref<ClientRect | null>;
     setRef: (element: HTMLElement | null) => void;
   };
   scrollableAncestors: Element[];

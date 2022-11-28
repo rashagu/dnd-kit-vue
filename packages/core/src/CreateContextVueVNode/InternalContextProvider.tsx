@@ -20,4 +20,5 @@ const InternalContextProvider = defineComponent<{value:InternalContextDescriptor
 InternalContextProvider.props = {
     value:Object
 }
+InternalContextProvider.name = 'InternalContextProvider'
 export default InternalContextProvider;

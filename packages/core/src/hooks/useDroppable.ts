@@ -26,7 +26,7 @@ interface ResizeObserverConfig {
 }
 
 export interface UseDroppableArguments {
-  id: UniqueIdentifier;
+  id: ComputedRef<UniqueIdentifier>;
   disabled?: boolean;
   data?: Data;
   resizeObserverConfig?: ResizeObserverConfig;
@@ -62,7 +62,7 @@ export function useDroppable({
     ...defaultResizeObserverConfig,
     ...resizeObserverConfig,
   };
-  const id_C = computed(()=>id)
+  const id_C = computed(()=>id.value)
   const ids = useLatestValue(updateMeasurementsFor ?? id_C);
   const handleResize = () => {
     if (!resizeObserverConnected.value) {
@@ -114,12 +114,12 @@ export function useDroppable({
     resizeObserver.value.observe(nodeRef.value);
   });
 
-  watch([()=>id], (value, oldValue, onCleanup) => {
-    console.log(id)
+
+  watch(()=>id.value, (value, oldValue, onCleanup) => {
       internalContext.value.dispatch({
         type: Action.RegisterDroppable,
         element: {
-          id,
+          id: value,
           key,
           disabled,
           node: nodeRef,
@@ -131,16 +131,16 @@ export function useDroppable({
         internalContext.value.dispatch({
           type: Action.UnregisterDroppable,
           key,
-          id,
+          id: value,
         }))
     }, {immediate: true}
   );
 
-  watchEffect(() => {
+  watch([id, key, ()=>disabled, ()=>internalContext.value.dispatch], () => {
     if (disabled !== previous.value.disabled) {
       internalContext.value.dispatch({
         type: Action.SetDroppableDisabled,
-        id,
+        id: id.value,
         key,
         disabled,
       });
@@ -148,11 +148,14 @@ export function useDroppable({
       previous.value.disabled = disabled;
     }
   });
+  const isOver = computed(()=>{
+    return internalContext.value.over?.id === id.value
+  })
 
   return {
     // active: internalContext.value.active,
     rect,
-    isOver: internalContext.value.over?.id === id,
+    isOver: isOver,
     node: nodeRef,
     // over: internalContext.value.over,
     setNodeRef,

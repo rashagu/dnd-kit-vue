@@ -1,4 +1,4 @@
-import {defineComponent, ref, h, Fragment} from 'vue'
+import {defineComponent, ref, h, Fragment, computed} from 'vue'
 import {useDraggable} from "../../packages/core";
 import {CSS} from '../../packages/utilities';
 
@@ -11,14 +11,14 @@ export const vuePropsType = {
 }
 const Draggable = defineComponent<ExampleProps>((props, {slots}) => {
   const {attributes, listeners, setNodeRef, transform, isDragging} = useDraggable({
-    id: 'unique-id',
+    id: computed(()=>'unique-id'),
   });
 
   return ()=>{
     console.log(transform.value, isDragging.value)
     return (
       <button
-        ref={setNodeRef}
+        ref={setNodeRef as any}
         style={{
           width: '300px',
           transform: CSS.Translate.toString(transform.value),

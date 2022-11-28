@@ -25,10 +25,12 @@
     "dist"
   ],
   "peerDependencies": {
-    "vue": "^3.2.37"
+    "vue": "^3.2.45"
   },
   "dependencies": {
     "tslib": "^2.0.0",
+    "lodash": "^4.17.21",
+    "@types/lodash": "^4.14.190",
     "@kousum/accessibility": "^3.0.0",
     "@kousum/utilities": "^3.2.0"
   },

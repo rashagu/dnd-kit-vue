@@ -12,9 +12,11 @@ import {ActiveDraggableContext} from '../components/DndContext';
 import {useSyntheticListeners, SyntheticListenerMap} from './utilities';
 import {computed, ComputedRef, inject, ref, watch} from "vue";
 import {defaultCoordinates} from "../utilities";
+import {useDndContext} from "../CreateContextVueVNode/DndContextConsumer";
+import {useInternalContext} from "../CreateContextVueVNode/InternalContextConsumer";
 
 export interface UseDraggableArguments {
-  id: UniqueIdentifier;
+  id: ComputedRef<UniqueIdentifier>;
   data?: Data;
   disabled?: boolean;
   attributes?: {
@@ -46,21 +48,17 @@ export function useDraggable({
   attributes,
 }: UseDraggableArguments) {
   const key = useUniqueId(ID_PREFIX);
-  const internalContext = inject('InternalContext', ref<InternalContextDescriptor>(defaultInternalContext));
+  const internalContext = useInternalContext();
 
 
+  const dndContext = useDndContext()
   const {role = defaultRole, roleDescription = 'draggable', tabIndex = 0} =
     attributes ?? {};
   const isDragging = computed(()=>{
-    return internalContext.value.active?.id === id
+    return internalContext.value.active?.id === id.value
   });
   const transform= computed<Transform | null >(()=>{
-    console.log(inject('DndContext'))
-    return  isDragging.value ? inject('DndContext', ref<Transform>({
-      ...defaultCoordinates,
-      scaleX: 1,
-      scaleY: 1,
-    })).value : null;
+    return  isDragging.value ? dndContext.value : null;
   })
   const [node, setNodeRef] = useNodeRef();
   const [activatorNode, setActivatorNodeRef] = useNodeRef();
@@ -68,18 +66,17 @@ export function useDraggable({
 
   const dataRef = useLatestValue(computed(()=>data));
 
-  useIsomorphicLayoutEffect(
-    () => {
-      internalContext.value.draggableNodes.set(id, {id, key: key.value, node, activatorNode, data: dataRef});
+  watch([()=>internalContext.value.draggableNodes, ()=>id.value], () => {
+      internalContext.value.draggableNodes.set(id.value, {id: id.value, key: key.value, node, activatorNode, data: dataRef});
 
       return () => {
-        const node = internalContext.value.draggableNodes.get(id);
+        const node = internalContext.value.draggableNodes.get(id.value);
 
         if (node && node.key === key.value) {
-          internalContext.value.draggableNodes.delete(id);
+          internalContext.value.draggableNodes.delete(id.value);
         }
       };
-    }
+    }, {immediate: true}
   );
 
   const memoizedAttributes: ComputedRef<DraggableAttributes> = computed(

@@ -50,8 +50,10 @@ export function useReducer(reducer:any,initialState:any, init?:(value?:any)=>any
   if (init){
     state.value = init()
   }
+
   let dispatch = (action?:any) => {
     state.value = reducer(state.value,action)
   }
+
   return [state,dispatch]
 }

@@ -58,13 +58,13 @@ export function useSortable({
     context.value.disabled
   );
   const index = computed(()=>{
-    return context.value.items.indexOf(id)
+    return context.value.items.indexOf(id.value)
   });
   const data = computed<SortableData & Data>(
     () => ({sortable: {containerId: context.value.containerId, index: index.value, items: context.value.items}, ...customData})
   );
   const itemsAfterCurrentSortable = computed(
-    () => context.value.items.slice(context.value.items.indexOf(id))
+    () => context.value.items.slice(context.value.items.indexOf(id.value))
   );
   const {rect, node, isOver, setNodeRef: setDroppableNodeRef} = useDroppable({
     id,
@@ -127,7 +127,7 @@ export function useSortable({
 
   const newIndex =computed(()=>{
     return isValidIndex(context.value.activeIndex) && isValidIndex(context.value.overIndex)
-      ? getNewIndex({id, items:context.value.items, activeIndex:context.value.activeIndex, overIndex:context.value.overIndex})
+      ? getNewIndex({id: id.value, items:context.value.items, activeIndex:context.value.activeIndex, overIndex:context.value.overIndex})
       : index.value
   });
 
@@ -149,7 +149,7 @@ export function useSortable({
       containerId: context.value.containerId,
       isDragging: isDragging.value,
       isSorting: isSorting.value,
-      id,
+      id: id.value,
       index: index.value,
       items:context.value.items,
       newIndex: previous.value.newIndex,
@@ -199,6 +199,10 @@ export function useSortable({
     onCleanup(() => clearTimeout(timeoutId))
   });
 
+  watch([derivedTransform,
+    finalTransform], (value)=>{
+    console.debug(value)
+  }, {deep: true})
   return {
     internalContext,
     context,

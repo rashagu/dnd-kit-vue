@@ -13,14 +13,14 @@ export type SyntheticListenerMap = Record<string, Function>;
 
 export function useSyntheticListeners(
   listeners: SyntheticListeners,
-  id: UniqueIdentifier
+  id: ComputedRef<UniqueIdentifier>
 ): ComputedRef<SyntheticListenerMap> {
   return computed(() => {
     return listeners.reduce<SyntheticListenerMap>(
       (acc, {eventName, handler}) => {
         // @ts-ignore
         acc[eventName] = (event: any) => {
-          handler(event, id);
+          handler(event, id.value);
         };
 
         return acc;

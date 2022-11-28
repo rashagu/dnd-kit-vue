@@ -2,7 +2,19 @@ import {useSortable} from '@kousum/sortable';
 import {CSS} from '@kousum/utilities';
 
 
-import {defineComponent, ref, h, Fragment, useSlots, VNodeRef, CSSProperties, getCurrentInstance, inject} from 'vue'
+import {
+  defineComponent,
+  ref,
+  h,
+  Fragment,
+  useSlots,
+  VNodeRef,
+  CSSProperties,
+  getCurrentInstance,
+  inject,
+  computed
+} from 'vue'
+import {Arguments} from "../../src/hooks/useSortable";
 
 interface SortableItemProps {
   id: number | string,
@@ -15,13 +27,14 @@ const SortableItem = defineComponent<SortableItemProps>((props, {}) => {
 
   const slots = useSlots()
 
+  const params:Arguments = {id: computed(()=>props.id) as any}
   const {
     attributes,
     listeners,
     setNodeRef,
     transform,
     transition,
-  } = useSortable({id: props.id});
+  } = useSortable(params);
 
   return () => {
     const style:CSSProperties = {
@@ -34,7 +47,7 @@ const SortableItem = defineComponent<SortableItemProps>((props, {}) => {
     console.log('transform', transform.value)
 
     return (
-      <div ref={setNodeRef as VNodeRef} style={style} {...attributes.value} {...listeners?.value}>
+      <div ref={setNodeRef as any} style={style} {...attributes.value} {...listeners?.value}>
         {/* ... */}
         {props.id}
       </div>
