@@ -96,7 +96,6 @@ export function useSortable({
   const setNodeRef = useCombinedRefs(setDroppableNodeRef, setDraggableNodeRef);
   const isSorting = computed(()=>Boolean(internalContext.value.active));
   const displaceItem = computed(()=>{
-    console.error(isSorting.value, context.value.disableTransforms, )
     return isSorting.value &&
     !context.value.disableTransforms &&
     isValidIndex(context.value.activeIndex) &&

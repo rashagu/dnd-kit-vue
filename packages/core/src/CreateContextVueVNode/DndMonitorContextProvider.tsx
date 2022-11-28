@@ -17,6 +17,7 @@ const DndMonitorContextProvider = defineComponent<{value:RegisterListener}>((pro
 
 })
 DndMonitorContextProvider.props = {
-    value:Object
+    value: Function
 }
+DndMonitorContextProvider.name = 'DndMonitorContextProvider'
 export default DndMonitorContextProvider;

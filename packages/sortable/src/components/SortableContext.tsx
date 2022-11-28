@@ -88,7 +88,7 @@ const SortableContext = defineComponent<Props>((props, {}) => {
   watch([
     itemsHaveChanged,
     items,
-    isDragging,
+    ()=>isDragging.value,
     ()=>dndContext.value.measureDroppableContainers,
     ()=>dndContext.value.measuringScheduled,
   ], () => {

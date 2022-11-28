@@ -2,6 +2,7 @@
 import type {ClientRect} from '../../types';
 
 import type {Collision, CollisionDescriptor} from './types';
+import {computed, ComputedRef} from "vue";
 
 /**
  * Sort collisions from smallest to greatest value
@@ -53,7 +54,7 @@ export function cornersOfRectangle({left, top, height, width}: ClientRect) {
  * If a property is specified, returns the specified property of the first collision.
  */
 export function getFirstCollision(
-  collisions: Collision[] | null | undefined
+  collisions: Collision[] | null | undefined,
 ): Collision | null;
 
 export function getFirstCollision<T extends keyof Collision>(
@@ -65,7 +66,8 @@ export function getFirstCollision(
   collisions: Collision[] | null | undefined,
   property?: keyof Collision
 ) {
-  console.log(collisions)
+
+
   if (!collisions || collisions.length === 0) {
     return null;
   }

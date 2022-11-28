@@ -1,6 +1,6 @@
 
 import {useEvent} from '@kousum/utilities';
-import {computed, watchEffect} from "vue";
+import {computed, watch, watchEffect} from "vue";
 
 interface Arguments {
   callback: MutationCallback;
@@ -27,9 +27,9 @@ export function useMutationObserver({callback, disabled}: Arguments) {
     return new MutationObserver(handleMutations);
   });
 
-  watchEffect(() => {
+  watch(()=>mutationObserver.value, () => {
     return () => mutationObserver.value?.disconnect();
-  });
+  }, {immediate: true});
 
   return mutationObserver;
 }

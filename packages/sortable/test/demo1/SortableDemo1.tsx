@@ -45,10 +45,11 @@ const SortableDemo1 = defineComponent<Demo1Props>((props, {}) => {
   function handleDragEnd(event:DragEndEvent) {
     // console.log(event)
     const {active, over} = event;
+    console.debug({active, over})
 
     if (active.id !== over?.id) {
-      const oldIndex = items.value.indexOf(active.id);
-      const newIndex = items.value.indexOf(over.id);
+      const oldIndex = items.value.indexOf(+active.id);
+      const newIndex = items.value.indexOf(+over!.id);
       setItems(arrayMove(items.value, oldIndex, newIndex));
     }
   }
@@ -57,18 +58,20 @@ const SortableDemo1 = defineComponent<Demo1Props>((props, {}) => {
 
 
     return (
-      <DndContext
-        sensors={sensors.value}
-        collisionDetection={closestCenter}
-        onDragEnd={handleDragEnd}
-      >
-        <SortableContext
-          items={items.value}
-          strategy={verticalListSortingStrategy}
+      <div style={{width: '500px'}}>
+        <DndContext
+          sensors={sensors.value}
+          collisionDetection={closestCenter}
+          onDragEnd={handleDragEnd}
         >
-          {items.value.map(id => <SortableItem key={id} id={id} />)}
-        </SortableContext>
-      </DndContext>
+          <SortableContext
+            items={items.value}
+            strategy={verticalListSortingStrategy}
+          >
+            {items.value.map(id => <SortableItem key={id} id={id} />)}
+          </SortableContext>
+        </DndContext>
+      </div>
     );
 
   }

@@ -6,7 +6,7 @@ import {getClientRect, Rect, useReducer} from '../../utilities';
 
 import {useMutationObserver} from './useMutationObserver';
 import {useResizeObserver} from './useResizeObserver';
-import {ComputedRef, watch} from "vue";
+import {computed, ComputedRef, watch} from "vue";
 
 function defaultMeasure(element: HTMLElement) {
   return new Rect(getClientRect(element), element);
@@ -14,8 +14,8 @@ function defaultMeasure(element: HTMLElement) {
 
 export function useRect(
   element: ComputedRef<HTMLElement | null>,
-  measure: (element: HTMLElement) => ClientRect = defaultMeasure,
-  fallbackRect?: ClientRect | null
+  measure: ComputedRef<(element: HTMLElement) => ClientRect> = computed(()=>defaultMeasure),
+  fallbackRect?: ComputedRef<ClientRect | null>
 ) {
   let [rect, measureRect] = useReducer(reducer, null);
 
@@ -41,7 +41,7 @@ export function useRect(
   });
   const resizeObserver = useResizeObserver({callback: measureRect});
 
-  watch(()=>element?.value, () => {
+  watch([element, measure, fallbackRect], () => {
     measureRect();
 
     if (element && element.value) {
@@ -54,7 +54,7 @@ export function useRect(
       resizeObserver.value?.disconnect();
       mutationObserver.value?.disconnect();
     }
-  });
+  }, {immediate: true});
 
   return rect;
 
@@ -66,10 +66,10 @@ export function useRect(
     if (element.value.isConnected === false) {
       // Fall back to last rect we measured if the element is
       // no longer connected to the DOM.
-      return currentRect ?? fallbackRect ?? null;
+      return currentRect ?? fallbackRect?.value ?? null;
     }
 
-    const newRect = measure(element.value);
+    const newRect = measure.value(element.value);
 
     if (JSON.stringify(currentRect) === JSON.stringify(newRect)) {
       return currentRect;

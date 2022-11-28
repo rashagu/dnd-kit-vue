@@ -164,12 +164,10 @@ const DndContext = defineComponent<Props>((props_) => {
     useDndMonitorProvider();
   const status = ref<Status>(Status.Uninitialized);
   const isInitialized = computed(()=>{
-    console.debug(status.value, Status.Initialized)
     return status.value === Status.Initialized
   });
 
   const activeId = computed(()=>{
-    console.debug(state.value.draggable.active)
     return state.value.draggable.active
   })
   const draggableNodes = computed(()=>{
@@ -188,17 +186,23 @@ const DndContext = defineComponent<Props>((props_) => {
     initial: null,
     translated: null,
   });
-  const active = computed<Active | null>(
-    () => {
-      return state.value.draggable.active != null
-        ? {
-          id: state.value.draggable.active,
-          // It's possible for the active node to unmount while dragging
-          data: node.value?.data ?? defaultData,
-          rect: activeRects.value,
-        } : null
-    }
-  );
+
+  const active = ref<Active | null>(null);
+  function setActive(){
+    return state.value.draggable.active != null
+      ? {
+        id: state.value.draggable.active,
+        // It's possible for the active node to unmount while dragging
+        data: node.value?.data ?? defaultData,
+        rect: activeRects.value,
+      } : null
+  }
+  watch([activeId, node], ()=>{
+    active.value = setActive()
+  }, {immediate: true})
+
+
+
   const activeRef = ref<UniqueIdentifier | null>(null);
   const activeSensor = ref<SensorInstance | null>(null);
   const activatorEvent = ref<Event | null>(null);
@@ -212,12 +216,21 @@ const DndContext = defineComponent<Props>((props_) => {
     () => state.value.droppable.containers.getEnabled(),
   );
   const measuringConfiguration = useMeasuringConfiguration(measuring);
-  const {droppableRects, measureDroppableContainers, measuringScheduled} =
-    useDroppableMeasuring(enabledDroppableContainers.value, {
+  const useDroppableMeasuringArg = computed(()=>{
+    return {
       dragging: isInitialized.value,
       dependencies: [state.value.draggable.translate.x, state.value.draggable.translate.y],
       config: measuringConfiguration.value.droppable,
-    });
+    }
+  })
+  const {
+    droppableRects,
+    measureDroppableContainers,
+    measuringScheduled
+  } = useDroppableMeasuring(
+    enabledDroppableContainers,
+    useDroppableMeasuringArg
+  );
   const activeNode = useCachedNode(draggableNodes, activeId);
   const activationCoordinates = computed(
     () => (activatorEvent.value ? getEventCoordinates(activatorEvent.value) : null)
@@ -235,13 +248,22 @@ const DndContext = defineComponent<Props>((props_) => {
     measure: measuringConfiguration.value.draggable.measure,
   });
 
+  const measure = computed(()=>{
+    return measuringConfiguration.value.draggable.measure
+  })
+
+
   const activeNodeRect = useRect(
     activeNode,
-    measuringConfiguration.value.draggable.measure,
-    initialActiveNodeRect.value
+    measure,
+    initialActiveNodeRect
   )
+
+  const containerNode  = computed(()=>{
+    return activeNode.value ? activeNode.value.parentElement : null
+  })
   const containerNodeRect = useRect(
-    activeNode.value ? activeNode.value.parentElement : null
+    containerNode
   )
   const sensorContext = ref<SensorContext>({
     activatorEvent: null,
@@ -274,8 +296,6 @@ const DndContext = defineComponent<Props>((props_) => {
     return dragOverlay.value.nodeRef.value ?? activeNode.value
   });
   const draggingNodeRect = computed(()=>{
-
-    console.debug(isInitialized.value, activeNodeRect.value)
     return isInitialized.value
       ? dragOverlay.value.rect.value ?? activeNodeRect.value
       : null
@@ -300,7 +320,7 @@ const DndContext = defineComponent<Props>((props_) => {
 
   // Apply modifiers
   const modifiedTranslate = computed(()=>{
-    console.log(state.value.draggable.translate.x, nodeRectDelta.x)
+    // console.log(state.value.draggable.translate.x, nodeRectDelta.x)
     return applyModifiers(modifiers, {
       transform: {
         x: state.value.draggable.translate.x - nodeRectDelta.x,
@@ -314,7 +334,7 @@ const DndContext = defineComponent<Props>((props_) => {
       containerNodeRect:containerNodeRect.value,
       draggingNodeRect: draggingNodeRect?.value,
       over: sensorContext.value.over,
-      overlayNodeRect: dragOverlay.value.rect,
+      overlayNodeRect: dragOverlay.value.rect.value,
       scrollableAncestors: scrollableAncestors.value,
       scrollableAncestorRects,
       windowRect: windowRect.value,
@@ -336,14 +356,12 @@ const DndContext = defineComponent<Props>((props_) => {
     return add(modifiedTranslate.value, scrollAdjustment)
   });
   const collisionRect = computed(()=>{
-    console.log(draggingNodeRect?.value)
     return draggingNodeRect?.value
       ? getAdjustedRect(draggingNodeRect.value, modifiedTranslate.value)
       : null
   });
 
   const collisions = computed(()=>{
-    console.log(active.value, collisionRect.value)
     return active.value && collisionRect.value
       ? collisionDetection({
         active: active.value,
@@ -354,7 +372,7 @@ const DndContext = defineComponent<Props>((props_) => {
       })
       : null
   });
-  const overId = computed(()=>getFirstCollision(collisions.value, 'id'));
+
   const over = ref<Over | null>(null);
 
   function setOver(val: any) {
@@ -442,9 +460,10 @@ const DndContext = defineComponent<Props>((props_) => {
     function createHandler(type: Action.DragEnd | Action.DragCancel) {
       return async function handler() {
         const {collisions, over} = sensorContext.value;
+
         let event: DragEndEvent | null = null;
 
-        if (active.value && scrollAdjustedTranslate) {
+        if (active.value && scrollAdjustedTranslate.value) {
           const {cancelDrop} = latestProps.value;
 
           event = {
@@ -528,11 +547,11 @@ const DndContext = defineComponent<Props>((props_) => {
 
   useSensorSetup(sensors);
 
-  watchEffect(() => {
+  watch([activeNodeRect, status], () => {
     if (activeNodeRect.value && status.value === Status.Initializing) {
       status.value = Status.Initialized
     }
-  });
+  }, {deep: true, immediate: true});
 
 
 
@@ -560,50 +579,7 @@ const DndContext = defineComponent<Props>((props_) => {
     dispatchMonitorEvent({type: 'onDragMove', event});
   });
 
-  watch(()=>overId.value, ()=>{
-    const {
-      collisions,
-      droppableContainers,
-      scrollAdjustedTranslate,
-    } = sensorContext.value;
 
-
-    if (
-      !state.value.draggable.active ||
-      activeRef.value == null ||
-      !activatorEvent.value ||
-      !scrollAdjustedTranslate
-    ) {
-      return;
-    }
-
-    const {onDragOver} = latestProps.value;
-    const overContainer = droppableContainers.get(overId.value);
-    console.log(overContainer, overId.value)
-    const over = overContainer && overContainer.rect.value
-      ? {
-        id: overContainer.id,
-        rect: overContainer.rect.value,
-        data: overContainer.data,
-        disabled: overContainer.disabled,
-      }
-      : null;
-
-    const event: DragOverEvent = {
-      active:state.value.draggable.active,
-      activatorEvent:activatorEvent.value,
-      collisions,
-      delta: {
-        x: scrollAdjustedTranslate.x,
-        y: scrollAdjustedTranslate.y,
-      },
-      over,
-    };
-
-    setOver(over);
-    onDragOver?.(event);
-    dispatchMonitorEvent({type: 'onDragOver', event});
-  }, {deep: true, immediate: true})
 
 
   watch([
@@ -653,48 +629,7 @@ const DndContext = defineComponent<Props>((props_) => {
     scrollableAncestorRects,
   });
 
-  const publicContext = computed(() => {
-    const context: PublicContextDescriptor = {
-      active: active.value,
-      activeNode: activeNode.value,
-      activeNodeRect:activeNodeRect.value,
-      activatorEvent: activatorEvent.value,
-      collisions: collisions.value,
-      containerNodeRect:containerNodeRect.value,
-      dragOverlay: dragOverlay.value,
-      draggableNodes: draggableNodes.value,
-      droppableContainers: droppableContainers.value,
-      droppableRects: droppableRects.value,
-      over: over.value,
-      measureDroppableContainers,
-      scrollableAncestors: scrollableAncestors.value,
-      scrollableAncestorRects,
-      measuringConfiguration: measuringConfiguration.value,
-      measuringScheduled,
-      windowRect: windowRect.value,
-    };
 
-    return context;
-  });
-
-  const internalContext = computed(() => {
-    const context: InternalContextDescriptor = {
-      activatorEvent: activatorEvent.value,
-      activators: activators.value,
-      active: active.value,
-      activeNodeRect:activeNodeRect.value,
-      ariaDescribedById: {
-        draggable: draggableDescribedById.value,
-      },
-      dispatch,
-      draggableNodes: draggableNodes.value,
-      over: over.value,
-      measureDroppableContainers,
-    };
-    // console.log(context)
-
-    return context;
-  });
 
   const slots = useSlots()
 
@@ -720,12 +655,99 @@ const DndContext = defineComponent<Props>((props_) => {
     return {enabled};
   }
 
+  let overIdCache: any = undefined
   return () => {
+    const overId = getFirstCollision(collisions.value, 'id');
+    if (overIdCache !== overId){
+      console.log(overIdCache, overId)
+      const {
+        collisions: collisions_,
+        droppableContainers,
+        scrollAdjustedTranslate,
+      } = sensorContext.value;
+
+
+      if (
+        !state.value.draggable.active ||
+        activeRef.value == null ||
+        !activatorEvent.value ||
+        !scrollAdjustedTranslate
+      ) {
+        // return;
+      }else{
+
+        const {onDragOver} = latestProps.value;
+        const overContainer = droppableContainers.get(overId);
+        // console.debug(overContainer, overId.value)
+        const over = overContainer && overContainer.rect
+          ? {
+            id: overContainer.id,
+            rect: overContainer.rect,
+            data: overContainer.data,
+            disabled: overContainer.disabled,
+          }
+          : null;
+
+        const event: DragOverEvent = {
+          active:state.value.draggable.active,
+          activatorEvent:activatorEvent.value,
+          collisions: collisions_,
+          delta: {
+            x: scrollAdjustedTranslate.x,
+            y: scrollAdjustedTranslate.y,
+          },
+          over,
+        };
+
+        // console.debug(over)
+        setOver(over);
+        onDragOver?.(event);
+        dispatchMonitorEvent({type: 'onDragOver', event});
+        overIdCache = overId
+      }
+
+    }
+
+
+
+    const internalContext: InternalContextDescriptor = {
+      activatorEvent: activatorEvent.value,
+      activators: activators.value,
+      active: active.value,
+      activeNodeRect:activeNodeRect.value,
+      ariaDescribedById: {
+        draggable: draggableDescribedById.value,
+      },
+      dispatch,
+      draggableNodes: draggableNodes.value,
+      over: over.value,
+      measureDroppableContainers:measureDroppableContainers.value,
+    };
+
+    const publicContext: PublicContextDescriptor = {
+      active: active.value,
+      activeNode: activeNode.value,
+      activeNodeRect:activeNodeRect.value,
+      activatorEvent: activatorEvent.value,
+      collisions: collisions.value,
+      containerNodeRect:containerNodeRect.value,
+      dragOverlay: dragOverlay.value,
+      draggableNodes: draggableNodes.value,
+      droppableContainers: droppableContainers.value,
+      droppableRects: droppableRects.value,
+      over: over.value,
+      measureDroppableContainers:measureDroppableContainers.value,
+      scrollableAncestors: scrollableAncestors.value,
+      scrollableAncestorRects,
+      measuringConfiguration: measuringConfiguration.value,
+      measuringScheduled: measuringScheduled.value,
+      windowRect: windowRect.value,
+    }
 
     return (
       <DndMonitorContext.Provider value={registerMonitorListener}>
-        <InternalContext.Provider value={internalContext.value}>
-          <PublicContext.Provider value={publicContext.value}>
+        <InternalContext.Provider value={internalContext}>
+          <PublicContext.Provider value={publicContext}>
             {JSON.stringify(transform.value)}
             <ActiveDraggableContext.Provider value={transform.value}>
               {{

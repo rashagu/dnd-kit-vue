@@ -17,9 +17,9 @@ export function getInitialState(): State {
 }
 
 export function reducer(state: State, action: Actions): State {
-  console.debug(action.active)
   switch (action.type) {
     case Action.DragStart:
+      console.debug(action)
       return {
         ...state,
         draggable: {

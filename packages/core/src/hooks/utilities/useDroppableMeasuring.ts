@@ -1,10 +1,9 @@
-
 import {useLatestValue, useLazyMemo} from '@kousum/utilities';
 
 import {Rect} from '../../utilities/rect';
 import type {DroppableContainer, RectMap} from '../../store/types';
 import type {ClientRect, UniqueIdentifier} from '../../types';
-import {ref, watchEffect} from "vue";
+import {computed, ComputedRef, ref, watch, watchEffect} from "vue";
 
 interface Arguments {
   dragging: boolean;
@@ -33,114 +32,108 @@ export interface DroppableMeasuring {
 const defaultValue: RectMap = new Map();
 
 export function useDroppableMeasuring(
-  containers: DroppableContainer[],
-  {dragging, dependencies, config}: Arguments
+  containers: ComputedRef<DroppableContainer[]>,
+  arg: ComputedRef<Arguments>
 ) {
   const containerIdsScheduledForMeasurement = ref<UniqueIdentifier[] | null>(null);
-  const measuringScheduled = containerIdsScheduledForMeasurement != null;
-  const {frequency, measure, strategy} = config;
-  const containersRef = ref(containers);
-  const disabled = isDisabled();
+  const measuringScheduled = computed(() => {
+    return containerIdsScheduledForMeasurement.value != null
+  });
+
+
+  const containersRef = ref(containers.value);
+  const disabled = computed(isDisabled);
   const disabledRef = useLatestValue(disabled);
-  const measureDroppableContainers = (ids: UniqueIdentifier[] = []) => {
+  const measureDroppableContainers = computed(()=>(ids: UniqueIdentifier[] = []) => {
     if (disabledRef.value) {
       return;
     }
-
     containerIdsScheduledForMeasurement.value = containerIdsScheduledForMeasurement.value ? containerIdsScheduledForMeasurement.value.concat(ids) : ids
-
-  }
+  })
   const timeoutId = ref<any>(null);
-  const droppableRects = useLazyMemo<RectMap>(
-    (previousValue) => {
-      if (disabled && !dragging) {
-        return defaultValue;
-      }
 
-      const ids = containerIdsScheduledForMeasurement;
+  const previousValue = ref()
+  const droppableRects = computed(() => {
+    if (disabled.value && !arg.value.dragging) {
+      return defaultValue;
+    }
 
-      if (
-        !previousValue ||
-        previousValue === defaultValue ||
-        containersRef.value !== containers ||
-        ids != null
-      ) {
-        const map: RectMap = new Map();
+    const ids = containerIdsScheduledForMeasurement.value;
 
-        for (let container of containers) {
-          if (!container) {
-            continue;
-          }
+    if (
+      !previousValue ||
+      previousValue.value === defaultValue ||
+      containersRef.value !== containers.value ||
+      ids != null
+    ) {
+      const map: RectMap = new Map();
 
-          if (
-            ids.value &&
-            ids.value.length > 0 &&
-            !ids.value.includes(container.id) &&
-            container.rect.current
-          ) {
-            // This container does not need to be re-measured
-            map.set(container.id, container.rect.current);
-            continue;
-          }
-
-          const node = container.node.current;
-          const rect = node ? new Rect(measure(node), node) : null;
-
-          container.rect.current = rect;
-
-          if (rect) {
-            map.set(container.id, rect);
-          }
+      for (let container of containers.value) {
+        if (!container) {
+          continue;
         }
 
-        return map;
-      }
+        if (
+          ids &&
+          ids.length > 0 &&
+          !ids.includes(container.id) &&
+          container.rect
+        ) {
+          // This container does not need to be re-measured
+          map.set(container.id, container.rect);
+          continue;
+        }
 
-      return previousValue;
-    },
-    [
-      containers,
-      containerIdsScheduledForMeasurement,
-      dragging,
-      disabled,
-      measure,
-    ]
-  );
+        const node = container.node;
+        const rect = node ? new Rect(arg.value.config.measure(node), node) : null;
+
+        container.rect = rect;
+
+        if (rect) {
+          map.set(container.id, rect);
+        }
+      }
+      previousValue.value = map
+      return map;
+    }
+
+    return previousValue.value;
+  })
+
 
   watchEffect(() => {
-    containersRef.value = containers;
+    containersRef.value = containers.value;
   });
 
-  watchEffect(
-    () => {
-      if (disabled) {
-        return;
-      }
-
-      requestAnimationFrame(() => measureDroppableContainers());
-    });
+  watch([() => arg.value.dragging, () => disabled.value], () => {
+    if (disabled.value) {
+      return;
+    }
+    requestAnimationFrame(() => measureDroppableContainers.value());
+  }, {immediate: true});
 
   watchEffect(() => {
-    if (measuringScheduled) {
+    if (measuringScheduled.value) {
       containerIdsScheduledForMeasurement.value = null
     }
   });
 
-  watchEffect(
-    () => {
+  watch([()=>arg.value.config.frequency, disabled, measureDroppableContainers, ()=>arg.value.dependencies], () => {
+    console.log(arg.value.config.frequency)
       if (
-        disabled ||
-        typeof frequency !== 'number' ||
+        disabled.value ||
+        typeof arg.value.config.frequency !== 'number' ||
         timeoutId.value !== null
       ) {
         return;
       }
 
       timeoutId.value = setTimeout(() => {
-        measureDroppableContainers();
+        measureDroppableContainers.value();
         timeoutId.value = null;
-      }, frequency);
-    });
+      }, arg.value.config.frequency);
+    }, {deep: true, immediate: true});
+
 
   return {
     droppableRects,
@@ -149,13 +142,13 @@ export function useDroppableMeasuring(
   };
 
   function isDisabled() {
-    switch (strategy) {
+    switch (arg.value.config.strategy) {
       case MeasuringStrategy.Always:
         return false;
       case MeasuringStrategy.BeforeDragging:
-        return dragging;
+        return arg.value.dragging;
       default:
-        return !dragging;
+        return !arg.value.dragging;
     }
   }
 }

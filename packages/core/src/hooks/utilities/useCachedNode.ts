@@ -9,13 +9,12 @@ export function useCachedNode(
   id: ComputedRef<UniqueIdentifier | null>
 ): ComputedRef<DraggableNode['node']['current']> {
 
-  console.debug(draggableNodes.value, id.value)
   const valueRef = ref();
 
   return computed(
     () => {
       const draggableNode = id.value !== null ? draggableNodes.value.get(id.value) : undefined;
-      const node = draggableNode ? draggableNode.node.current : null;
+      const node = draggableNode ? draggableNode.node : null;
 
       const newValue = () => {
         if (id === null) {
@@ -27,6 +26,7 @@ export function useCachedNode(
         return node ?? valueRef.value ?? null;
       };
 
+      // console.debug(draggableNode)
       valueRef.value = newValue();
 
       return newValue();
