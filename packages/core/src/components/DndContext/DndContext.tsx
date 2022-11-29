@@ -7,6 +7,7 @@ import {
   useUniqueId,
 } from '@kousum/utilities';
 import type {Transform} from '@kousum/utilities';
+import { isEqual } from "lodash"
 
 import {
   Action,
@@ -74,7 +75,7 @@ import {
 } from './hooks';
 import type {MeasuringConfiguration} from './types';
 import DndContextProvider from "../../CreateContextVueVNode/DndContextProvider";
-import {computed, defineComponent, ref, useSlots, watch, watchEffect} from "vue";
+import {computed, defineComponent, ref, useSlots, watch, } from "vue";
 
 export interface Props {
   id?: string;
@@ -555,7 +556,10 @@ const DndContext = defineComponent<Props>((props_) => {
 
 
 
-  watchEffect(() => {
+  watch([
+    ()=>scrollAdjustedTranslate.value.x,
+    ()=>scrollAdjustedTranslate.value.y,
+  ], () => {
     const {onDragMove} = latestProps.value;
     const {collisions, over} = sensorContext.value;
 
@@ -595,28 +599,31 @@ const DndContext = defineComponent<Props>((props_) => {
     over,
     scrollableAncestors,
     scrollAdjustedTranslate,
-  ], ()=>{
+  ], (value, oldValue)=>{
+    if (!isEqual(value, oldValue)){
+      // console.log(value, oldValue)
 
-    sensorContext.value = {
-      activatorEvent: activatorEvent.value,
-      active: active.value,
-      activeNode: activeNode.value,
-      collisionRect: collisionRect.value,
-      collisions: collisions.value,
-      droppableRects: droppableRects.value,
-      draggableNodes: draggableNodes.value,
-      draggingNode: draggingNode.value,
-      draggingNodeRect: draggingNodeRect?.value,
-      droppableContainers: droppableContainers.value,
-      over: over.value,
-      scrollableAncestors: scrollableAncestors.value,
-      scrollAdjustedTranslate:scrollAdjustedTranslate.value,
-    };
+      sensorContext.value = {
+        activatorEvent: activatorEvent.value,
+        active: active.value,
+        activeNode: activeNode.value,
+        collisionRect: collisionRect.value,
+        collisions: collisions.value,
+        droppableRects: droppableRects.value,
+        draggableNodes: draggableNodes.value,
+        draggingNode: draggingNode.value,
+        draggingNodeRect: draggingNodeRect?.value,
+        droppableContainers: droppableContainers.value,
+        over: over.value,
+        scrollableAncestors: scrollableAncestors.value,
+        scrollAdjustedTranslate:scrollAdjustedTranslate.value,
+      };
 
-    activeRects.value = {
-      initial: draggingNodeRect?.value,
-      translated: collisionRect.value,
-    };
+      activeRects.value = {
+        initial: draggingNodeRect?.value,
+        translated: collisionRect.value,
+      };
+    }
   }, {immediate: true})
 
 
@@ -658,6 +665,7 @@ const DndContext = defineComponent<Props>((props_) => {
   let overIdCache: any = undefined
   return () => {
     const overId = getFirstCollision(collisions.value, 'id');
+
     if (overIdCache !== overId){
       console.log(overIdCache, overId)
       const {
