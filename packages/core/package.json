@@ -1,12 +1,12 @@
 {
-  "name": "@kousum/core",
-  "version": "6.0.6-beta.0",
+  "name": "@dnd-kit-vue/core",
+  "version": "6.0.6-vue.1",
   "description": "dnd kit – a lightweight React library for building performant and accessible drag and drop experiences",
   "author": "Claudéric Demers",
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/kousum/dnd-kit-vue.git",
+    "url": "git+https://github.com/rashagu/dnd-kit-vue.git",
     "directory": "packages/core"
   },
   "scripts": {
@@ -29,8 +29,8 @@
     "tslib": "^2.0.0",
     "lodash": "^4.17.21",
     "@types/lodash": "^4.14.190",
-    "@kousum/accessibility": "^3.0.2-beta.0",
-    "@kousum/utilities": "^3.2.1-beta.0"
+    "@dnd-kit-vue/accessibility": "^3.0.2-vue.1",
+    "@dnd-kit-vue/utilities": "^3.2.1-vue.1"
   },
   "peerDependencies": {
     "vue": "^3.2.45",

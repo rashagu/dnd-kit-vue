@@ -1,4 +1,10 @@
-# @kousum/utilities
+# @dnd-kit-vue/utilities
+
+## 3.2.1-vue.1
+
+### Patch Changes
+
+- c2c1075: org name
 
 ## 3.2.1-beta.0
 
@@ -33,7 +39,7 @@
     - Consumers can choose an alternate approach that does consider transforms for specific use-cases if needed by configuring the measuring prop of <DndContext>. Refer to the <Switch> example.
   - Reduced the number of concepts related to measuring from `ViewRect`, `LayoutRect` to just a single concept of `ClientRect`.
     - The `ClientRect` interface no longer holds the `offsetTop` and `offsetLeft` properties. For most use-cases, you can replace `offsetTop` with `top` and `offsetLeft` with `left`.
-    - Replaced the following exports from the `@kousum/core` package with `getClientRect`:
+    - Replaced the following exports from the `@dnd-kit-vue/core` package with `getClientRect`:
       - `getBoundingClientRect`
       - `getViewRect`
       - `getLayoutRect`
@@ -86,11 +92,11 @@
 
 ### Major Changes
 
-- [#373](https://github.com/clauderic/dnd-kit/pull/373) [`1f5ca27`](https://github.com/clauderic/dnd-kit/commit/1f5ca27b17879861c2c545160c2046a747544846) Thanks [@clauderic](https://github.com/clauderic)! - Added react to peerDependencies of @kousum/utilities
+- [#373](https://github.com/clauderic/dnd-kit/pull/373) [`1f5ca27`](https://github.com/clauderic/dnd-kit/commit/1f5ca27b17879861c2c545160c2046a747544846) Thanks [@clauderic](https://github.com/clauderic)! - Added react to peerDependencies of @dnd-kit-vue/utilities
 
 ### Minor Changes
 
-- [#334](https://github.com/clauderic/dnd-kit/pull/334) [`13be602`](https://github.com/clauderic/dnd-kit/commit/13be602229c6d5723b3ae98bca7b8f45f0773366) Thanks [@trentmwillis](https://github.com/trentmwillis)! - Move `Coordinates` interface along with `getEventCoordinates`, `isMouseEvent` and `isTouchEvent` helpers to @kousum/utilities
+- [#334](https://github.com/clauderic/dnd-kit/pull/334) [`13be602`](https://github.com/clauderic/dnd-kit/commit/13be602229c6d5723b3ae98bca7b8f45f0773366) Thanks [@trentmwillis](https://github.com/trentmwillis)! - Move `Coordinates` interface along with `getEventCoordinates`, `isMouseEvent` and `isTouchEvent` helpers to @dnd-kit-vue/utilities
 
 ### Patch Changes
 

@@ -1,12 +1,12 @@
 {
-  "name": "@kousum/modifiers",
-  "version": "6.0.1-beta.0",
+  "name": "@dnd-kit-vue/modifiers",
+  "version": "6.0.1-vue.1",
   "description": "Translate modifier presets for use with `@dnd-kit` packages.",
   "author": "Claudéric Demers",
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/kousum/dnd-kit-vue.git",
+    "url": "git+https://github.com/rashagu/dnd-kit-vue.git",
     "directory": "packages/modifiers"
   },
   "scripts": {
@@ -26,16 +26,16 @@
     "dist"
   ],
   "dependencies": {
-    "@kousum/utilities": "^3.2.1-beta.0",
+    "@dnd-kit-vue/utilities": "^3.2.1-vue.1",
     "tslib": "^2.0.0"
   },
   "peerDependencies": {
-    "@kousum/core": "^6.0.6-beta.0",
+    "@dnd-kit-vue/core": "^6.0.6-vue.1",
     "vue": "^3.2.45"
   },
   "devDependencies": {
     "@types/node": "^18.11.9",
-    "@kousum/core": "^6.0.6-beta.0",
+    "@dnd-kit-vue/core": "^6.0.6-vue.1",
     "@vitejs/plugin-vue": "^3.2.0",
     "@vitejs/plugin-vue-jsx": "^2.1.1",
     "rimraf": "^3.0.2",

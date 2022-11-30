@@ -1,12 +1,12 @@
 {
-  "name": "@kousum/accessibility",
-  "version": "3.0.2-beta.0",
+  "name": "@dnd-kit-vue/accessibility",
+  "version": "3.0.2-vue.1",
   "description": "A generic toolkit to help with accessibility",
   "author": "Claudéric Demers",
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/kousum/dnd-kit-vue.git",
+    "url": "git+https://github.com/rashagu/dnd-kit-vue.git",
     "directory": "packages/accessibility"
   },
   "scripts": {
