@@ -1,6 +1,6 @@
 import {defineComponent, ref, h, Fragment, computed} from 'vue'
-import {useDraggable} from "../../packages/core";
-import {CSS} from '../../packages/utilities';
+import {useDraggable} from "@dnd-kit-vue/core";
+import {CSS} from '@dnd-kit-vue/utilities';
 
 interface ExampleProps {
   name?: string

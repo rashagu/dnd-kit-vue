@@ -1,6 +1,5 @@
 import {defineComponent, ref, h, Fragment} from 'vue'
-import SortableDemo from "../packages/sortable/test/SortableDemo";
-import CoreTest from "./CoreTest";
+import CoreTest from "../packages/core/test/demo/CoreTest";
 import SortableDemo1 from "../packages/sortable/test/demo1/SortableDemo1";
 
 interface CoreTestProps {
