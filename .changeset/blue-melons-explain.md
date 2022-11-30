@@ -6,4 +6,4 @@
 "@dnd-kit-vue/utilities": patch
 ---
 
-for vue3
+first version
