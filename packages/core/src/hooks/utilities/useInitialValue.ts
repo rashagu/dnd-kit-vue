@@ -1,5 +1,5 @@
 import {useLazyMemo} from '@kousum/utilities';
-import {ComputedRef} from "vue";
+import {computed, ComputedRef, ref} from "vue";
 
 type AnyFunction = (...args: any) => any;
 
@@ -10,18 +10,20 @@ export function useInitialValue<
   value: T | null,
   computeFn?: U
 ): ComputedRef<U extends AnyFunction ? ReturnType<U> | null : T | null> {
-  return useLazyMemo(
-    (previousValue) => {
+  const previousValue = ref()
+
+  return computed(()=>{
+    function getData() {
       if (!value) {
         return null;
       }
 
-      if (previousValue) {
-        return previousValue;
+      if (previousValue.value) {
+        return previousValue.value;
       }
 
       return typeof computeFn === 'function' ? computeFn(value) : value;
-    },
-    [computeFn, value]
-  );
+    }
+    return getData()
+  })
 }

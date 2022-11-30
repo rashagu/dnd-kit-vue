@@ -6,6 +6,7 @@ export function useEvent<T extends Function>(handler: T | undefined) {
   const handlerRef = ref<T | undefined>(handler);
 
   useIsomorphicLayoutEffect(() => {
+    // @ts-ignore
     handlerRef.value = handler;
   });
 

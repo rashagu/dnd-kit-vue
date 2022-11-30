@@ -89,8 +89,8 @@ export function useScrollOffsets(elements: Element[]): ComputedRef<Coordinates> 
 
   return computed(() => {
     if (elements.length) {
-      return scrollCoordinates
-        ? Array.from(scrollCoordinates.values()).reduce(
+      return scrollCoordinates.value
+        ? Array.from(scrollCoordinates.value.values()).reduce(
             (acc, coordinates) => add(acc, coordinates),
             defaultCoordinates
           )

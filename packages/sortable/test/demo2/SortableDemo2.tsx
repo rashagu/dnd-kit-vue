@@ -2,18 +2,7 @@ import {useSortable} from '@kousum/sortable';
 import {CSS} from '@kousum/utilities';
 
 
-import {
-  defineComponent,
-  ref,
-  h,
-  Fragment,
-  useSlots,
-  VNodeRef,
-  CSSProperties,
-  getCurrentInstance,
-  inject,
-  computed
-} from 'vue'
+import {computed, CSSProperties, defineComponent, useSlots} from 'vue'
 import {Arguments} from "../../src/hooks/useSortable";
 
 interface SortableItemProps {

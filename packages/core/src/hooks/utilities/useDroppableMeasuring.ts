@@ -118,8 +118,12 @@ export function useDroppableMeasuring(
     }
   });
 
-  watch([()=>arg.value.config.frequency, disabled, measureDroppableContainers, ()=>arg.value.dependencies], () => {
-    console.log(arg.value.config.frequency)
+  watch([
+    ()=>arg.value.config.frequency,
+    disabled,
+    measureDroppableContainers,
+    ()=>arg.value.dependencies
+  ], () => {
       if (
         disabled.value ||
         typeof arg.value.config.frequency !== 'number' ||

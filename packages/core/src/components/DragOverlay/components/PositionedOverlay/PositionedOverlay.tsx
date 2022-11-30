@@ -9,7 +9,7 @@ import {CSSProperties, h, useSlots} from "vue";
 
 type TransitionGetter = (
   activatorEvent: Event | null
-) => CSSProperties | undefined;
+) => CSSProperties['transition'] | undefined;
 
 export interface Props {
   as: any;

@@ -42,7 +42,6 @@ export const rectIntersection: CollisionDetection = ({
 }) => {
   const collisions: CollisionDescriptor[] = [];
 
-  // console.debug(droppableContainers)
   for (const droppableContainer of droppableContainers) {
     const {id} = droppableContainer;
     const rect = droppableRects.get(id);

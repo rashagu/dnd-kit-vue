@@ -2,7 +2,7 @@
 import {useIsomorphicLayoutEffect, usePrevious} from '@kousum/utilities';
 
 import type {UniqueIdentifier} from '../../../../types';
-import {cloneVNode, ref, useSlots} from "vue";
+import {cloneVNode, h, ref, useSlots, Fragment} from "vue";
 
 export type Animation = (
   key: UniqueIdentifier,
@@ -43,9 +43,9 @@ export function AnimationManager({animation}: Props) {
   });
 
   return (
-    <>
+    <Fragment>
       {children}
       {clonedChildren.value ? cloneVNode(clonedChildren.value, {ref: element}) : null}
-    </>
+    </Fragment>
   );
 }

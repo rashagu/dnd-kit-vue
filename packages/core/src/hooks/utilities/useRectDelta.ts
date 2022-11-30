@@ -5,5 +5,5 @@ import {useInitialValue} from './useInitialValue';
 
 export function useRectDelta(rect: ClientRect | null) {
   const initialRect = useInitialValue(rect);
-  return getRectDelta(rect, initialRect.value);
+  return getRectDelta(rect, initialRect.value as ClientRect);
 }

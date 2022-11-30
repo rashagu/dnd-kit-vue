@@ -120,7 +120,6 @@ export function useSortable({
         index: index.value,
       })
       : null
-    console.log(displaceItem.value, dragSourceDisplacement.value)
     return v
   });
 
@@ -199,10 +198,7 @@ export function useSortable({
     onCleanup(() => clearTimeout(timeoutId))
   });
 
-  watch([derivedTransform,
-    finalTransform], (value)=>{
-    console.debug(value)
-  }, {deep: true})
+
   return {
     internalContext,
     context,

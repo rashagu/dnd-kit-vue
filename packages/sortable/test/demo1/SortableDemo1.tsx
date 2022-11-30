@@ -45,7 +45,6 @@ const SortableDemo1 = defineComponent<Demo1Props>((props, {}) => {
   function handleDragEnd(event:DragEndEvent) {
     // console.log(event)
     const {active, over} = event;
-    console.debug({active, over})
 
     if (active.id !== over?.id) {
       const oldIndex = items.value.indexOf(+active.id);

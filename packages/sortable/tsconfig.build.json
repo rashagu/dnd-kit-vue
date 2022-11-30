@@ -1,4 +1,19 @@
 {
-  "extends": "../../tsconfig.build.json",
-  "include": ["src", "types", "../../types"]
+  "extends": "./tsconfig.json",
+  "exclude": ["./**/*.spec.*","./**/_stories/.*","./**/_stories/.*","./**/__stories__/.*",
+    "./main.ts", "../script/*",
+    "./Comp1",
+    "./App.tsx",
+    "./**/__test__"
+  ],
+  "compilerOptions": {
+    "rootDir": "./src",
+    "outDir": "./dist/types",
+    "strictNullChecks": false,
+    "module": "ES6",
+    "target": "ES6",
+    "noImplicitAny": false,
+    "emitDeclarationOnly": true,
+    "declaration": true,
+  }
 }

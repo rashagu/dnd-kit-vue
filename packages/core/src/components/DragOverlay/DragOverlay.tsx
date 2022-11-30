@@ -1,7 +1,7 @@
 
 import {applyModifiers, Modifiers} from '../../modifiers';
 import {ActiveDraggableContext} from '../DndContext';
-import {useDndContext} from '../../hooks';
+import {useDndContext as usePublicContext} from '../../hooks';
 import {useInitialValue} from '../../hooks/utilities';
 
 import {
@@ -13,9 +13,11 @@ import type {PositionedOverlayProps} from './components';
 
 import {useDropAnimation, useKey} from './hooks';
 import type {DropAnimation} from './hooks';
-import {inject, ref, useSlots} from "vue";
+import {inject, ref, useSlots, h, defineComponent} from "vue";
 import {defaultCoordinates} from "../../utilities";
 import {Transform} from "@kousum/utilities/src";
+import {useDndContext} from "../../CreateContextVueVNode/DndContextConsumer";
+import {ClientRect} from "../../types";
 
 export interface Props
   extends Pick<
@@ -28,80 +30,91 @@ export interface Props
   zIndex?: number;
 }
 
-export const DragOverlay =
-  ({
-     adjustScale = false,
-     dropAnimation: dropAnimationConfig,
-     style,
-     transition,
-     modifiers,
-     wrapperElement = 'div',
-     className,
-     zIndex = 999,
-   }: Props) => {
-    const {
-      activatorEvent,
-      active,
-      activeNodeRect,
-      containerNodeRect,
-      draggableNodes,
-      droppableContainers,
-      dragOverlay,
-      over,
-      measuringConfiguration,
-      scrollableAncestors,
-      scrollableAncestorRects,
-      windowRect,
-    } = useDndContext();
+export const vuePropsType = {
+  adjustScale: {
+    type: Boolean,
+    default: false
+  },
+  dropAnimation: {
+    type: Object,
+  },
+  style:{
+    type: [Object]
+  },
+  transition:{
+    type: [String, Object]
+  },
+  modifiers:{
+    type: Array
+  },
+  wrapperElement:{
+    type: String,
+    default: 'div'
+  },
+  className:{
+    type: String,
+  },
+  zIndex:{
+    type: Number,
+    default: 999
+  },
+}
+const DragOverlay = defineComponent<Props>((props, {}) => {
 
-    const transform = inject('DndContext', ref<Transform>({
-      ...defaultCoordinates,
-      scaleX: 1,
-      scaleY: 1,
-    }))
-    const key = useKey(active?.id);
-    const modifiedTransform = applyModifiers(modifiers, {
-      activatorEvent,
-      active,
-      activeNodeRect,
-      containerNodeRect,
-      draggingNodeRect: dragOverlay.rect,
-      over,
-      overlayNodeRect: dragOverlay.rect,
-      scrollableAncestors,
-      scrollableAncestorRects,
+  const slots = useSlots()
+
+  const context = usePublicContext();
+
+  const transform = useDndContext()
+  const key = useKey(context.value.active?.id);
+  // TODO
+  const initialRect = useInitialValue(context.value.activeNodeRect);
+
+  return () => {
+    const modifiedTransform = applyModifiers(props.modifiers, {
+      activatorEvent: context.value.activatorEvent,
+      active: context.value.active,
+      activeNodeRect: context.value.activeNodeRect,
+      containerNodeRect: context.value.containerNodeRect,
+      draggingNodeRect: context.value.dragOverlay.rect,
+      over: context.value.over,
+      overlayNodeRect: context.value.dragOverlay.rect,
+      scrollableAncestors: context.value.scrollableAncestors,
+      scrollableAncestorRects: context.value.scrollableAncestorRects,
       transform:transform.value,
-      windowRect,
+      windowRect: context.value.windowRect,
     });
-    const initialRect = useInitialValue(activeNodeRect);
+
+    // TODO
     const dropAnimation = useDropAnimation({
-      config: dropAnimationConfig,
-      draggableNodes,
-      droppableContainers,
-      measuringConfiguration,
+      config: props.dropAnimation,
+      draggableNodes: context.value.draggableNodes,
+      droppableContainers: context.value.droppableContainers,
+      measuringConfiguration: context.value.measuringConfiguration,
     });
+
     // We need to wait for the active node to be measured before connecting the drag overlay ref
     // otherwise collisions can be computed against a mispositioned drag overlay
-    const ref_ = initialRect ? dragOverlay.setRef : undefined;
+    const ref_ = initialRect.value ? context.value.dragOverlay.setRef : undefined;
 
-    const slots = useSlots()
+
     return (
       <NullifiedContextProvider>
         <AnimationManager animation={dropAnimation}>
-          {active && key && key.value ? (
+          {context.value.active && key && key.value ? (
             <PositionedOverlay
               key={key.value}
-              id={active.id}
-              ref={ref_}
-              as={wrapperElement}
-              activatorEvent={activatorEvent}
-              adjustScale={adjustScale}
-              className={className}
-              transition={transition}
-              rect={initialRect.value}
+              id={context.value.active.id}
+              ref={ref_ as any}
+              as={props.wrapperElement}
+              activatorEvent={context.value.activatorEvent}
+              adjustScale={props.adjustScale}
+              className={props.className}
+              transition={props.transition}
+              rect={initialRect.value as ClientRect}
               style={{
-                zIndex,
-                ...style,
+                zIndex:props.zIndex,
+                ...props.style,
               }}
               transform={modifiedTransform}
             >
@@ -112,4 +125,10 @@ export const DragOverlay =
       </NullifiedContextProvider>
     );
   }
-;
+})
+
+DragOverlay.props = vuePropsType
+DragOverlay.name = 'DragOverlay'
+
+export {DragOverlay}
+

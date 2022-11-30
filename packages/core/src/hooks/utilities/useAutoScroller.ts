@@ -127,7 +127,7 @@ export function useAutoScroller({
         const {direction, speed} = getScrollDirectionAndSpeed(
           scrollContainer,
           scrollContainerRect,
-          rect.value,
+          rect.value!,
           acceleration,
           threshold
         );

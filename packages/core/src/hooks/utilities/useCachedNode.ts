@@ -26,7 +26,6 @@ export function useCachedNode(
         return node ?? valueRef.value ?? null;
       };
 
-      // console.debug(draggableNode)
       valueRef.value = newValue();
 
       return newValue();

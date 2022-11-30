@@ -8,7 +8,7 @@ import {
   defaultAnnouncements,
   defaultScreenReaderInstructions,
 } from './defaults';
-import {ref, watchEffect, Teleport} from "vue";
+import {ref, watchEffect, Teleport, h, Fragment} from "vue";
 
 interface Props {
   announcements?: Announcements;
@@ -56,13 +56,13 @@ export function Accessibility({
   }
 
   const markup = (
-    <>
+    <Fragment>
       <HiddenText
         id={hiddenTextDescribedById}
         value={screenReaderInstructions.draggable}
       />
       <LiveRegion id={liveRegionId.value} announcement={announcement.value} />
-    </>
+    </Fragment>
   );
 
 

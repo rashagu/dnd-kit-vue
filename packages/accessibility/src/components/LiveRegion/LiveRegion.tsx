@@ -1,4 +1,4 @@
-import {CSSProperties} from "vue";
+import {CSSProperties, h} from "vue";
 
 export interface Props {
   id: string;

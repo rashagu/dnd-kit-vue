@@ -3,7 +3,7 @@ import type {Transform} from '@kousum/utilities';
 
 import {InternalContext, defaultInternalContext} from '../../../../store';
 import {ActiveDraggableContext} from '../../../DndContext';
-import {useSlots} from "vue";
+import {useSlots, h} from "vue";
 
 
 const defaultTransform: Transform = {
@@ -14,11 +14,11 @@ const defaultTransform: Transform = {
 };
 
 export function NullifiedContextProvider() {
-  const slota = useSlots()
+  const slots = useSlots()
   return (
     <InternalContext.Provider value={defaultInternalContext}>
       <ActiveDraggableContext.Provider value={defaultTransform}>
-        {slota.default?.()}
+        {slots.default?.()}
       </ActiveDraggableContext.Provider>
     </InternalContext.Provider>
   );

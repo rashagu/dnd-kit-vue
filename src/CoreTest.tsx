@@ -20,7 +20,6 @@ const CoreTest = defineComponent<ExampleProps>((props, {slots}) => {
     coordinates.value = val
   }
   const handleDragEnd = ({delta}:any) => {
-    console.log(delta)
     const {x, y} = coordinates.value
     coordinates.value = {
       x:x + delta.x,

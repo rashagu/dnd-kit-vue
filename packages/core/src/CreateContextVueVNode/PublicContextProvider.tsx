@@ -11,6 +11,7 @@ const PublicContextProvider = defineComponent<{value:PublicContextDescriptor}>((
     const context = ref<PublicContextDescriptor>(props.value);
 
     watch(()=>props.value, ()=>{
+        // @ts-ignore
         context.value = props.value
     }, { deep: true})
     provide('PublicContext', context)

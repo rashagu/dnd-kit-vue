@@ -79,10 +79,8 @@ const SortableContext = defineComponent<Props>((props, {}) => {
   const previousItemsRef = ref(items.value);
   const itemsHaveChanged = computed(()=>!itemsEqual(items.value, previousItemsRef.value));
   const disableTransforms = computed(()=>{
-    console.log(dndContext.value.over)
     return (overIndex.value !== -1 && activeIndex.value === -1) || itemsHaveChanged.value
   });
-  const disabled = normalizeDisabled(props.disabled);
 
 
   watch([
@@ -104,6 +102,8 @@ const SortableContext = defineComponent<Props>((props, {}) => {
 
 
   return () => {
+    const disabled = normalizeDisabled(props.disabled!);
+
     const contextValue: ContextDescriptor = {
       activeIndex:activeIndex.value,
       containerId:containerId.value,

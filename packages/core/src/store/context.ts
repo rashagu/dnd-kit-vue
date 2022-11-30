@@ -4,6 +4,7 @@ import {DroppableContainersMap} from './constructors';
 import type {InternalContextDescriptor, PublicContextDescriptor} from './types';
 import InternalContextProvider from "../CreateContextVueVNode/InternalContextProvider";
 import PublicContextProvider from "../CreateContextVueVNode/PublicContextProvider";
+import {ref} from "vue";
 
 export const defaultPublicContext: PublicContextDescriptor = {
   activatorEvent: null,
@@ -17,10 +18,8 @@ export const defaultPublicContext: PublicContextDescriptor = {
   droppableContainers: new DroppableContainersMap(),
   over: null,
   dragOverlay: {
-    nodeRef: {
-      current: null,
-    },
-    rect: null,
+    nodeRef: ref(null),
+    rect: ref(null),
     setRef: noop,
   },
   scrollableAncestors: [],

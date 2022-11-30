@@ -15,7 +15,6 @@ const Draggable = defineComponent<ExampleProps>((props, {slots}) => {
   });
 
   return ()=>{
-    console.log(transform.value, isDragging.value)
     return (
       <button
         ref={setNodeRef as any}
@@ -26,7 +25,10 @@ const Draggable = defineComponent<ExampleProps>((props, {slots}) => {
             ? '-1px 0 15px 0 rgba(34, 33, 81, 0.01), 0px 15px 15px 0 rgba(34, 33, 81, 0.25)'
             : undefined,
         }}
-        {...listeners?.value} {...attributes.value} >Drag handle {isDragging.value?'isDragging':''}</button>
+         {...attributes.value} >
+        <span {...listeners?.value} style={{color: 'red'}}>handle</span>
+        Drag handle {isDragging.value?'isDragging':''}
+      </button>
     )
   };
 })

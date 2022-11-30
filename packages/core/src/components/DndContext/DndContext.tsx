@@ -75,7 +75,7 @@ import {
 } from './hooks';
 import type {MeasuringConfiguration} from './types';
 import DndContextProvider from "../../CreateContextVueVNode/DndContextProvider";
-import {computed, defineComponent, ref, useSlots, watch, } from "vue";
+import {computed, defineComponent, ref, useSlots, watch, h} from "vue";
 
 export interface Props {
   id?: string;
@@ -445,7 +445,6 @@ const DndContext = defineComponent<Props>((props_) => {
         dispatchMonitorEvent({type: 'onDragStart', event});
       },
       onMove(coordinates) {
-        console.log(coordinates)
         dispatch({
           type: Action.DragMove,
           coordinates,
@@ -667,7 +666,6 @@ const DndContext = defineComponent<Props>((props_) => {
     const overId = getFirstCollision(collisions.value, 'id');
 
     if (overIdCache !== overId){
-      console.log(overIdCache, overId)
       const {
         collisions: collisions_,
         droppableContainers,
@@ -686,7 +684,6 @@ const DndContext = defineComponent<Props>((props_) => {
 
         const {onDragOver} = latestProps.value;
         const overContainer = droppableContainers.get(overId);
-        // console.debug(overContainer, overId.value)
         const over = overContainer && overContainer.rect
           ? {
             id: overContainer.id,
@@ -707,7 +704,6 @@ const DndContext = defineComponent<Props>((props_) => {
           over,
         };
 
-        // console.debug(over)
         setOver(over);
         onDragOver?.(event);
         dispatchMonitorEvent({type: 'onDragOver', event});

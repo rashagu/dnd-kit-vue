@@ -274,7 +274,7 @@ function createDefaultDropAnimation(
       return;
     }
 
-    const cleanup = sideEffects?.({active, dragOverlay, ...rest});
+    const cleanup: CleanupFunction | undefined = sideEffects?.({active, dragOverlay, ...rest}) || undefined;
     const animation = dragOverlay.node.animate(animationKeyframes, {
       duration,
       easing,
