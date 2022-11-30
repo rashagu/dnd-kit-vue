@@ -6,12 +6,18 @@
   "scripts": {
     "dev": "vite",
     "build:all": "pnpm -C ./packages/accessibility build & pnpm -C ./packages/core build & pnpm -C ./packages/modifiers build & pnpm -C ./packages/sortable build & pnpm -C ./packages/utilities build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "change": "pnpm changeset",
+    "version": "pnpm changeset version",
+    "publish": "pnpm changeset publish",
+    "preEnter": "changeset pre enter",
+    "preExit": "changeset pre exit"
   },
   "dependencies": {
+    "@changesets/cli": "^2.25.2",
     "@kousum/core": "6.0.5",
-    "@kousum/sortable": "7.0.1",
     "@kousum/modifiers": "6.0.0",
+    "@kousum/sortable": "7.0.1",
     "vue": "^3.2.45"
   },
   "devDependencies": {
