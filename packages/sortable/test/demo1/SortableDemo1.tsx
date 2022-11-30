@@ -5,13 +5,13 @@ import {
   PointerSensor,
   useSensor,
   useSensors, DragEndEvent,
-} from '@kousum/core';
+} from '@dnd-kit-vue/core';
 import {
   arrayMove,
   SortableContext,
   sortableKeyboardCoordinates,
   verticalListSortingStrategy,
-} from '@kousum/sortable';
+} from '@dnd-kit-vue/sortable';
 
 import SortableItem from './SortableItem';
 

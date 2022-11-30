@@ -3,7 +3,7 @@ import {
   getEventCoordinates,
   getOwnerDocument,
   getWindow,
-} from '@kousum/utilities';
+} from '@dnd-kit-vue/utilities';
 
 import {defaultCoordinates} from '../../utilities';
 import {

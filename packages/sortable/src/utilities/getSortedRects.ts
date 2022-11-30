@@ -2,7 +2,7 @@ import type {
   ClientRect,
   UniqueIdentifier,
   UseDndContextReturnValue,
-} from '@kousum/core';
+} from '@dnd-kit-vue/core';
 
 export function getSortedRects(
   items: UniqueIdentifier[],

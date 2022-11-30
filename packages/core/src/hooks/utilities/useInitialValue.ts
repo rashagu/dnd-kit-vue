@@ -1,4 +1,4 @@
-import {useLazyMemo} from '@kousum/utilities';
+import {useLazyMemo} from '@dnd-kit-vue/utilities';
 import {computed, ComputedRef, ref} from "vue";
 
 type AnyFunction = (...args: any) => any;

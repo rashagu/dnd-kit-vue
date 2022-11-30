@@ -1,4 +1,4 @@
-import {useLazyMemo} from '@kousum/utilities';
+import {useLazyMemo} from '@dnd-kit-vue/utilities';
 
 import type {DraggableNode, DraggableNodes} from '../../store';
 import type {UniqueIdentifier} from '../../types';

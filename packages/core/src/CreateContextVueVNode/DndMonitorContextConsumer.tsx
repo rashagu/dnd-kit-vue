@@ -1,5 +1,5 @@
 import {defineComponent, ref, h, Fragment, useSlots, inject} from 'vue'
-import type {Transform} from '@kousum/utilities';
+import type {Transform} from '@dnd-kit-vue/utilities';
 import {defaultCoordinates} from "../utilities";
 import {RegisterListener} from "../components/DndMonitor/types";
 

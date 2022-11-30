@@ -9,7 +9,7 @@
 
 <p align="left">
   <a href="https://www.npmjs.com/package/@dnd-kit-vue/core"><img src="https://img.shields.io/npm/v/@dnd-kit-vue/core.svg" alt="Stable Release" /></a>
-  <a href="https://github.com/kousum/dnd-kit-vue/actions"><img src="https://badgen.net/github/checks/kousum/dnd-kit-vue" alt="Build status" /></a>
+  <a href="https://github.com/rashagu/dnd-kit-vue/actions"><img src="https://badgen.net/github/checks/kousum/dnd-kit-vue" alt="Build status" /></a>
 </p>
 
 - **Feature packed:** customizable collision detection algorithms, multiple activators, draggable overlay, drag handles, auto-scrolling, constraints, and so much more.

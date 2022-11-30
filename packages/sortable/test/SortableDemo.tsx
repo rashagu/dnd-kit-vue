@@ -1,5 +1,5 @@
 import {defineComponent, ref, h, Fragment} from 'vue'
-import {DndContext} from "@kousum/core";
+import {DndContext} from "@dnd-kit-vue/core";
 import {SortableContext} from "../src";
 
 interface SortableDemoProps {

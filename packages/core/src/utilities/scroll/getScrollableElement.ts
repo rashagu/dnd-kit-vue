@@ -5,7 +5,7 @@ import {
   getOwnerDocument,
   isNode,
   isWindow,
-} from '@kousum/utilities';
+} from '@dnd-kit-vue/utilities';
 
 export function getScrollableElement(element: EventTarget | null) {
   if (!canUseDOM || !element) {

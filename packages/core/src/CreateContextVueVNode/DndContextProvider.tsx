@@ -1,6 +1,6 @@
 
 import {defineComponent, getCurrentInstance, provide, ref, watch} from "vue";
-import type {Transform} from '@kousum/utilities';
+import type {Transform} from '@dnd-kit-vue/utilities';
 
 
 

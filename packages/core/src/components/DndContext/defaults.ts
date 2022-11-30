@@ -1,4 +1,4 @@
-import type {DeepRequired} from '@kousum/utilities';
+import type {DeepRequired} from '@dnd-kit-vue/utilities';
 
 import type {DataRef} from '../../store/types';
 import {KeyboardSensor, PointerSensor} from '../../sensors';

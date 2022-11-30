@@ -5,8 +5,8 @@ import {
   useLatestValue,
   useIsomorphicLayoutEffect,
   useUniqueId,
-} from '@kousum/utilities';
-import type {Transform} from '@kousum/utilities';
+} from '@dnd-kit-vue/utilities';
+import type {Transform} from '@dnd-kit-vue/utilities';
 import { isEqual } from "lodash"
 
 import {

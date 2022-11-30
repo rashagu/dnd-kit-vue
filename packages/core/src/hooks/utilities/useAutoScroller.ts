@@ -1,5 +1,5 @@
 
-import {useInterval, useLazyMemo, usePrevious} from '@kousum/utilities';
+import {useInterval, useLazyMemo, usePrevious} from '@dnd-kit-vue/utilities';
 
 import {getScrollDirectionAndSpeed} from '../../utilities';
 import {Direction} from '../../types';

@@ -1,4 +1,4 @@
-import {CSS} from '@kousum/utilities';
+import {CSS} from '@dnd-kit-vue/utilities';
 
 import {arrayMove} from '../utilities';
 

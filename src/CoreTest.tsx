@@ -1,7 +1,7 @@
 import {defineComponent, ref, h, Fragment} from 'vue'
-import {defaultCoordinates, DndContext, useSensors} from "../packages/core";
+import {defaultCoordinates, DndContext, useSensors} from "@dnd-kit-vue/core";
 import Draggable from "./test/Draggable";
-import {Coordinates} from "../packages/utilities";
+import {Coordinates} from "@dnd-kit-vue/utilities";
 
 
 

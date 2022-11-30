@@ -1,5 +1,5 @@
 
-import {getOwnerDocument} from '@kousum/utilities';
+import {getOwnerDocument} from '@dnd-kit-vue/utilities';
 
 import type {SensorProps} from '../types';
 import {

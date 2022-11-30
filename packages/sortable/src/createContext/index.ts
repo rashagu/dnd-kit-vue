@@ -1,7 +1,7 @@
 
 
 import {defineComponent, provide, Ref, ref} from "vue";
-import type {Transform} from '@kousum/utilities';
+import type {Transform} from '@dnd-kit-vue/utilities';
 
 
 

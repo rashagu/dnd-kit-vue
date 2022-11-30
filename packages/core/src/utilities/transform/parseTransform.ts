@@ -1,4 +1,4 @@
-import type {Transform} from '@kousum/utilities';
+import type {Transform} from '@dnd-kit-vue/utilities';
 
 export function parseTransform(transform: string): Transform | null {
   if (transform.startsWith('matrix3d(')) {

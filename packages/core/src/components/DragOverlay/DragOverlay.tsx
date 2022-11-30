@@ -15,7 +15,7 @@ import {useDropAnimation, useKey} from './hooks';
 import type {DropAnimation} from './hooks';
 import {inject, ref, useSlots, h, defineComponent} from "vue";
 import {defaultCoordinates} from "../../utilities";
-import {Transform} from "@kousum/utilities/src";
+import {Transform} from "@dnd-kit-vue/utilities/src";
 import {useDndContext} from "../../CreateContextVueVNode/DndContextConsumer";
 import {ClientRect} from "../../types";
 

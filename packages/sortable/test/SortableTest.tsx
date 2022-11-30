@@ -1,4 +1,4 @@
-import {DndContext} from "@kousum/core";
+import {DndContext} from "@dnd-kit-vue/core";
 import {SortableContext} from "../src";
 import {ref} from "vue";
 

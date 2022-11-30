@@ -1,4 +1,4 @@
-import {Coordinates, subtract} from '@kousum/utilities';
+import {Coordinates, subtract} from '@dnd-kit-vue/utilities';
 
 import {defaultCoordinates} from '../../utilities';
 import {ref, watchEffect} from "vue";

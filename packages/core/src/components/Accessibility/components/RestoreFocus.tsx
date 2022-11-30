@@ -3,7 +3,7 @@ import {
   findFirstFocusableNode,
   isKeyboardEvent,
   usePrevious,
-} from '@kousum/utilities';
+} from '@dnd-kit-vue/utilities';
 
 import {defaultInternalContext, InternalContext, InternalContextDescriptor} from '../../../store';
 import {inject, ref, watchEffect} from "vue";

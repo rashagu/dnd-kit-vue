@@ -1,6 +1,6 @@
 
-import {getClientRect, ClientRect} from '@kousum/core';
-import {Transform, useIsomorphicLayoutEffect} from '@kousum/utilities';
+import {getClientRect, ClientRect} from '@dnd-kit-vue/core';
+import {Transform, useIsomorphicLayoutEffect} from '@dnd-kit-vue/utilities';
 import {ComputedRef, Ref, ref, watch, watchEffect} from "vue";
 
 interface Arguments {

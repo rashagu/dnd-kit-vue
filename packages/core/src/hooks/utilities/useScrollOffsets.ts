@@ -1,5 +1,5 @@
 
-import {add} from '@kousum/utilities';
+import {add} from '@dnd-kit-vue/utilities';
 
 import {
   defaultCoordinates,

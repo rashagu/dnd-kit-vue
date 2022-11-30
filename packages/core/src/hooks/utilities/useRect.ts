@@ -1,5 +1,5 @@
 
-import {useIsomorphicLayoutEffect} from '@kousum/utilities';
+import {useIsomorphicLayoutEffect} from '@dnd-kit-vue/utilities';
 
 import type {ClientRect} from '../../types';
 import {getClientRect, Rect, useReducer} from '../../utilities';

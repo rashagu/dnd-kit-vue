@@ -1,6 +1,6 @@
 
-import {useDndContext, ClientRect, UniqueIdentifier} from '@kousum/core';
-import {useIsomorphicLayoutEffect, useUniqueId} from '@kousum/utilities';
+import {useDndContext, ClientRect, UniqueIdentifier} from '@dnd-kit-vue/core';
+import {useIsomorphicLayoutEffect, useUniqueId} from '@dnd-kit-vue/utilities';
 
 import type {Disabled, SortingStrategy} from '../types';
 import {getSortedRects, itemsEqual, normalizeDisabled} from '../utilities';

@@ -1,4 +1,4 @@
-import {isWindow} from '@kousum/utilities';
+import {isWindow} from '@dnd-kit-vue/utilities';
 
 import type {Coordinates} from '../../types';
 

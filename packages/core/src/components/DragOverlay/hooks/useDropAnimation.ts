@@ -1,5 +1,5 @@
-import {CSS, useEvent, getWindow} from '@kousum/utilities';
-import type {DeepRequired, Transform} from '@kousum/utilities';
+import {CSS, useEvent, getWindow} from '@dnd-kit-vue/utilities';
+import type {DeepRequired, Transform} from '@dnd-kit-vue/utilities';
 
 import type {
   Active,

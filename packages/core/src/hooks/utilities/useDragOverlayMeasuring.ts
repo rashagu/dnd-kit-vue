@@ -1,5 +1,5 @@
 
-import {isHTMLElement, useNodeRef} from '@kousum/utilities';
+import {isHTMLElement, useNodeRef} from '@dnd-kit-vue/utilities';
 
 import {useResizeObserver} from './useResizeObserver';
 import {getMeasurableNode} from '../../utilities/nodes';

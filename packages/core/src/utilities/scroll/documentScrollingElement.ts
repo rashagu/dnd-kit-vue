@@ -1,4 +1,4 @@
-import {canUseDOM} from '@kousum/utilities';
+import {canUseDOM} from '@dnd-kit-vue/utilities';
 
 export function isDocumentScrollingElement(element: Element | null) {
   if (!canUseDOM || !element) {

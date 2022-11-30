@@ -1,5 +1,5 @@
-import type {Active, UniqueIdentifier} from '@kousum/core';
-import type {Transition} from '@kousum/utilities';
+import type {Active, UniqueIdentifier} from '@dnd-kit-vue/core';
+import type {Transition} from '@dnd-kit-vue/utilities';
 
 export type SortableTransition = Pick<Transition, 'easing' | 'duration'>;
 

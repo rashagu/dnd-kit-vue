@@ -1,5 +1,5 @@
 
-import {useIsomorphicLayoutEffect, usePrevious} from '@kousum/utilities';
+import {useIsomorphicLayoutEffect, usePrevious} from '@dnd-kit-vue/utilities';
 
 import type {UniqueIdentifier} from '../../../../types';
 import {cloneVNode, h, ref, useSlots, Fragment} from "vue";

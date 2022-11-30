@@ -1,4 +1,4 @@
-import {canUseDOM} from '@kousum/utilities';
+import {canUseDOM} from '@dnd-kit-vue/utilities';
 
 import type {SensorDescriptor} from '../../sensors';
 import {watchEffect} from "vue";

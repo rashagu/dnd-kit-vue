@@ -5,8 +5,8 @@ import {
   KeyboardCode,
   DroppableContainer,
   KeyboardCoordinateGetter,
-} from '@kousum/core';
-import {subtract} from '@kousum/utilities';
+} from '@dnd-kit-vue/core';
+import {subtract} from '@dnd-kit-vue/utilities';
 
 import {hasSortableData} from '../../types';
 

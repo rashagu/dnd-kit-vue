@@ -1,3 +1,5 @@
+import {Arguments} from "./hooks/useSortable";
+
 export {SortableContext} from './components';
 export type {SortableContextProps} from './components';
 export {
@@ -22,4 +24,6 @@ export {hasSortableData} from './types';
 export type {SortableData, SortingStrategy} from './types';
 
 
-
+export type {
+  Arguments
+}

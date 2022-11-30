@@ -3,7 +3,7 @@ import {
   isDocument,
   isHTMLElement,
   isSVGElement,
-} from '@kousum/utilities';
+} from '@dnd-kit-vue/utilities';
 
 import {isFixed} from './isFixed';
 import {isScrollable} from './isScrollable';

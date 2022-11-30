@@ -1,5 +1,5 @@
 
-import type {Transform} from '@kousum/utilities';
+import type {Transform} from '@dnd-kit-vue/utilities';
 
 import {InternalContext, defaultInternalContext} from '../../../../store';
 import {ActiveDraggableContext} from '../../../DndContext';

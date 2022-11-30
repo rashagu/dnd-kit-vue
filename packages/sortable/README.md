@@ -14,7 +14,7 @@ npm install @dnd-kit/sortable
 
 ## Architecture
 
-The sortable preset builds on top of the primitives exposed by `@kousum/core` to help building sortable interfaces.
+The sortable preset builds on top of the primitives exposed by `@dnd-kit-vue/core` to help building sortable interfaces.
 
 The sortable preset exposes two main concepts: `SortableContext` and the `useSortable` hook:
 

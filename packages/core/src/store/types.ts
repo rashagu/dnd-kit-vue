@@ -2,7 +2,7 @@
 import {Ref} from "vue";
 
 type MutableRefObject<T> = any
-import type {DeepRequired} from '@kousum/utilities';
+import type {DeepRequired} from '@dnd-kit-vue/utilities';
 
 import type {SyntheticListeners} from '../hooks/utilities';
 import type {Collision} from '../utilities/algorithms';

@@ -1,5 +1,5 @@
 
-import {useLazyMemo} from '@kousum/utilities';
+import {useLazyMemo} from '@dnd-kit-vue/utilities';
 
 import {getScrollableAncestors} from '../../utilities';
 import {ref, watchEffect} from "vue";

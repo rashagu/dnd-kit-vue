@@ -1,5 +1,5 @@
-import {useUniqueId} from '@kousum/utilities';
-import {HiddenText, LiveRegion, useAnnouncement} from '@kousum/accessibility';
+import {useUniqueId} from '@dnd-kit-vue/utilities';
+import {HiddenText, LiveRegion, useAnnouncement} from '@dnd-kit-vue/accessibility';
 
 import {DndMonitorListener, useDndMonitor} from '../DndMonitor';
 

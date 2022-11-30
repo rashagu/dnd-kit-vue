@@ -1,4 +1,4 @@
-import type {Coordinates} from '@kousum/utilities';
+import type {Coordinates} from '@dnd-kit-vue/utilities';
 
 export type {Coordinates};
 

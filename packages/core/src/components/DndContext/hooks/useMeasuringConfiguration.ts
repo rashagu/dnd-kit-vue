@@ -1,5 +1,5 @@
 
-import type {DeepRequired} from '@kousum/utilities';
+import type {DeepRequired} from '@dnd-kit-vue/utilities';
 
 import {defaultMeasuringConfiguration} from '../defaults';
 import type {MeasuringConfiguration} from '../types';

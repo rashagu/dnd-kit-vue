@@ -1,5 +1,5 @@
 
-import {useEvent} from '@kousum/utilities';
+import {useEvent} from '@dnd-kit-vue/utilities';
 import {computed, watch, watchEffect} from "vue";
 
 interface Arguments {

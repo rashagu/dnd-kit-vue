@@ -1,4 +1,4 @@
-import {isHTMLElement} from '@kousum/utilities';
+import {isHTMLElement} from '@dnd-kit-vue/utilities';
 
 export function getMeasurableNode(
   node: HTMLElement | undefined | null

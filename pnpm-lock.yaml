@@ -5,9 +5,10 @@ importers:
   .:
     specifiers:
       '@changesets/cli': ^2.25.2
-      '@kousum/core': 6.0.5
-      '@kousum/modifiers': 6.0.0
-      '@kousum/sortable': 7.0.1
+      '@dnd-kit-vue/core': 6.0.6-vue.1
+      '@dnd-kit-vue/modifiers': 6.0.1-vue.1
+      '@dnd-kit-vue/sortable': 7.0.2-vue.1
+      '@dnd-kit-vue/utilities': 3.2.1-vue.1
       '@types/node': ^18.11.9
       '@vitejs/plugin-vue': ^3.2.0
       '@vitejs/plugin-vue-jsx': ^2.1.1
@@ -18,9 +19,10 @@ importers:
       vue-tsc: ^1.0.9
     dependencies:
       '@changesets/cli': 2.25.2
-      '@kousum/core': link:packages/core
-      '@kousum/modifiers': link:packages/modifiers
-      '@kousum/sortable': link:packages/sortable
+      '@dnd-kit-vue/core': link:packages/core
+      '@dnd-kit-vue/modifiers': link:packages/modifiers
+      '@dnd-kit-vue/sortable': link:packages/sortable
+      '@dnd-kit-vue/utilities': link:packages/utilities
       vue: 3.2.45
     devDependencies:
       '@types/node': 18.11.9
@@ -54,8 +56,8 @@ importers:
 
   packages/core:
     specifiers:
-      '@kousum/accessibility': ^3.0.0
-      '@kousum/utilities': ^3.2.0
+      '@dnd-kit-vue/accessibility': ^3.0.2-vue.1
+      '@dnd-kit-vue/utilities': ^3.2.1-vue.1
       '@types/lodash': ^4.14.190
       '@types/node': ^18.11.9
       '@vitejs/plugin-vue': ^3.2.0
@@ -68,8 +70,8 @@ importers:
       vue: ^3.2.45
       vue-tsc: ^1.0.9
     dependencies:
-      '@kousum/accessibility': link:../accessibility
-      '@kousum/utilities': link:../utilities
+      '@dnd-kit-vue/accessibility': link:../accessibility
+      '@dnd-kit-vue/utilities': link:../utilities
       '@types/lodash': 4.14.190
       lodash: 4.17.21
       tslib: 2.4.0
@@ -85,33 +87,8 @@ importers:
 
   packages/modifiers:
     specifiers:
-      '@kousum/core': ^6.0.0
-      '@kousum/utilities': ^3.2.0
-      '@types/node': ^18.11.9
-      '@vitejs/plugin-vue': ^3.2.0
-      '@vitejs/plugin-vue-jsx': ^2.1.1
-      rimraf: ^3.0.2
-      tslib: ^2.0.0
-      typescript: ^4.9.3
-      vite: ^3.2.4
-      vue-tsc: ^1.0.9
-    dependencies:
-      '@kousum/utilities': link:../utilities
-      tslib: 2.4.0
-    devDependencies:
-      '@kousum/core': link:../core
-      '@types/node': 18.11.9
-      '@vitejs/plugin-vue': 3.2.0_vite@3.2.4+vue@3.2.45
-      '@vitejs/plugin-vue-jsx': 2.1.1_vite@3.2.4+vue@3.2.45
-      rimraf: 3.0.2
-      typescript: 4.9.3
-      vite: 3.2.4_@types+node@18.11.9
-      vue-tsc: 1.0.9_typescript@4.9.3
-
-  packages/sortable:
-    specifiers:
-      '@kousum/core': ^6.0.4
-      '@kousum/utilities': ^3.2.0
+      '@dnd-kit-vue/core': ^6.0.6-vue.1
+      '@dnd-kit-vue/utilities': ^3.2.1-vue.1
       '@types/node': ^18.11.9
       '@vitejs/plugin-vue': ^3.2.0
       '@vitejs/plugin-vue-jsx': ^2.1.1
@@ -122,11 +99,38 @@ importers:
       vue: ^3.2.45
       vue-tsc: ^1.0.9
     dependencies:
-      '@kousum/utilities': link:../utilities
+      '@dnd-kit-vue/utilities': link:../utilities
       tslib: 2.4.0
       vue: 3.2.45
     devDependencies:
-      '@kousum/core': link:../core
+      '@dnd-kit-vue/core': link:../core
+      '@types/node': 18.11.9
+      '@vitejs/plugin-vue': 3.2.0_vite@3.2.4+vue@3.2.45
+      '@vitejs/plugin-vue-jsx': 2.1.1_vite@3.2.4+vue@3.2.45
+      rimraf: 3.0.2
+      typescript: 4.9.3
+      vite: 3.2.4_@types+node@18.11.9
+      vue-tsc: 1.0.9_typescript@4.9.3
+
+  packages/sortable:
+    specifiers:
+      '@dnd-kit-vue/core': ^6.0.6-vue.1
+      '@dnd-kit-vue/utilities': ^3.2.1-vue.1
+      '@types/node': ^18.11.9
+      '@vitejs/plugin-vue': ^3.2.0
+      '@vitejs/plugin-vue-jsx': ^2.1.1
+      rimraf: ^3.0.2
+      tslib: ^2.0.0
+      typescript: ^4.9.3
+      vite: ^3.2.4
+      vue: ^3.2.45
+      vue-tsc: ^1.0.9
+    dependencies:
+      '@dnd-kit-vue/utilities': link:../utilities
+      tslib: 2.4.0
+      vue: 3.2.45
+    devDependencies:
+      '@dnd-kit-vue/core': link:../core
       '@types/node': 18.11.9
       '@vitejs/plugin-vue': 3.2.0_vite@3.2.4+vue@3.2.45
       '@vitejs/plugin-vue-jsx': 2.1.1_vite@3.2.4+vue@3.2.45

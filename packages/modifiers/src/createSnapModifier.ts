@@ -1,4 +1,4 @@
-import type {Modifier} from '@kousum/core';
+import type {Modifier} from '@dnd-kit-vue/core';
 
 export function createSnapModifier(gridSize: number): Modifier {
   return ({transform}) => ({

@@ -1,5 +1,5 @@
-import {useSortable} from '@kousum/sortable';
-import {CSS} from '@kousum/utilities';
+import {useSortable} from '@dnd-kit-vue/sortable';
+import {CSS} from '@dnd-kit-vue/utilities';
 
 
 import {
@@ -14,7 +14,7 @@ import {
   inject,
   computed
 } from 'vue'
-import {Arguments} from "../../src/hooks/useSortable";
+import type {Arguments} from "@dnd-kit-vue/sortable";
 
 interface SortableItemProps {
   id: number | string,

@@ -1,4 +1,4 @@
-import {useLatestValue, useLazyMemo} from '@kousum/utilities';
+import {useLatestValue, useLazyMemo} from '@dnd-kit-vue/utilities';
 
 import {Rect} from '../../utilities/rect';
 import type {DroppableContainer, RectMap} from '../../store/types';

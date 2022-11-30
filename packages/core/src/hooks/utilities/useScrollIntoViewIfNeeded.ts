@@ -1,4 +1,4 @@
-import {useIsomorphicLayoutEffect} from '@kousum/utilities';
+import {useIsomorphicLayoutEffect} from '@dnd-kit-vue/utilities';
 
 import {scrollIntoViewIfNeeded} from '../../utilities/scroll';
 

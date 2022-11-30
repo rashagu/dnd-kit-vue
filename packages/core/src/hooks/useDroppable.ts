@@ -4,7 +4,7 @@ import {
   useLatestValue,
   useNodeRef,
   useUniqueId,
-} from '@kousum/utilities';
+} from '@dnd-kit-vue/utilities';
 
 import {InternalContext, Action, Data, InternalContextDescriptor, defaultInternalContext} from '../store';
 import type {ClientRect, UniqueIdentifier} from '../types';

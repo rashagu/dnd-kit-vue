@@ -1,15 +1,15 @@
 
-import {MeasuringStrategy, UniqueIdentifier} from '@kousum/core';
-import {restrictToWindowEdges} from '@kousum/modifiers';
+import {MeasuringStrategy, UniqueIdentifier} from '@dnd-kit-vue/core';
+import {restrictToWindowEdges} from '@dnd-kit-vue/modifiers';
 import {
   AnimateLayoutChanges,
   defaultAnimateLayoutChanges,
   verticalListSortingStrategy,
-} from '@kousum/sortable';
+} from '@dnd-kit-vue/sortable';
 import {
   restrictToVerticalAxis,
   restrictToFirstScrollableAncestor,
-} from '@kousum/modifiers';
+} from '@dnd-kit-vue/modifiers';
 
 import {Sortable, Props as SortableProps} from './Sortable';
 

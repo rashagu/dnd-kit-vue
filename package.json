@@ -10,14 +10,15 @@
     "change": "pnpm changeset",
     "version": "pnpm changeset version",
     "publish": "pnpm changeset publish",
-    "preEnter": "changeset pre enter",
+    "preEnter": "changeset pre enter vue",
     "preExit": "changeset pre exit"
   },
   "dependencies": {
     "@changesets/cli": "^2.25.2",
-    "@kousum/core": "6.0.5",
-    "@kousum/modifiers": "6.0.0",
-    "@kousum/sortable": "7.0.1",
+    "@dnd-kit-vue/core": "6.0.6-vue.1",
+    "@dnd-kit-vue/modifiers": "6.0.1-vue.1",
+    "@dnd-kit-vue/sortable": "7.0.2-vue.1",
+    "@dnd-kit-vue/utilities": "3.2.1-vue.1",
     "vue": "^3.2.45"
   },
   "devDependencies": {

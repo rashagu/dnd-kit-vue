@@ -1,5 +1,5 @@
-import {useSortable} from '@kousum/sortable';
-import {CSS} from '@kousum/utilities';
+import {useSortable} from '@dnd-kit-vue/sortable';
+import {CSS} from '@dnd-kit-vue/utilities';
 
 
 import {computed, CSSProperties, defineComponent, useSlots} from 'vue'

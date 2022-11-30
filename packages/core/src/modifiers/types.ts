@@ -1,4 +1,4 @@
-import type {Transform} from '@kousum/utilities';
+import type {Transform} from '@dnd-kit-vue/utilities';
 import type {Active, Over} from '../store';
 import type {ClientRect} from '../types';
 

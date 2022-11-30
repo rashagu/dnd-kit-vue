@@ -1,4 +1,4 @@
-import type {UniqueIdentifier} from '@kousum/core';
+import type {UniqueIdentifier} from '@dnd-kit-vue/core';
 
 export function itemsEqual(a: UniqueIdentifier[], b: UniqueIdentifier[]) {
   if (a === b) {

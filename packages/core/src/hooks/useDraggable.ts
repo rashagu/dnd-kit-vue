@@ -4,7 +4,7 @@ import {
   useIsomorphicLayoutEffect,
   useLatestValue,
   useUniqueId,
-} from '@kousum/utilities';
+} from '@dnd-kit-vue/utilities';
 
 import {InternalContext, Data, InternalContextDescriptor, defaultInternalContext} from '../store';
 import type {UniqueIdentifier} from '../types';

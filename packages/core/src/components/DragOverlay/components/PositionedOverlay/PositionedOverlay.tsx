@@ -1,7 +1,7 @@
 
-import {CSS, isKeyboardEvent} from '@kousum/utilities';
+import {CSS, isKeyboardEvent} from '@dnd-kit-vue/utilities';
 
-import type {Transform} from '@kousum/utilities';
+import type {Transform} from '@dnd-kit-vue/utilities';
 
 import {getRelativeTransformOrigin} from '../../../../utilities';
 import type {ClientRect, UniqueIdentifier} from '../../../../types';

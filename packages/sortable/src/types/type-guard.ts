@@ -4,7 +4,7 @@ import type {
   DroppableContainer,
   DraggableNode,
   Over,
-} from '@kousum/core';
+} from '@dnd-kit-vue/core';
 
 import type {SortableData} from './data';
 

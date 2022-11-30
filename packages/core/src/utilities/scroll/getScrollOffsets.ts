@@ -1,4 +1,4 @@
-import {add} from '@kousum/utilities';
+import {add} from '@dnd-kit-vue/utilities';
 
 import type {Coordinates} from '../../types';
 import {

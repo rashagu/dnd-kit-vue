@@ -1,4 +1,4 @@
-import type {Modifier} from '@kousum/core';
+import type {Modifier} from '@dnd-kit-vue/core';
 import {restrictToBoundingRect} from './utilities';
 
 export const restrictToParentElement: Modifier = ({

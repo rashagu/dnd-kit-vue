@@ -1,5 +1,5 @@
 
-import {useIsomorphicLayoutEffect} from '@kousum/utilities';
+import {useIsomorphicLayoutEffect} from '@dnd-kit-vue/utilities';
 
 import {getRectDelta} from '../../../utilities/rect';
 import {getFirstScrollableAncestor} from '../../../utilities/scroll';
