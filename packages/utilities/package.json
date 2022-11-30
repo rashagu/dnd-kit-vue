@@ -1,6 +1,6 @@
 {
   "name": "@dnd-kit-vue/utilities",
-  "version": "3.2.1-vue.1",
+  "version": "0.0.0",
   "description": "Internal utilities to bee shared between `@dnd-kit` packages",
   "author": "Claudéric Demers",
   "license": "MIT",

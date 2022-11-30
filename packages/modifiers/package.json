@@ -1,6 +1,6 @@
 {
   "name": "@dnd-kit-vue/modifiers",
-  "version": "6.0.1-vue.1",
+  "version": "0.0.0",
   "description": "Translate modifier presets for use with `@dnd-kit` packages.",
   "author": "Claudéric Demers",
   "license": "MIT",
