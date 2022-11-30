@@ -1,5 +1,14 @@
 # @kousum/core
 
+## 6.0.6-beta.0
+
+### Patch Changes
+
+- 90fb8b6: for vue3
+- Updated dependencies [90fb8b6]
+  - @kousum/accessibility@3.0.2-beta.0
+  - @kousum/utilities@3.2.1-beta.0
+
 ## 6.0.5
 
 ### Patch Changes
@@ -126,12 +135,12 @@
   ```ts
   const defaultDropAnimationConfiguration: DropAnimationOptions = {
     duration: 250,
-    easing: 'ease',
+    easing: "ease",
     keyframes: defaultDropAnimationKeyframes,
     sideEffects: defaultDropAnimationSideEffects({
       styles: {
         active: {
-          opacity: '0',
+          opacity: "0",
         },
       },
     }),
@@ -141,13 +150,13 @@
   The `keyframes` option allows consumers to override the keyframes of the drop animation. For example, here is how you would add a fade out transition to the drop animation using keyframes:
 
   ```ts
-  import {CSS} from '@kousum/utilities';
+  import { CSS } from "@kousum/utilities";
 
   const customDropAnimation = {
-    keyframes({transform}) {
+    keyframes({ transform }) {
       return [
-        {opacity: 1, transform: CSS.Transform.toString(transform.initial)},
-        {opacity: 0, transform: CSS.Transform.toString(transform.final)},
+        { opacity: 1, transform: CSS.Transform.toString(transform.initial) },
+        { opacity: 0, transform: CSS.Transform.toString(transform.final) },
       ];
     },
   };
@@ -184,16 +193,16 @@
 
   ```ts
   const customDropAnimation = {
-    sideEffects({active}) {
-      active.node.classList.add('dropAnimationInProgress');
-      active.node.animate([{opacity: 0}, {opacity: 1}], {
-        easing: 'ease-in',
+    sideEffects({ active }) {
+      active.node.classList.add("dropAnimationInProgress");
+      active.node.animate([{ opacity: 0 }, { opacity: 1 }], {
+        easing: "ease-in",
         duration: 250,
       });
 
       return () => {
         // Clean up when the drop animation is complete
-        active.node.classList.remove('dropAnimationInProgress');
+        active.node.classList.remove("dropAnimationInProgress");
       };
     },
   };
@@ -489,10 +498,10 @@
   Consumers can also access the array of collisions in components wrapped by `<DndContext>` via the `useDndContext()` hook:
 
   ```ts
-  import {useDndContext} from '@kousum/core';
+  import { useDndContext } from "@kousum/core";
 
   function MyComponent() {
-    const {collisions} = useDndContext();
+    const { collisions } = useDndContext();
   }
   ```
 
@@ -658,7 +667,7 @@
     DndContext,
     getBoundingClientRect,
     MeasuringConfiguration,
-  } from '@kousum/core';
+  } from "@kousum/core";
 
   const measuringConfig: MeasuringConfiguration = {
     draggable: {
@@ -787,7 +796,7 @@
   Example usage:
 
   ```tsx
-  import {DndContext, useDndMonitor} from '@kousum/core';
+  import { DndContext, useDndMonitor } from "@kousum/core";
 
   function App() {
     return (
@@ -815,13 +824,13 @@
   **Example usage:**
 
   ```tsx
-  import {DndContext, useDraggable, useDroppable} from '@kousum/core';
+  import { DndContext, useDraggable, useDroppable } from "@kousum/core";
 
   function Draggable() {
-    const {attributes, listeners, setNodeRef, transform} = useDraggable({
-      id: 'draggable',
+    const { attributes, listeners, setNodeRef, transform } = useDraggable({
+      id: "draggable",
       data: {
-        type: 'type1',
+        type: "type1",
       },
     });
 
@@ -829,10 +838,10 @@
   }
 
   function Droppable() {
-    const {setNodeRef} = useDroppable({
-      id: 'droppable',
+    const { setNodeRef } = useDroppable({
+      id: "droppable",
       data: {
-        accepts: ['type1', 'type2'],
+        accepts: ["type1", "type2"],
       },
     });
 
@@ -842,7 +851,7 @@
   function App() {
     return (
       <DndContext
-        onDragEnd={({active, over}) => {
+        onDragEnd={({ active, over }) => {
           if (over?.data.current.accepts.includes(active.data.current.type)) {
             // do stuff
           }
@@ -947,9 +956,9 @@
   This behaviour can be customized using the `activator` option of the `autoScroll` prop:
 
   ```tsx
-  import {AutoScrollActivator, DndContext} from '@kousum/core';
+  import { AutoScrollActivator, DndContext } from "@kousum/core";
 
-  <DndContext autoScroll={{activator: AutoScrollActivator.DraggableRect}} />;
+  <DndContext autoScroll={{ activator: AutoScrollActivator.DraggableRect }} />;
   ```
 
   The auto-scroller now also looks at scrollable ancestors in order of appearance in the DOM tree, meaning it will first attempt to scroll the window, and narrow its focus down rather than the old behaviour of looking at scrollable ancestors in order of closeness to the draggable element in the DOM tree (reversed tree order).
@@ -957,15 +966,15 @@
   This generally leads to an improved user experience, but can be customized by passing a configuration object to the `autoScroll` prop that sets the `order` option to `TraversalOrder.ReversedTreeOrder` instead of the new default value of `TraversalOrder.TreeOrder`:
 
   ```tsx
-  import {DndContext, TraversalOrder} from '@kousum/core';
+  import { DndContext, TraversalOrder } from "@kousum/core";
 
-  <DndContext autoScroll={{order: TraversalOrder.ReversedTreeOrder}} />;
+  <DndContext autoScroll={{ order: TraversalOrder.ReversedTreeOrder }} />;
   ```
 
   The autoscrolling `thresholds`, `acceleration` and `interval` can now also be customized using the `autoScroll` prop:
 
   ```tsx
-  import {DndContext} from '@kousum/core';
+  import { DndContext } from "@kousum/core";
 
   <DndContext
     autoScroll={{
@@ -986,7 +995,7 @@
   Finally, consumers can now conditionally opt out of scrolling certain scrollable ancestors using the `canScroll` option of the `autoScroll` prop:
 
   ```tsx
-  import {DndContext} from '@kousum/core';
+  import { DndContext } from "@kousum/core";
 
   <DndContext
     autoScroll={{

@@ -1,5 +1,14 @@
 # @dnd-kit/sortable
 
+## 7.0.2-beta.0
+
+### Patch Changes
+
+- 90fb8b6: for vue3
+- Updated dependencies [90fb8b6]
+  - @kousum/core@6.0.6-beta.0
+  - @kousum/utilities@3.2.1-beta.0
+
 ## 7.0.1
 
 ### Patch Changes
@@ -230,10 +239,10 @@
   Consumers can also access the array of collisions in components wrapped by `<DndContext>` via the `useDndContext()` hook:
 
   ```ts
-  import {useDndContext} from '@kousum/core';
+  import { useDndContext } from "@kousum/core";
 
   function MyComponent() {
-    const {collisions} = useDndContext();
+    const { collisions } = useDndContext();
   }
   ```
 
@@ -371,13 +380,13 @@
   **Example usage:**
 
   ```tsx
-  import {DndContext, useDraggable, useDroppable} from '@kousum/core';
+  import { DndContext, useDraggable, useDroppable } from "@kousum/core";
 
   function Draggable() {
-    const {attributes, listeners, setNodeRef, transform} = useDraggable({
-      id: 'draggable',
+    const { attributes, listeners, setNodeRef, transform } = useDraggable({
+      id: "draggable",
       data: {
-        type: 'type1',
+        type: "type1",
       },
     });
 
@@ -385,10 +394,10 @@
   }
 
   function Droppable() {
-    const {setNodeRef} = useDroppable({
-      id: 'droppable',
+    const { setNodeRef } = useDroppable({
+      id: "droppable",
       data: {
-        accepts: ['type1', 'type2'],
+        accepts: ["type1", "type2"],
       },
     });
 
@@ -398,7 +407,7 @@
   function App() {
     return (
       <DndContext
-        onDragEnd={({active, over}) => {
+        onDragEnd={({ active, over }) => {
           if (over?.data.current.accepts.includes(active.data.current.type)) {
             // do stuff
           }
@@ -436,9 +445,9 @@
   This behaviour can be customized using the `activator` option of the `autoScroll` prop:
 
   ```tsx
-  import {AutoScrollActivator, DndContext} from '@kousum/core';
+  import { AutoScrollActivator, DndContext } from "@kousum/core";
 
-  <DndContext autoScroll={{activator: AutoScrollActivator.DraggableRect}} />;
+  <DndContext autoScroll={{ activator: AutoScrollActivator.DraggableRect }} />;
   ```
 
   The auto-scroller now also looks at scrollable ancestors in order of appearance in the DOM tree, meaning it will first attempt to scroll the window, and narrow its focus down rather than the old behaviour of looking at scrollable ancestors in order of closeness to the draggable element in the DOM tree (reversed tree order).
@@ -446,15 +455,15 @@
   This generally leads to an improved user experience, but can be customized by passing a configuration object to the `autoScroll` prop that sets the `order` option to `TraversalOrder.ReversedTreeOrder` instead of the new default value of `TraversalOrder.TreeOrder`:
 
   ```tsx
-  import {DndContext, TraversalOrder} from '@kousum/core';
+  import { DndContext, TraversalOrder } from "@kousum/core";
 
-  <DndContext autoScroll={{order: TraversalOrder.ReversedTreeOrder}} />;
+  <DndContext autoScroll={{ order: TraversalOrder.ReversedTreeOrder }} />;
   ```
 
   The autoscrolling `thresholds`, `acceleration` and `interval` can now also be customized using the `autoScroll` prop:
 
   ```tsx
-  import {DndContext} from '@kousum/core';
+  import { DndContext } from "@kousum/core";
 
   <DndContext
     autoScroll={{
@@ -475,7 +484,7 @@
   Finally, consumers can now conditionally opt out of scrolling certain scrollable ancestors using the `canScroll` option of the `autoScroll` prop:
 
   ```tsx
-  import {DndContext} from '@kousum/core';
+  import { DndContext } from "@kousum/core";
 
   <DndContext
     autoScroll={{

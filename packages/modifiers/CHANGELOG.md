@@ -1,5 +1,14 @@
 # @dnd-kit/modifiers
 
+## 6.0.1-beta.0
+
+### Patch Changes
+
+- 90fb8b6: for vue3
+- Updated dependencies [90fb8b6]
+  - @kousum/core@6.0.6-beta.0
+  - @kousum/utilities@3.2.1-beta.0
+
 ## 6.0.0
 
 ### Patch Changes
