@@ -1,7 +1,7 @@
 
 
 function main() {
-    const { version } = require("../packages/semi-ui-vue/package.json");
+    const { version } = require("../packages/core/package.json");
     return version;
 }
 
