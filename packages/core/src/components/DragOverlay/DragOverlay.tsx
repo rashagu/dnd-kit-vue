@@ -59,6 +59,7 @@ export const vuePropsType = {
     default: 999
   },
 }
+
 const DragOverlay = defineComponent<Props>((props, {}) => {
 
   const slots = useSlots()

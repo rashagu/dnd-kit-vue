@@ -4,7 +4,7 @@ import {
   KeyboardSensor,
   PointerSensor,
   useSensor,
-  useSensors, DragEndEvent,
+  useSensors, DragEndEvent, DragOverlay,
 } from '@dnd-kit-vue/core';
 import {
   arrayMove,
@@ -17,7 +17,7 @@ import SortableItem from './SortableItem';
 
 
 
-import {defineComponent, ref, h, Fragment, useSlots, provide} from 'vue'
+import {defineComponent, ref, h, Fragment, useSlots, provide, Teleport} from 'vue'
 
 interface Demo1Props {
   name?: string
@@ -34,6 +34,7 @@ const SortableDemo1 = defineComponent<Demo1Props>((props, {}) => {
   function setItems(val: number[]) {
     items.value = val
   }
+
   const sensors = useSensors(
     useSensor(PointerSensor),
     useSensor(KeyboardSensor, {
@@ -52,10 +53,10 @@ const SortableDemo1 = defineComponent<Demo1Props>((props, {}) => {
       setItems(arrayMove(items.value, oldIndex, newIndex));
     }
   }
+
   provide('aa', 'aa')
+
   return () => {
-
-
     return (
       <div style={{width: '500px'}}>
         <DndContext
@@ -69,6 +70,11 @@ const SortableDemo1 = defineComponent<Demo1Props>((props, {}) => {
           >
             {items.value.map(id => <SortableItem key={id} id={id} />)}
           </SortableContext>
+          <Teleport to={document.body}>
+            <DragOverlay>
+              123123
+            </DragOverlay>
+          </Teleport>
         </DndContext>
       </div>
     );

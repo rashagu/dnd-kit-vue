@@ -49,7 +49,6 @@ export function useSortable({
   resizeObserverConfig,
   transition = defaultTransition,
 }: Arguments) {
-
   const {context} = useSortableContext();
 
 
@@ -199,6 +198,38 @@ export function useSortable({
   });
 
 
+  const getTransitionValue = computed(()=>{
+    return getTransition()
+  })
+  function getTransition() {
+
+    if (
+      // Temporarily disable transitions for a single frame to set up derived transforms
+      derivedTransform.value ||
+      // Or to prevent items jumping to back to their "new" position when items change
+      (itemsHaveChanged.value && previous.value.newIndex === index.value)
+    ) {
+      return disabledTransition;
+    }
+
+    if (
+      (shouldDisplaceDragSource.value && !isKeyboardEvent(internalContext.value.activatorEvent)) ||
+      !transition
+    ) {
+      return undefined;
+    }
+
+    if (isSorting.value || shouldAnimateLayoutChanges.value) {
+
+      return CSS.Transition.toString({
+        ...transition,
+        property: transitionProperty,
+      });
+    }
+
+    return undefined;
+  }
+
   return {
     internalContext,
     context,
@@ -222,35 +253,8 @@ export function useSortable({
     setDroppableNodeRef,
     setDraggableNodeRef,
     transform: derivedTransform.value? derivedTransform : finalTransform,
-    transition: getTransition(),
+    transition: getTransitionValue,
   };
-
-  function getTransition() {
-    if (
-      // Temporarily disable transitions for a single frame to set up derived transforms
-      derivedTransform.value ||
-      // Or to prevent items jumping to back to their "new" position when items change
-      (itemsHaveChanged && previous.value.newIndex === index.value)
-    ) {
-      return disabledTransition;
-    }
-
-    if (
-      (shouldDisplaceDragSource.value && !isKeyboardEvent(internalContext.value.activatorEvent)) ||
-      !transition
-    ) {
-      return undefined;
-    }
-
-    if (isSorting.value || shouldAnimateLayoutChanges.value) {
-      return CSS.Transition.toString({
-        ...transition,
-        property: transitionProperty,
-      });
-    }
-
-    return undefined;
-  }
 }
 
 function normalizeLocalDisabled(
