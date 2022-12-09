@@ -42,7 +42,7 @@ const SortableItem = defineComponent<SortableItemProps>((props, {}) => {
       margin: '10px',
       backgroundColor: 'rgba(38,140,255,0.25)',
       transform: CSS.Transform.toString(transform.value),
-      transition,
+      transition:transition.value,
     };
 
     return (
