@@ -1,16 +1,16 @@
 
 import type {UniqueIdentifier} from '../../../types';
-import {computed} from "vue";
+import {computed, ComputedRef, ref, watch} from "vue";
 
 let key = 0;
 
-export function useKey(id: UniqueIdentifier | undefined) {
-  return computed(() => {
-    if (id == null) {
-      return;
-    }
-
-    key++;
-    return key;
-  });
+export function useKey(id: ComputedRef<UniqueIdentifier | undefined>) {
+  const keyShallowRef = ref(key)
+  // 这里的问题
+  watch(()=>id?.value, ()=>{
+    console.log(id?.value)
+    key++
+    keyShallowRef.value = key
+  })
+  return keyShallowRef
 }
