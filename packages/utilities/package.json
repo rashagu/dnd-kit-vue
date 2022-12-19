@@ -16,9 +16,8 @@
     "build": "pnpm rm:dist && vue-tsc --noEmit && vite build && tsc -b --force tsconfig.build.json",
     "preview": "vite preview"
   },
-  "main": "dist/index.mjs",
-  "module": "dist/index.mjs",
-  "types": "dist/types/index.d.ts",
+  "main": "src/index.ts",
+  "module": "src/index.ts",
   "files": [
     "README.md",
     "CHANGELOG.md",

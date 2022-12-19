@@ -296,17 +296,20 @@ const DndContext = defineComponent<Props>((props_) => {
   const draggingNode = computed(()=>{
     return dragOverlay.value.nodeRef.value ?? activeNode.value
   });
+
   const draggingNodeRect = computed(()=>{
     return isInitialized.value
       ? dragOverlay.value.rect.value ?? activeNodeRect.value
       : null
   });
-  const usesDragOverlay = Boolean(
+  const usesDragOverlay = computed(()=>Boolean(
     dragOverlay.value.nodeRef.value && dragOverlay.value.rect
-  );
+  ));
+
+
   // The delta between the previous and new position of the draggable node
   // is only relevant when there is no drag overlay
-  const nodeRectDelta = useRectDelta(usesDragOverlay ? null : activeNodeRect.value);
+  const nodeRectDelta = useRectDelta(usesDragOverlay.value ? null : activeNodeRect.value);
 
   // Get the window rect of the dragging node
   const windowRect = useWindowRect(
@@ -319,31 +322,56 @@ const DndContext = defineComponent<Props>((props_) => {
   );
   const scrollableAncestorRects = useRects(scrollableAncestors.value);
 
+
+  const applyModifiersArgsRef = ref()
+
+  watch([
+    ()=>state.value.draggable.translate,
+    activatorEvent,
+
+    ()=>active.value?.id,
+    ()=>active.value?.data.value,
+    ()=>active.value?.rect,
+
+    activeNodeRect,
+    containerNodeRect,
+    draggingNodeRect,
+    ()=>sensorContext.value.over,
+    ()=>dragOverlay.value.rect.value,
+    scrollableAncestors,
+    windowRect
+  ],(value, oldValue, onCleanup)=>{
+    if (!isEqual(value, oldValue)){
+      applyModifiersArgsRef.value = {
+        transform: {
+          x: state.value.draggable.translate.x - nodeRectDelta.x,
+          y: state.value.draggable.translate.y - nodeRectDelta.y,
+          scaleX: 1,
+          scaleY: 1,
+        },
+        activatorEvent: activatorEvent.value,
+        active: active.value,
+        activeNodeRect: activeNodeRect.value,
+        containerNodeRect: containerNodeRect.value,
+        draggingNodeRect: draggingNodeRect?.value,
+        over: sensorContext.value.over,
+        overlayNodeRect: dragOverlay.value.rect.value,
+        scrollableAncestors: scrollableAncestors.value,
+        scrollableAncestorRects,
+        windowRect: windowRect.value,
+      }
+    }
+  }, {immediate:true})
   // Apply modifiers
   const modifiedTranslate = computed(()=>{
-    // console.log(state.value.draggable.translate.x, nodeRectDelta.x)
-    return applyModifiers(modifiers, {
-      transform: {
-        x: state.value.draggable.translate.x - nodeRectDelta.x,
-        y: state.value.draggable.translate.y - nodeRectDelta.y,
-        scaleX: 1,
-        scaleY: 1,
-      },
-      activatorEvent: activatorEvent.value,
-      active: active.value,
-      activeNodeRect:activeNodeRect.value,
-      containerNodeRect:containerNodeRect.value,
-      draggingNodeRect: draggingNodeRect?.value,
-      over: sensorContext.value.over,
-      overlayNodeRect: dragOverlay.value.rect.value,
-      scrollableAncestors: scrollableAncestors.value,
-      scrollableAncestorRects,
-      windowRect: windowRect.value,
-    })
+    return applyModifiers(modifiers, applyModifiersArgsRef.value)
   });
-  const pointerCoordinates = activationCoordinates.value
-    ? add(activationCoordinates.value, state.value.draggable.translate)
-    : null;
+
+  const pointerCoordinates = computed(()=>{
+    return activationCoordinates.value
+      ? add(activationCoordinates.value, state.value.draggable.translate)
+      : null
+  });
 
   const scrollOffsets = useScrollOffsets(scrollableAncestors.value);
   // Represents the scroll delta since dragging was initiated
@@ -369,7 +397,7 @@ const DndContext = defineComponent<Props>((props_) => {
         collisionRect: collisionRect.value,
         droppableRects: droppableRects.value,
         droppableContainers: enabledDroppableContainers.value,
-        pointerCoordinates,
+        pointerCoordinates: pointerCoordinates.value,
       })
       : null
   });
@@ -383,7 +411,7 @@ const DndContext = defineComponent<Props>((props_) => {
   // When there is no drag overlay used, we need to account for the
   // window scroll delta
   const appliedTranslate = computed(()=>{
-    return usesDragOverlay
+    return usesDragOverlay.value
       ? modifiedTranslate.value
       : add(modifiedTranslate.value, activeNodeScrollDelta)
   });
@@ -502,6 +530,7 @@ const DndContext = defineComponent<Props>((props_) => {
       };
     }
   })
+
 
   const bindActivatorToSensorInstantiator = computed(() => (handler: SensorActivatorFunction<any>, sensor: SensorDescriptor<any>): SyntheticListener['handler'] => {
     return (event, active) => {
@@ -626,11 +655,12 @@ const DndContext = defineComponent<Props>((props_) => {
   }, {immediate: true})
 
 
+  // TODO
   useAutoScroller({
     ...autoScrollOptions,
     delta: state.value.draggable.translate,
     draggingRect: collisionRect.value,
-    pointerCoordinates,
+    pointerCoordinates: pointerCoordinates.value,
     scrollableAncestors: scrollableAncestors.value,
     scrollableAncestorRects,
   });
@@ -660,6 +690,7 @@ const DndContext = defineComponent<Props>((props_) => {
 
     return {enabled};
   }
+
 
   let overIdCache: any = undefined
   return () => {
