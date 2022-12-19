@@ -1,8 +1,19 @@
 
-import {useIsomorphicLayoutEffect, usePrevious} from '@dnd-kit-vue/utilities';
+import {usePrevious} from '@dnd-kit-vue/utilities';
 
 import type {UniqueIdentifier} from '../../../../types';
-import {cloneVNode, h, ref, useSlots, Fragment} from "vue";
+import {
+  cloneVNode,
+  h,
+  ref,
+  useSlots,
+  Fragment,
+  onMounted,
+  watch,
+  defineComponent,
+  ExtractPropTypes,
+  withMemo, shallowRef
+} from "vue";
 
 export type Animation = (
   key: UniqueIdentifier,
@@ -11,20 +22,24 @@ export type Animation = (
 
 export interface Props {
   animation: Animation;
+  children: any
 }
 
-export function AnimationManager({animation}: Props) {
-  const clonedChildren = ref<any>(null);
+export const vuePropsType = {
+  animation: Function,
+  children: [Object, Function]
+}
+const AnimationManager = defineComponent<Props>((props, {}) => {
+
   const slots = useSlots()
-  const children = slots.default?.()
+  const clonedChildren = ref<any>(null);
   const element = ref<HTMLElement | null>(null);
-  const previousChildren = usePrevious(children);
-
-  if (!children && !clonedChildren.value && previousChildren) {
-    clonedChildren.value = previousChildren
-  }
-
-  useIsomorphicLayoutEffect(() => {
+  const previousChildren = shallowRef(props.children);
+  watch(()=>props.children, (value, oldValue, onCleanup)=>{
+    previousChildren.value = oldValue
+  })
+  watch([()=>props.animation, ()=>clonedChildren.value, ()=>element.value], () => {
+    console.log(element.value)
     if (!element.value) {
       return;
     }
@@ -37,15 +52,32 @@ export function AnimationManager({animation}: Props) {
       return;
     }
 
-    Promise.resolve(animation(id, element.value)).then(() => {
+    Promise.resolve(props.animation(id, element.value)).then(() => {
       clonedChildren.value = null
     });
-  });
+  }, {immediate: true});
 
-  return (
-    <Fragment>
-      {children}
-      {clonedChildren.value ? cloneVNode(clonedChildren.value, {ref: element}) : null}
-    </Fragment>
-  );
+  return () => {
+
+    if (!props.children && !clonedChildren.value && previousChildren.value) {
+      clonedChildren.value = previousChildren.value
+      previousChildren.value = props.children
+    }
+
+
+    return (
+      <Fragment>
+        {props.children}
+        {clonedChildren.value ? cloneVNode(clonedChildren.value, {ref: element}) : null}
+      </Fragment>
+    );
+  }
+})
+
+AnimationManager.props = vuePropsType
+AnimationManager.name = 'AnimationManager'
+
+export {
+  AnimationManager
 }
+

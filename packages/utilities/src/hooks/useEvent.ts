@@ -1,16 +1,7 @@
-import {ref} from 'vue';
+import {ref, computed, shallowRef} from 'vue';
 
 import {useIsomorphicLayoutEffect} from './useIsomorphicLayoutEffect';
 
 export function useEvent<T extends Function>(handler: T | undefined) {
-  const handlerRef = ref<T | undefined>(handler);
-
-  useIsomorphicLayoutEffect(() => {
-    // @ts-ignore
-    handlerRef.value = handler;
-  });
-
-  return function (...args: any) {
-    return handlerRef.value?.(...args);
-  }
+  return  shallowRef<T | undefined>(handler);
 }

@@ -166,8 +166,8 @@ export function useDropAnimation({
   draggableNodes,
   droppableContainers,
   measuringConfiguration,
-}: Arguments) {
-  return useEvent<Animation>((id, node) => {
+}: Arguments):Animation {
+  return (id, node) => {
     if (config === null) {
       return;
     }
@@ -222,7 +222,7 @@ export function useDropAnimation({
       measuringConfiguration,
       transform: parsedTransform,
     });
-  });
+  };
 }
 
 function createDefaultDropAnimation(

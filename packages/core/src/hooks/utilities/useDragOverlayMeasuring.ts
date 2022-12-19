@@ -6,6 +6,7 @@ import {getMeasurableNode} from '../../utilities/nodes';
 import type {PublicContextDescriptor} from '../../store';
 import type {ClientRect} from '../../types';
 import {computed, ComputedRef, Ref, ref} from "vue";
+import {isEqual} from "lodash";
 
 interface Arguments {
   measure(element: HTMLElement): ClientRect;
@@ -18,7 +19,7 @@ export function useDragOverlayMeasuring({
   const handleResize = (entries: ResizeObserverEntry[]) => {
     for (const {target} of entries) {
       if (isHTMLElement(target)) {
-        const newRect = measure(target);
+        const newRect = measure(<HTMLElement>target);
 
         rect.value =  rect.value
           ? {...rect.value, width: newRect.width, height: newRect.height}
@@ -28,19 +29,19 @@ export function useDragOverlayMeasuring({
     }
   };
   const resizeObserver = useResizeObserver({callback: handleResize});
-  const handleNodeChange = (element:any) => {
-      const node = getMeasurableNode(element);
+  const handleNodeChange = (element: any) => {
+    const node = getMeasurableNode(element);
 
-      resizeObserver.value?.disconnect();
+    resizeObserver.value?.disconnect();
 
-      if (node) {
-        resizeObserver.value?.observe(node);
-      }
-
-      rect.value = node ? measure(node) : null
-    };
+    if (node) {
+      resizeObserver.value?.observe(node);
+    }
+    rect.value = node ? measure(node) : null
+  };
 
   const [nodeRef, setRef] = useNodeRef(handleNodeChange);
+
 
   return computed(
     () => ({

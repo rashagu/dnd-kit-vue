@@ -4,7 +4,7 @@ import {
   KeyboardSensor,
   PointerSensor,
   useSensor,
-  useSensors, DragEndEvent, DragOverlay,
+  useSensors, DragEndEvent, DragOverlay, defaultDropAnimationSideEffects, DropAnimation,
 } from '@dnd-kit-vue/core';
 import {
   arrayMove,
@@ -36,7 +36,13 @@ const SortableDemo1 = defineComponent<Demo1Props>((props, {}) => {
   }
 
   const sensors = useSensors(
-    useSensor(PointerSensor),
+    useSensor(PointerSensor, {
+      activationConstraint:{
+        // distance: 5,
+        delay: 100,
+        tolerance: 100
+      }
+    }),
     useSensor(KeyboardSensor, {
       coordinateGetter: sortableKeyboardCoordinates,
     })
@@ -54,7 +60,16 @@ const SortableDemo1 = defineComponent<Demo1Props>((props, {}) => {
     }
   }
 
-  provide('aa', 'aa')
+
+  const dropAnimationConfig: DropAnimation = {
+    sideEffects: defaultDropAnimationSideEffects({
+      styles: {
+        active: {
+          opacity: '0.5',
+        },
+      },
+    }),
+  };
 
   return () => {
     return (
@@ -70,11 +85,12 @@ const SortableDemo1 = defineComponent<Demo1Props>((props, {}) => {
           >
             {items.value.map(id => <SortableItem key={id} id={id} />)}
           </SortableContext>
-          <Teleport to={document.body}>
-            <DragOverlay>
-              123123
-            </DragOverlay>
-          </Teleport>
+          <DragOverlay
+            adjustScale={false}
+            dropAnimation={dropAnimationConfig}
+          >
+            <SortableItem key={'123'} id={'123'} />
+          </DragOverlay>
         </DndContext>
       </div>
     );

@@ -15,7 +15,7 @@ const App = defineComponent<CoreTestProps>((props, {slots}) => {
   return () => (
     <div>
       <SortableDemo1 />
-      <CoreTest />
+      {/*<CoreTest />*/}
       {/*<SortableDemo />*/}
     </div>
   )

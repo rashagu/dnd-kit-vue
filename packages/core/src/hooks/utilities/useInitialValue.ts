@@ -4,17 +4,16 @@ import {computed, ComputedRef, ref} from "vue";
 type AnyFunction = (...args: any) => any;
 
 export function useInitialValue<
-  T,
+  T extends ComputedRef,
   U extends AnyFunction | undefined = undefined
 >(
   value: T | null,
   computeFn?: U
-): ComputedRef<U extends AnyFunction ? ReturnType<U> | null : T | null> {
+): ComputedRef<any> {
   const previousValue = ref()
-
   return computed(()=>{
     function getData() {
-      if (!value) {
+      if (!value?.value) {
         return null;
       }
 
@@ -22,7 +21,8 @@ export function useInitialValue<
         return previousValue.value;
       }
 
-      return typeof computeFn === 'function' ? computeFn(value) : value;
+
+      return typeof computeFn === 'function' ? computeFn(value.value) : value.value;
     }
     return getData()
   })

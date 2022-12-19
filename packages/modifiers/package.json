@@ -27,6 +27,7 @@
   ],
   "dependencies": {
     "@dnd-kit-vue/utilities": "^0.0.1",
+    "@dnd-kit-vue/core": "^0.0.1",
     "tslib": "^2.0.0"
   },
   "peerDependencies": {
@@ -35,7 +36,6 @@
   },
   "devDependencies": {
     "@types/node": "^18.11.9",
-    "@dnd-kit-vue/core": "^0.0.1",
     "@vitejs/plugin-vue": "^3.2.0",
     "@vitejs/plugin-vue-jsx": "^2.1.1",
     "rimraf": "^3.0.2",

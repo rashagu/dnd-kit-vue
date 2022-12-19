@@ -1,6 +1,6 @@
 
 import {useEvent} from '@dnd-kit-vue/utilities';
-import {computed} from "vue";
+import {computed, onUnmounted, shallowRef, watch} from "vue";
 
 interface Arguments {
   callback: ResizeObserverCallback;
@@ -13,22 +13,22 @@ interface Arguments {
  */
 export function useResizeObserver({callback, disabled}: Arguments) {
   const handleResize = useEvent(callback);
-  const resizeObserver = computed(
-    () => {
-      if (
-        disabled ||
-        typeof window === 'undefined' ||
-        typeof window.ResizeObserver === 'undefined'
-      ) {
-        return undefined;
-      }
+  const resizeObserver = shallowRef<ResizeObserver>()
+  watch(()=>disabled, ()=>{
+    if (
+      disabled ||
+      typeof window === 'undefined' ||
+      typeof window.ResizeObserver === 'undefined'
+    ) {
+      return undefined;
+    }
 
-      const {ResizeObserver} = window;
+    const {ResizeObserver} = window;
 
-      return new ResizeObserver(handleResize);
-    });
+    return new ResizeObserver(handleResize.value as any);
+  }, {immediate: true})
 
-  computed(() => {
+  onUnmounted(() => {
     return () => resizeObserver.value?.disconnect();
   });
 

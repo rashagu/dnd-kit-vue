@@ -27,13 +27,16 @@
   ],
   "dependencies": {
     "@dnd-kit-vue/utilities": "^0.0.1",
+    "lodash": "^4.17.21",
     "tslib": "^2.0.0"
   },
   "peerDependencies": {
     "vue": "^3.2.45",
+    "lodash": "^4.17.21",
     "@dnd-kit-vue/core": "^0.0.1"
   },
   "devDependencies": {
+    "@types/lodash": "^4.14.190",
     "@types/node": "^18.11.9",
     "@dnd-kit-vue/core": "^0.0.1",
     "@vitejs/plugin-vue": "^3.2.0",

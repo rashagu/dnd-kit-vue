@@ -2,6 +2,7 @@
 import {useDndContext, ClientRect, UniqueIdentifier} from '@dnd-kit-vue/core';
 import {useIsomorphicLayoutEffect, useUniqueId} from '@dnd-kit-vue/utilities';
 
+
 import type {Disabled, SortingStrategy} from '../types';
 import {getSortedRects, itemsEqual, normalizeDisabled} from '../utilities';
 import {rectSortingStrategy} from '../strategies';
@@ -9,6 +10,7 @@ import {createContext} from "../createContext";
 import {computed, ComputedRef, defineComponent, getCurrentInstance, h, ref, useSlots, watch, watchEffect} from "vue";
 import Provider from "./context/Provider";
 import Consumer from "./context/Consumer";
+import {isEqual} from "lodash";
 
 export interface Props {
   items: (UniqueIdentifier | {id: UniqueIdentifier})[];
@@ -66,7 +68,8 @@ const SortableContext = defineComponent<Props>((props, {}) => {
   // } = useDndContext();
   const dndContext = useDndContext();
   const containerId = useUniqueId(ID_PREFIX, props.id);
-  const useDragOverlay = computed(()=>Boolean(dndContext.value.dragOverlay.rect !== null));
+  const useDragOverlay = computed(()=>Boolean(dndContext.value.dragOverlay.rect !== null))
+
   const items = computed<UniqueIdentifier[]>(
     () =>
       props.items.map((item) =>

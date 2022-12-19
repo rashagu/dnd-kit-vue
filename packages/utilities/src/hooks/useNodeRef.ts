@@ -12,7 +12,7 @@ export function useNodeRef(
   const node = ref<HTMLElement | null>(null);
   const setNodeRef = (element: HTMLElement | null) => {
     if (element !== node.value) {
-      onChangeHandler?.(element, node.value);
+      onChangeHandler?.value?.(element, node.value);
     }
 
     node.value = element;

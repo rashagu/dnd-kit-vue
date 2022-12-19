@@ -179,14 +179,14 @@ function useScrollIntent({
 
   return useLazyMemo<ScrollIntent>(
     (previousIntent) => {
-      if (disabled || !previousDelta || !previousIntent) {
+      if (disabled || !previousDelta.value || !previousIntent) {
         // Reset scroll intent tracking when auto-scrolling is disabled
         return defaultScrollIntent;
       }
 
       const direction = {
-        x: Math.sign(delta.x - previousDelta.x),
-        y: Math.sign(delta.y - previousDelta.y),
+        x: Math.sign(delta.x - previousDelta.value!.x),
+        y: Math.sign(delta.y - previousDelta.value!.y),
       };
 
       // Keep track of the user intent to scroll in each direction for both axis

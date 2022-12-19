@@ -23,17 +23,17 @@ export function RestoreFocus({disabled}: Props) {
       return;
     }
 
-    if (!activatorEvent && previousActivatorEvent && previousActiveId != null) {
-      if (!isKeyboardEvent(previousActivatorEvent)) {
+    if (!activatorEvent && previousActivatorEvent.value && previousActiveId.value != null) {
+      if (!isKeyboardEvent(previousActivatorEvent.value)) {
         return;
       }
 
-      if (document.activeElement === previousActivatorEvent.target) {
+      if (document.activeElement === previousActivatorEvent.value.target) {
         // No need to restore focus
         return;
       }
 
-      const draggableNode = draggableNodes.get(previousActiveId);
+      const draggableNode = draggableNodes.get(previousActiveId.value);
 
       if (!draggableNode) {
         return;

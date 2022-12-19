@@ -6,18 +6,20 @@ import {getClientRect, Rect, useReducer} from '../../utilities';
 
 import {useMutationObserver} from './useMutationObserver';
 import {useResizeObserver} from './useResizeObserver';
-import {computed, ComputedRef, watch} from "vue";
+import {computed, ComputedRef, ref, watch} from "vue";
+import {isEqual} from "lodash";
 
 function defaultMeasure(element: HTMLElement) {
   return new Rect(getClientRect(element), element);
 }
+
 
 export function useRect(
   element: ComputedRef<HTMLElement | null>,
   measure: ComputedRef<(element: HTMLElement) => ClientRect> = computed(()=>defaultMeasure),
   fallbackRect?: ComputedRef<ClientRect | null>
 ) {
-  let [rect, measureRect] = useReducer(reducer, null);
+  const rect = ref<ClientRect | null>(null)
 
   const mutationObserver = useMutationObserver({
     callback(records) {
@@ -33,16 +35,18 @@ export function useRect(
           target instanceof HTMLElement &&
           target.contains(element.value)
         ) {
-          measureRect();
+          measureRect(rect.value);
           break;
         }
       }
     },
   });
-  const resizeObserver = useResizeObserver({callback: measureRect});
+  const resizeObserver = useResizeObserver({callback: ()=>{
+      measureRect(rect.value);
+    }});
 
   watch([element, measure, ()=>fallbackRect?.value], () => {
-    measureRect();
+    measureRect(rect.value);
 
     if (element && element.value) {
       resizeObserver.value?.observe(element.value);
@@ -58,7 +62,7 @@ export function useRect(
 
   return rect;
 
-  function reducer(currentRect: ClientRect | null) {
+  function measureRect(currentRect: ClientRect | null) {
     if (!element?.value) {
       return null;
     }
@@ -71,10 +75,9 @@ export function useRect(
 
     const newRect = measure.value(element.value);
 
-    if (JSON.stringify(currentRect) === JSON.stringify(newRect)) {
-      return currentRect;
+    if (JSON.stringify(currentRect) !== JSON.stringify(newRect)) {
+      rect.value = newRect
     }
 
-    return newRect;
   }
 }
