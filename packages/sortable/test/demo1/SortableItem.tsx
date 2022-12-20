@@ -39,7 +39,6 @@ const SortableItem = defineComponent<SortableItemProps>((props, {}) => {
   return () => {
     const style:CSSProperties = {
       height: '20px',
-      margin: '10px',
       backgroundColor: 'rgba(38,140,255,0.25)',
       transform: CSS.Transform.toString(transform.value),
       transition:transition.value,

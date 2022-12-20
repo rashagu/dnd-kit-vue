@@ -16,7 +16,6 @@ import {
 import SortableItem from './SortableItem';
 
 
-
 import {defineComponent, ref, h, Fragment, useSlots, provide, Teleport} from 'vue'
 
 interface Demo1Props {
@@ -31,13 +30,14 @@ const SortableDemo1 = defineComponent<Demo1Props>((props, {}) => {
   const slots = useSlots()
 
   const items = ref([1, 2, 3]);
+
   function setItems(val: number[]) {
     items.value = val
   }
 
   const sensors = useSensors(
     useSensor(PointerSensor, {
-      activationConstraint:{
+      activationConstraint: {
         // distance: 5,
         delay: 100,
         tolerance: 100
@@ -49,7 +49,7 @@ const SortableDemo1 = defineComponent<Demo1Props>((props, {}) => {
   );
 
 
-  function handleDragEnd(event:DragEndEvent) {
+  function handleDragEnd(event: DragEndEvent) {
     // console.log(event)
     const {active, over} = event;
 
@@ -83,13 +83,13 @@ const SortableDemo1 = defineComponent<Demo1Props>((props, {}) => {
             items={items.value}
             strategy={verticalListSortingStrategy}
           >
-            {items.value.map(id => <SortableItem key={id} id={id} />)}
+            {items.value.map(id => <div style={{margin:'10px'}}><SortableItem key={id} id={id}/></div>)}
           </SortableContext>
           <DragOverlay
             adjustScale={false}
             dropAnimation={dropAnimationConfig}
           >
-            <SortableItem key={'123'} id={'123'} />
+            <SortableItem key={'123'} id={'123'}/>
           </DragOverlay>
         </DndContext>
       </div>
@@ -101,5 +101,5 @@ const SortableDemo1 = defineComponent<Demo1Props>((props, {}) => {
 SortableDemo1.props = vuePropsType
 SortableDemo1.name = 'SortableDemo1'
 
-export default SortableDemo1
 
+export default SortableDemo1
