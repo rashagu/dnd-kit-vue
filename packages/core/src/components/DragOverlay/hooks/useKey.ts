@@ -8,7 +8,6 @@ export function useKey(id: ComputedRef<UniqueIdentifier | undefined>) {
   const keyShallowRef = ref(key)
   // 这里的问题
   watch(()=>id?.value, ()=>{
-    console.log(id?.value)
     key++
     keyShallowRef.value = key
   })

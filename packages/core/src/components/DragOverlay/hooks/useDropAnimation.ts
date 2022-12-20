@@ -178,7 +178,7 @@ export function useDropAnimation({
       return;
     }
 
-    const activeNode = activeDraggable.node.current;
+    const activeNode = activeDraggable.node;
 
     if (!activeNode) {
       return;
@@ -284,6 +284,7 @@ function createDefaultDropAnimation(
 
     return new Promise((resolve) => {
       animation.onfinish = () => {
+        console.log('onfinish')
         cleanup?.();
         resolve();
       };
