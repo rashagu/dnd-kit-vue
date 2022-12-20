@@ -53,7 +53,7 @@ const SortableDemo1 = defineComponent<Demo1Props>((props, {}) => {
     // console.log(event)
     const {active, over} = event;
 
-    if (active.id !== over?.id) {
+    if (active && over && active.id !== over?.id) {
       const oldIndex = items.value.indexOf(+active.id);
       const newIndex = items.value.indexOf(+over!.id);
       setItems(arrayMove(items.value, oldIndex, newIndex));
@@ -85,12 +85,14 @@ const SortableDemo1 = defineComponent<Demo1Props>((props, {}) => {
           >
             {items.value.map(id => <div style={{margin:'10px'}}><SortableItem key={id} id={id}/></div>)}
           </SortableContext>
-          <DragOverlay
-            adjustScale={false}
-            dropAnimation={dropAnimationConfig}
-          >
-            <SortableItem key={'123'} id={'123'}/>
-          </DragOverlay>
+          <Teleport to={document.body}>
+            <DragOverlay
+              adjustScale={false}
+              dropAnimation={dropAnimationConfig}
+            >
+              <SortableItem key={'123'} id={'123'}/>
+            </DragOverlay>
+          </Teleport>
         </DndContext>
       </div>
     );

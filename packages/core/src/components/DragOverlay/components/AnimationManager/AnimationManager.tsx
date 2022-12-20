@@ -39,7 +39,6 @@ const AnimationManager = defineComponent<Props>((props, {}) => {
     previousChildren.value = oldValue
   })
   watch([()=>props.animation, ()=>clonedChildren.value, ()=>element.value], () => {
-    console.log(element.value)
     if (!element.value) {
       return;
     }
@@ -52,7 +51,11 @@ const AnimationManager = defineComponent<Props>((props, {}) => {
       return;
     }
 
-    Promise.resolve(props.animation(id, element.value)).then(() => {
+    Promise.resolve(props.animation(
+      id,
+      // @ts-ignore
+      element.value.$el?element.value.$el:element.value
+    )).then(() => {
       clonedChildren.value = null
     });
   }, {immediate: true});
@@ -64,6 +67,7 @@ const AnimationManager = defineComponent<Props>((props, {}) => {
       previousChildren.value = props.children
     }
 
+    // console.log(clonedChildren.value?.el,props.animation)
 
     return (
       <Fragment>

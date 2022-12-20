@@ -150,7 +150,6 @@ const DragOverlay = defineComponent<Props>((props, {}) => {
 
     // ref_?.(positionedOverlayRef.value?.$el)
 
-    console.log(key.value)
     return (
       <NullifiedContextProvider>
         <AnimationManager
