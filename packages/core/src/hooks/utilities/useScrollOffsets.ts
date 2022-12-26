@@ -8,16 +8,16 @@ import {
   getScrollOffsets,
 } from '../../utilities';
 import type {Coordinates} from '../../types';
-import {computed, ComputedRef, ref, watchEffect} from "vue";
+import {computed, ComputedRef, ref, shallowRef, watch, watchEffect} from "vue";
 
 type ScrollCoordinates = Map<HTMLElement | Window, Coordinates>;
 
-export function useScrollOffsets(elements: Element[]): ComputedRef<Coordinates> {
+export function useScrollOffsets(elements: ComputedRef<Element[]>): ComputedRef<Coordinates> {
   const scrollCoordinates = ref<ScrollCoordinates | null>(null);
-  const prevElements = ref(elements);
+  const prevElements = shallowRef(elements.value);
 
   // To-do: Throttle the handleScroll callback
-  const handleScroll = (event: Event) => {
+  const handleScroll = shallowRef((event: Event) => {
     const scrollingElement = getScrollableElement(event.target);
 
     if (!scrollingElement) {
@@ -34,20 +34,20 @@ export function useScrollOffsets(elements: Element[]): ComputedRef<Coordinates> 
     );
 
     scrollCoordinates.value = new Map(scrollCoordinates.value);
-  };
+  });
 
-  watchEffect(() => {
+  watch([()=>handleScroll.value, ()=>elements.value],(value, oldValue, onCleanup) => {
     const previousElements = prevElements.value;
 
-    if (elements !== previousElements) {
+    if (elements.value !== previousElements) {
       cleanup(previousElements);
 
-      const entries = elements
+      const entries = elements.value
         .map((element) => {
           const scrollableElement = getScrollableElement(element);
 
           if (scrollableElement) {
-            scrollableElement.addEventListener('scroll', handleScroll, {
+            scrollableElement.addEventListener('scroll', handleScroll.value, {
               passive: true,
             });
 
@@ -70,31 +70,31 @@ export function useScrollOffsets(elements: Element[]): ComputedRef<Coordinates> 
 
       scrollCoordinates.value = entries.length ? new Map(entries) : null
 
-      prevElements.value = elements;
+      prevElements.value = elements.value;
     }
 
-    return () => {
-      cleanup(elements);
+    onCleanup(() => {
+      cleanup(elements.value);
       cleanup(previousElements);
-    };
+    });
 
     function cleanup(elements: Element[]) {
       elements.forEach((element) => {
         const scrollableElement = getScrollableElement(element);
 
-        scrollableElement?.removeEventListener('scroll', handleScroll);
+        scrollableElement?.removeEventListener('scroll', handleScroll.value);
       });
     }
-  });
+  }, {immediate: true});
 
   return computed(() => {
-    if (elements.length) {
+    if (elements.value.length) {
       return scrollCoordinates.value
         ? Array.from(scrollCoordinates.value.values()).reduce(
             (acc, coordinates) => add(acc, coordinates),
             defaultCoordinates
           )
-        : getScrollOffsets(elements);
+        : getScrollOffsets(elements.value);
     }
 
     return defaultCoordinates;

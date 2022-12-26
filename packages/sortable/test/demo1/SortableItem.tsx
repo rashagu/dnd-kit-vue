@@ -45,9 +45,11 @@ const SortableItem = defineComponent<SortableItemProps>((props, {}) => {
     };
 
     return (
-      <div ref={setNodeRef as any} style={style} {...attributes.value} {...listeners?.value}>
-        {/* ... */}
-        {props.id}
+      <div ref={setNodeRef as any} style={style}>
+        <div {...attributes.value} {...listeners?.value}>
+          {/* ... */}
+          {props.id}
+        </div>
       </div>
     );
   }

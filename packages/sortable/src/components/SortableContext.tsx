@@ -7,7 +7,18 @@ import type {Disabled, SortingStrategy} from '../types';
 import {getSortedRects, itemsEqual, normalizeDisabled} from '../utilities';
 import {rectSortingStrategy} from '../strategies';
 import {createContext} from "../createContext";
-import {computed, ComputedRef, defineComponent, getCurrentInstance, h, ref, useSlots, watch, watchEffect} from "vue";
+import {
+  computed,
+  ComputedRef,
+  defineComponent,
+  getCurrentInstance,
+  h,
+  onRenderTracked,
+  ref,
+  useSlots,
+  watch,
+  watchEffect
+} from "vue";
 import Provider from "./context/Provider";
 import Consumer from "./context/Consumer";
 import {isEqual} from "lodash";
@@ -78,7 +89,9 @@ const SortableContext = defineComponent<Props>((props, {}) => {
   );
   const isDragging = computed(()=>dndContext.value.active != null);
   const activeIndex = computed(()=>dndContext.value.active ? items.value.indexOf(dndContext.value.active.id) : -1);
-  const overIndex = computed(()=>dndContext.value.over ? items.value.indexOf(dndContext.value.over.id) : -1);
+  const overIndex = computed(()=>{
+    return dndContext.value.over ? items.value.indexOf(dndContext.value.over.id) : -1
+  });
   const previousItemsRef = ref(items.value);
   const itemsHaveChanged = computed(()=>!itemsEqual(items.value, previousItemsRef.value));
   const disableTransforms = computed(()=>{
@@ -101,6 +114,7 @@ const SortableContext = defineComponent<Props>((props, {}) => {
   watchEffect(() => {
     previousItemsRef.value = items.value;
   });
+
 
 
 

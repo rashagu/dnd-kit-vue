@@ -27,6 +27,7 @@ import type {
 import {useDerivedTransform} from './utilities';
 import {useSortableContext} from "../components/context/Consumer";
 import {computed, ref, watch} from "vue";
+import {isEqual} from "lodash";
 
 export interface Arguments
   extends Omit<UseDraggableArguments, 'disabled'>,
@@ -65,6 +66,7 @@ export function useSortable({
   const itemsAfterCurrentSortable = computed(
     () => context.value.items.slice(context.value.items.indexOf(id.value))
   );
+
   const {rect, node, isOver, setNodeRef: setDroppableNodeRef} = useDroppable({
     id,
     data,
@@ -74,6 +76,7 @@ export function useSortable({
       ...resizeObserverConfig,
     },
   });
+
   const {
     internalContext,
     attributes,
@@ -122,12 +125,20 @@ export function useSortable({
     return v
   });
 
-
-  const newIndex =computed(()=>{
-    return isValidIndex(context.value.activeIndex) && isValidIndex(context.value.overIndex)
-      ? getNewIndex({id: id.value, items:context.value.items, activeIndex:context.value.activeIndex, overIndex:context.value.overIndex})
-      : index.value
-  });
+  const newIndex = ref<number>(-1)
+  watch([
+    ()=>context.value.activeIndex,
+    ()=>context.value.overIndex,
+    ()=>context.value.items,
+    ()=>index.value,
+    ()=>id.value,
+  ], (value, oldValue, onCleanup)=>{
+    if (!isEqual(value, oldValue)){
+      newIndex.value =  isValidIndex(context.value.activeIndex) && isValidIndex(context.value.overIndex)
+        ? getNewIndex({id: id.value, items:context.value.items, activeIndex:context.value.activeIndex, overIndex:context.value.overIndex})
+        : index.value
+    }
+  }, {immediate: true})
 
   const activeId = computed(()=>{
     return internalContext.value.active?.id
@@ -198,9 +209,18 @@ export function useSortable({
   });
 
 
-  const getTransitionValue = computed(()=>{
-    return getTransition()
-  })
+  const getTransitionValue = ref(getTransition())
+  watch([
+    () => derivedTransform.value,
+    () => itemsHaveChanged.value,
+    () => previous.value.newIndex,
+    () => index.value,
+    () => shouldAnimateLayoutChanges.value
+  ], (value, oldValue, onCleanup) => {
+    if (!isEqual(value, oldValue)){
+      getTransitionValue.value = getTransition()
+    }
+  }, {immediate: true})
   function getTransition() {
 
     if (

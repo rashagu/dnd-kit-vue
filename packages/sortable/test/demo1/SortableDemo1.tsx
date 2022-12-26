@@ -29,7 +29,10 @@ const SortableDemo1 = defineComponent<Demo1Props>((props, {}) => {
 
   const slots = useSlots()
 
-  const items = ref([1, 2, 3]);
+  const items = ref<any[]>([]);
+  for (let i = 0; i < 100; i++) {
+    items.value.push(i+1)
+  }
 
   function setItems(val: number[]) {
     items.value = val
@@ -83,7 +86,7 @@ const SortableDemo1 = defineComponent<Demo1Props>((props, {}) => {
             items={items.value}
             strategy={verticalListSortingStrategy}
           >
-            {items.value.map(id => <div style={{margin:'10px'}}><SortableItem key={id} id={id}/></div>)}
+            {items.value.map(id => <SortableItem key={id} id={id}/>)}
           </SortableContext>
           <Teleport to={document.body}>
             <DragOverlay
