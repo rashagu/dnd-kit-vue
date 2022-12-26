@@ -1,32 +1,33 @@
 import {Coordinates, subtract} from '@dnd-kit-vue/utilities';
 
 import {defaultCoordinates} from '../../utilities';
-import {ref, watchEffect} from "vue";
+import {computed, ComputedRef, ref, shallowRef, watch, watchEffect} from "vue";
 
 export function useScrollOffsetsDelta(
-  scrollOffsets: Coordinates,
+  scrollOffsets: ComputedRef<Coordinates>,
   dependencies: any[] = []
 ) {
-  const initialScrollOffsets = ref<Coordinates | null>(null);
+  const initialScrollOffsets = shallowRef<Coordinates | null>(null);
 
-  watchEffect(
-    () => {
-      initialScrollOffsets.value = null;
-    });
+  watch(dependencies, () => {
+    initialScrollOffsets.value = null;
+  }, {immediate: true});
 
-  watchEffect(() => {
-    const hasScrollOffsets = scrollOffsets !== defaultCoordinates;
+  watch(dependencies, () => {
+    const hasScrollOffsets = scrollOffsets.value !== defaultCoordinates;
 
     if (hasScrollOffsets && !initialScrollOffsets.value) {
-      initialScrollOffsets.value = scrollOffsets;
+      initialScrollOffsets.value = scrollOffsets.value;
     }
 
     if (!hasScrollOffsets && initialScrollOffsets.value) {
       initialScrollOffsets.value = null;
     }
-  });
+  }, {immediate: true});
 
-  return initialScrollOffsets.value
-    ? subtract(scrollOffsets, initialScrollOffsets.value)
-    : defaultCoordinates;
+  return computed(()=>{
+    return initialScrollOffsets.value
+      ? subtract(scrollOffsets.value, initialScrollOffsets.value)
+      : defaultCoordinates
+  });
 }

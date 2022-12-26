@@ -327,19 +327,19 @@ const DndContext = defineComponent<Props>((props_) => {
 
   watch([
     ()=>state.value.draggable.translate,
-    activatorEvent,
+    ()=>activatorEvent.value,
 
     ()=>active.value?.id,
     ()=>active.value?.data.value,
     ()=>active.value?.rect,
 
-    activeNodeRect,
-    containerNodeRect,
-    draggingNodeRect,
+    ()=>activeNodeRect.value,
+    ()=>containerNodeRect.value,
+    ()=>draggingNodeRect.value,
     ()=>sensorContext.value.over,
     ()=>dragOverlay.value.rect.value,
-    scrollableAncestors,
-    windowRect
+    ()=>scrollableAncestors.value,
+    ()=>windowRect.value
   ],(value, oldValue, onCleanup)=>{
     if (!isEqual(value, oldValue)){
       applyModifiersArgsRef.value = {
@@ -373,16 +373,16 @@ const DndContext = defineComponent<Props>((props_) => {
       : null
   });
 
-  const scrollOffsets = useScrollOffsets(scrollableAncestors.value);
+  const scrollOffsets = useScrollOffsets(scrollableAncestors);
   // Represents the scroll delta since dragging was initiated
-  const scrollAdjustment = useScrollOffsetsDelta(scrollOffsets.value);
+  const scrollAdjustment = useScrollOffsetsDelta(scrollOffsets);
   // Represents the scroll delta since the last time the active node rect was measured
-  const activeNodeScrollDelta = useScrollOffsetsDelta(scrollOffsets.value, [
-    activeNodeRect.value,
+  const activeNodeScrollDelta = useScrollOffsetsDelta(scrollOffsets, [
+    ()=> activeNodeRect.value,
   ]);
 
   const scrollAdjustedTranslate = computed(()=>{
-    return add(modifiedTranslate.value, scrollAdjustment)
+    return add(modifiedTranslate.value, scrollAdjustment.value)
   });
   const collisionRect = computed(()=>{
     return draggingNodeRect?.value
@@ -413,8 +413,9 @@ const DndContext = defineComponent<Props>((props_) => {
   const appliedTranslate = computed(()=>{
     return usesDragOverlay.value
       ? modifiedTranslate.value
-      : add(modifiedTranslate.value, activeNodeScrollDelta)
+      : add(modifiedTranslate.value, activeNodeScrollDelta.value)
   });
+
 
   const transform = computed(()=>{
     return adjustScale(
