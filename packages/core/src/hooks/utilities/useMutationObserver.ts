@@ -24,7 +24,7 @@ export function useMutationObserver({callback, disabled}: Arguments) {
 
     const {MutationObserver} = window;
 
-    return new MutationObserver(handleMutations.value);
+    return new MutationObserver(handleMutations.value!);
   });
 
   watch(()=>mutationObserver.value, () => {
