@@ -82,16 +82,21 @@ const SortableContext = defineComponent<Props>((props, {}) => {
   const useDragOverlay = computed(()=>Boolean(dndContext.value.dragOverlay.rect !== null))
 
   const items = computed<UniqueIdentifier[]>(
-    () =>
-      props.items.map((item) =>
+    () =>{
+      return props.items.map((item) =>
         typeof item === 'object' && 'id' in item ? item.id : item
       )
+    }
   );
-  const isDragging = computed(()=>dndContext.value.active != null);
-  const activeIndex = computed(()=>dndContext.value.active ? items.value.indexOf(dndContext.value.active.id) : -1);
-  const overIndex = computed(()=>{
-    return dndContext.value.over ? items.value.indexOf(dndContext.value.over.id) : -1
+  const isDragging = computed(()=>{
+    return dndContext.value.active != null
   });
+  const activeIndex = computed(()=>dndContext.value.active ? items.value.indexOf(dndContext.value.active.id) : -1);
+  const overIndex = ref<number>(-1);
+  watch(()=>dndContext.value.over?.id, ()=>{
+    overIndex.value = dndContext.value.over ? items.value.indexOf(dndContext.value.over.id) : -1
+  }, {immediate:true})
+
   const previousItemsRef = ref(items.value);
   const itemsHaveChanged = computed(()=>!itemsEqual(items.value, previousItemsRef.value));
   const disableTransforms = computed(()=>{
@@ -105,7 +110,7 @@ const SortableContext = defineComponent<Props>((props, {}) => {
     ()=>isDragging.value,
     ()=>dndContext.value.measureDroppableContainers,
     ()=>dndContext.value.measuringScheduled,
-  ], () => {
+  ], (value, oldValue, onCleanup) => {
     if (itemsHaveChanged.value && isDragging.value && !dndContext.value.measuringScheduled) {
       dndContext.value.measureDroppableContainers(items.value);
     }

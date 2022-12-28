@@ -3,7 +3,7 @@ import {
   useDraggable,
   useDroppable,
   UseDraggableArguments,
-  UseDroppableArguments,
+  UseDroppableArguments, watchRef,
 } from '@dnd-kit-vue/core';
 import type {Data} from '@dnd-kit-vue/core';
 import {CSS, isKeyboardEvent, useCombinedRefs} from '@dnd-kit-vue/utilities';
@@ -26,8 +26,9 @@ import type {
 } from './types';
 import {useDerivedTransform} from './utilities';
 import {useSortableContext} from "../components/context/Consumer";
-import {computed, ref, watch} from "vue";
+import {computed, ref, shallowRef, watch} from "vue";
 import {isEqual} from "lodash";
+import {UniqueIdentifier} from "@dnd-kit-vue/core/src";
 
 export interface Arguments
   extends Omit<UseDraggableArguments, 'disabled'>,
@@ -53,30 +54,43 @@ export function useSortable({
   const {context} = useSortableContext();
 
 
-  const disabled: Disabled = normalizeLocalDisabled(
-    localDisabled,
-    context.value.disabled
-  );
-  const index = computed(()=>{
-    return context.value.items.indexOf(id.value)
+  const disabled = computed<Disabled>(()=>{
+    return normalizeLocalDisabled(
+      localDisabled,
+      context.value.disabled
+    )
   });
+  const index = ref<number>(-1)
+  watch([()=>context.value.items, ()=>id.value],()=>{
+    index.value = context.value.items.indexOf(id.value)
+  },{immediate: true})
+
   const data = computed<SortableData & Data>(
     () => ({sortable: {containerId: context.value.containerId, index: index.value, items: context.value.items}, ...customData})
   );
   const itemsAfterCurrentSortable = computed(
-    () => context.value.items.slice(context.value.items.indexOf(id.value))
+    () => {
+      return context.value.items.slice(context.value.items.indexOf(id.value))
+    }
   );
 
+
+  const droppable = computed(()=>{
+    return disabled.value.droppable || false
+  })
   const {rect, node, isOver, setNodeRef: setDroppableNodeRef} = useDroppable({
     id,
     data,
-    disabled: disabled.droppable,
+    disabled: droppable,
     resizeObserverConfig: {
       updateMeasurementsFor: itemsAfterCurrentSortable,
       ...resizeObserverConfig,
     },
   });
 
+  const draggable = computed(()=>{
+    return disabled.value.draggable || false
+  })
   const {
     internalContext,
     attributes,
@@ -92,11 +106,13 @@ export function useSortable({
       ...defaultAttributes,
       ...userDefinedAttributes,
     },
-    disabled: disabled.draggable,
+    disabled: draggable,
   });
 
   const setNodeRef = useCombinedRefs(setDroppableNodeRef, setDraggableNodeRef);
-  const isSorting = computed(()=>Boolean(internalContext.value.active));
+
+  const isSorting = watchRef(()=>Boolean(internalContext.value.active), [()=>internalContext.value.active]);
+
   const displaceItem = computed(()=>{
     return isSorting.value &&
     !context.value.disableTransforms &&
@@ -112,8 +128,8 @@ export function useSortable({
     return shouldDisplaceDragSource.value && displaceItem.value ? transform.value : null
   });
 
-  const strategy = localStrategy ?? context.value.strategy;
   const finalTransform = computed(()=>{
+    const strategy = localStrategy ?? context.value.strategy;
     const v = displaceItem.value? dragSourceDisplacement.value ?? strategy({
         rects: context.value.sortedRects,
         activeNodeRect: internalContext.value.activeNodeRect,
@@ -140,10 +156,10 @@ export function useSortable({
     }
   }, {immediate: true})
 
-  const activeId = computed(()=>{
-    return internalContext.value.active?.id
-  });
-  const previous = ref({
+  const activeId = watchRef(()=>internalContext.value.active?.id, [()=>internalContext.value.active?.id])
+
+
+  const previous = shallowRef({
     activeId: activeId.value,
     items: context.value.items,
     newIndex: newIndex.value,
@@ -152,7 +168,8 @@ export function useSortable({
   const itemsHaveChanged = computed(()=>{
     return context.value.items !== previous.value.items
   });
-  const shouldAnimateLayoutChanges = computed(()=>{
+
+  const shouldAnimateLayoutChanges = watchRef(()=>{
     return animateLayoutChanges({
       active: internalContext.value.active,
       containerId: context.value.containerId,
@@ -160,14 +177,27 @@ export function useSortable({
       isSorting: isSorting.value,
       id: id.value,
       index: index.value,
-      items:context.value.items,
+      items: context.value.items,
       newIndex: previous.value.newIndex,
       previousItems: previous.value.items,
       previousContainerId: previous.value.containerId,
       transition,
       wasDragging: previous.value?.activeId != null,
     })
-  });
+  }, [
+    () => internalContext.value.active,
+    () => context.value.containerId,
+    () => isDragging.value,
+    () => isSorting.value,
+    () => id.value,
+    () => index.value,
+    () => context.value.items,
+    () => previous.value.newIndex,
+    () => previous.value.items,
+    () => previous.value.containerId,
+    () => previous.value?.activeId,
+  ])
+
 
   const derivedTransform = useDerivedTransform({
     disabled: shouldAnimateLayoutChanges,
@@ -191,21 +221,25 @@ export function useSortable({
   })
 
 
+
   watch([activeId], (value, oldValue, onCleanup) => {
-    if (activeId.value === previous.value.activeId) {
-      return;
+    if (!isEqual(value, oldValue)){
+      if (activeId.value === previous.value.activeId) {
+        return;
+      }
+
+      if (activeId.value && !previous.value.activeId) {
+        previous.value.activeId = activeId.value;
+        return;
+      }
+
+      const timeoutId = setTimeout(() => {
+        previous.value.activeId = activeId.value;
+      }, 50);
+
+      onCleanup(() => clearTimeout(timeoutId))
     }
 
-    if (activeId.value && !previous.value.activeId) {
-      previous.value.activeId = activeId.value;
-      return;
-    }
-
-    const timeoutId = setTimeout(() => {
-      previous.value.activeId = activeId.value;
-    }, 50);
-
-    onCleanup(() => clearTimeout(timeoutId))
   });
 
 
@@ -216,10 +250,8 @@ export function useSortable({
     () => previous.value.newIndex,
     () => index.value,
     () => shouldAnimateLayoutChanges.value
-  ], (value, oldValue, onCleanup) => {
-    if (!isEqual(value, oldValue)){
-      getTransitionValue.value = getTransition()
-    }
+  ], () => {
+    getTransitionValue.value = getTransition()
   }, {immediate: true})
   function getTransition() {
 

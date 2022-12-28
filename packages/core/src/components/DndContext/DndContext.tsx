@@ -76,6 +76,7 @@ import {
 import type {MeasuringConfiguration} from './types';
 import DndContextProvider from "../../CreateContextVueVNode/DndContextProvider";
 import {computed, defineComponent, ref, useSlots, watch, h} from "vue";
+import {watchRef} from "../../index";
 
 export interface Props {
   id?: string;
@@ -168,15 +169,10 @@ const DndContext = defineComponent<Props>((props_) => {
     return status.value === Status.Initialized
   });
 
-  const activeId = computed(()=>{
-    return state.value.draggable.active
-  })
-  const draggableNodes = computed(()=>{
-    return state.value.draggable.nodes
-  })
-  const droppableContainers = computed(()=>{
-    return state.value.droppable.containers
-  })
+  const activeId = watchRef(()=>state.value.draggable.active, [()=>state.value.draggable.active])
+  const draggableNodes = watchRef(()=>state.value.draggable.nodes, [()=>state.value.draggable.nodes])
+  const droppableContainers = watchRef(()=>state.value.droppable.containers, [()=>state.value.droppable.containers])
+
 
 
 

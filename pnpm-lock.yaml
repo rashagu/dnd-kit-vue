@@ -24,11 +24,11 @@ importers:
       vue-tsc: ^1.0.9
     dependencies:
       '@changesets/cli': 2.25.2
-      '@dnd-kit-vue/accessibility': 0.0.1_vue@3.2.45
-      '@dnd-kit-vue/core': 0.0.1_lodash@4.17.21+vue@3.2.45
-      '@dnd-kit-vue/modifiers': 0.0.1_5w5ppku7verdwgnrcjkrfhhgvq
-      '@dnd-kit-vue/sortable': 0.0.1_5w5ppku7verdwgnrcjkrfhhgvq
-      '@dnd-kit-vue/utilities': 0.0.1_vue@3.2.45
+      '@dnd-kit-vue/accessibility': link:packages/accessibility
+      '@dnd-kit-vue/core': link:packages/core
+      '@dnd-kit-vue/modifiers': link:packages/modifiers
+      '@dnd-kit-vue/sortable': link:packages/sortable
+      '@dnd-kit-vue/utilities': link:packages/utilities
       vue: 3.2.45
     devDependencies:
       '@types/node': 18.11.9
@@ -66,8 +66,8 @@ importers:
 
   packages/core:
     specifiers:
-      '@dnd-kit-vue/accessibility': ^0.0.2
-      '@dnd-kit-vue/utilities': ^0.0.2
+      '@dnd-kit-vue/accessibility': ^0.0.1
+      '@dnd-kit-vue/utilities': ^0.0.1
       '@types/lodash': ^4.14.190
       '@types/node': ^18.11.9
       '@vitejs/plugin-vue': ^4.0.0
@@ -83,6 +83,7 @@ importers:
       '@dnd-kit-vue/accessibility': link:../accessibility
       '@dnd-kit-vue/utilities': link:../utilities
       lodash: 4.17.21
+      tslib: 2.4.0
       vue: 3.2.45
     devDependencies:
       '@types/lodash': 4.14.190
@@ -90,15 +91,14 @@ importers:
       '@vitejs/plugin-vue': 4.0.0_vite@4.0.3+vue@3.2.45
       '@vitejs/plugin-vue-jsx': 3.0.0_vite@4.0.3+vue@3.2.45
       rimraf: 3.0.2
-      tslib: 2.4.0
       typescript: 4.9.3
       vite: 4.0.3_@types+node@18.11.9
       vue-tsc: 1.0.9_typescript@4.9.3
 
   packages/modifiers:
     specifiers:
-      '@dnd-kit-vue/core': ^0.0.2
-      '@dnd-kit-vue/utilities': ^0.0.2
+      '@dnd-kit-vue/core': ^0.0.1
+      '@dnd-kit-vue/utilities': ^0.0.1
       '@types/node': ^18.11.9
       '@vitejs/plugin-vue': ^4.0.0
       '@vitejs/plugin-vue-jsx': ^3.0.0
@@ -124,11 +124,13 @@ importers:
 
   packages/sortable:
     specifiers:
-      '@dnd-kit-vue/core': ^0.0.2
-      '@dnd-kit-vue/utilities': ^0.0.2
+      '@dnd-kit-vue/core': ^0.0.1
+      '@dnd-kit-vue/utilities': ^0.0.1
+      '@types/lodash': ^4.14.190
       '@types/node': ^18.11.9
       '@vitejs/plugin-vue': ^4.0.0
       '@vitejs/plugin-vue-jsx': ^3.0.0
+      lodash: ^4.17.21
       rimraf: ^3.0.2
       tslib: ^2.0.0
       typescript: ^4.9.3
@@ -136,11 +138,13 @@ importers:
       vue: ^3.2.45
       vue-tsc: ^1.0.9
     dependencies:
-      '@dnd-kit-vue/core': link:../core
       '@dnd-kit-vue/utilities': link:../utilities
+      lodash: 4.17.21
       tslib: 2.4.0
       vue: 3.2.45
     devDependencies:
+      '@dnd-kit-vue/core': link:../core
+      '@types/lodash': 4.14.190
       '@types/node': 18.11.9
       '@vitejs/plugin-vue': 4.0.0_vite@4.0.3+vue@3.2.45
       '@vitejs/plugin-vue-jsx': 3.0.0_vite@4.0.3+vue@3.2.45
@@ -438,15 +442,6 @@ packages:
       regenerator-runtime: 0.13.11
     dev: false
 
-  /@babel/template/7.18.10:
-    resolution: {integrity: sha512-TI+rCtooWHr3QJ27kJxfjutghu44DLnasDMwpDqCXVTal9RLp3RSYNh4NdBrRP2cQAoG9A8juOQl6P6oZG4JxA==}
-    engines: {node: '>=6.9.0'}
-    dependencies:
-      '@babel/code-frame': 7.18.6
-      '@babel/parser': 7.20.7
-      '@babel/types': 7.20.7
-    dev: true
-
   /@babel/template/7.20.7:
     resolution: {integrity: sha512-8SegXApWe6VoNw0r9JHpSteLKTpTiLZ4rMlGIm9JQ18KiCtyQiAMEazujAHrUS5flrcqYZa75ukev3P6QmUwUw==}
     engines: {node: '>=6.9.0'}
@@ -454,24 +449,6 @@ packages:
       '@babel/code-frame': 7.18.6
       '@babel/parser': 7.20.7
       '@babel/types': 7.20.7
-    dev: true
-
-  /@babel/traverse/7.20.1:
-    resolution: {integrity: sha512-d3tN8fkVJwFLkHkBN479SOsw4DMZnz8cdbL/gvuDuzy3TS6Nfw80HuQqhw1pITbIruHyh7d1fMA47kWzmcUEGA==}
-    engines: {node: '>=6.9.0'}
-    dependencies:
-      '@babel/code-frame': 7.18.6
-      '@babel/generator': 7.20.7
-      '@babel/helper-environment-visitor': 7.18.9
-      '@babel/helper-function-name': 7.19.0
-      '@babel/helper-hoist-variables': 7.18.6
-      '@babel/helper-split-export-declaration': 7.18.6
-      '@babel/parser': 7.20.7
-      '@babel/types': 7.20.7
-      debug: 4.3.4
-      globals: 11.12.0
-    transitivePeerDependencies:
-      - supports-color
     dev: true
 
   /@babel/traverse/7.20.10:
@@ -490,15 +467,6 @@ packages:
       globals: 11.12.0
     transitivePeerDependencies:
       - supports-color
-    dev: true
-
-  /@babel/types/7.20.2:
-    resolution: {integrity: sha512-FnnvsNWgZCr232sqtXggapvlkk/tuwR/qhGzcmxI0GXLCjmPYQPzio2FbdlWuY6y1sHFfQKk+rRbUZ9VStQMog==}
-    engines: {node: '>=6.9.0'}
-    dependencies:
-      '@babel/helper-string-parser': 7.19.4
-      '@babel/helper-validator-identifier': 7.19.1
-      to-fast-properties: 2.0.0
     dev: true
 
   /@babel/types/7.20.7:
@@ -694,60 +662,6 @@ packages:
       fs-extra: 7.0.1
       human-id: 1.0.2
       prettier: 2.8.0
-    dev: false
-
-  /@dnd-kit-vue/accessibility/0.0.1_vue@3.2.45:
-    resolution: {integrity: sha512-KmAjwwPENs9emKRS//b+eiW4+2ZdSqYcMpBAJDfKh90BpTng5ET45hlaCg2OG360oqOhHbO39KkoCM+RDwTLIw==}
-    peerDependencies:
-      vue: ^3.2.45
-    dependencies:
-      vue: 3.2.45
-    dev: false
-
-  /@dnd-kit-vue/core/0.0.1_lodash@4.17.21+vue@3.2.45:
-    resolution: {integrity: sha512-wvDtw5FTyaZAc2FCZKkTeR+CalSDlnpDEgGWfW5Sqwuevsluv+tb/Ih/SH2ewy/0SvtmaNY23bI2+f3P8iEFFw==}
-    peerDependencies:
-      lodash: ^4.17.21
-      vue: ^3.2.45
-    dependencies:
-      '@dnd-kit-vue/accessibility': 0.0.1_vue@3.2.45
-      '@dnd-kit-vue/utilities': 0.0.1_vue@3.2.45
-      '@types/lodash': 4.14.190
-      lodash: 4.17.21
-      tslib: 2.4.0
-      vue: 3.2.45
-    dev: false
-
-  /@dnd-kit-vue/modifiers/0.0.1_5w5ppku7verdwgnrcjkrfhhgvq:
-    resolution: {integrity: sha512-WmJ4CKlpnkCVD1TZfs6V3jBiGob+BKLQB0uQR4P2VQPY1YkdRmPi5Q8i3JbTwreoh5UCFXNkjIifFLJXYoZdmw==}
-    peerDependencies:
-      '@dnd-kit-vue/core': ^0.0.1
-      vue: ^3.2.45
-    dependencies:
-      '@dnd-kit-vue/core': 0.0.1_lodash@4.17.21+vue@3.2.45
-      '@dnd-kit-vue/utilities': 0.0.1_vue@3.2.45
-      tslib: 2.4.0
-      vue: 3.2.45
-    dev: false
-
-  /@dnd-kit-vue/sortable/0.0.1_5w5ppku7verdwgnrcjkrfhhgvq:
-    resolution: {integrity: sha512-1QcFXgFqhPDkoYUilWHYVXDeTV4fUR+IVuqfqSckCePQc4RxE88x1jVYADfjnZomyIZoDyhOGoMr398VIzYWkQ==}
-    peerDependencies:
-      '@dnd-kit-vue/core': ^0.0.1
-      vue: ^3.2.45
-    dependencies:
-      '@dnd-kit-vue/core': 0.0.1_lodash@4.17.21+vue@3.2.45
-      '@dnd-kit-vue/utilities': 0.0.1_vue@3.2.45
-      tslib: 2.4.0
-      vue: 3.2.45
-    dev: false
-
-  /@dnd-kit-vue/utilities/0.0.1_vue@3.2.45:
-    resolution: {integrity: sha512-o2/Nxw/Q5zMyVa1lmiVSP6wYoqLThpgX+ZvEBNT4DWnr2KioN2FBIjKEDxsn6G/0ML28MnwWDL4rpy25STRhAg==}
-    peerDependencies:
-      vue: ^3.2.45
-    dependencies:
-      vue: 3.2.45
     dev: false
 
   /@esbuild/android-arm/0.15.15:
@@ -1077,6 +991,7 @@ packages:
 
   /@types/lodash/4.14.190:
     resolution: {integrity: sha512-5iJ3FBJBvQHQ8sFhEhJfjUP+G+LalhavTkYyrAYqz5MEJG+erSv0k9KJLb6q7++17Lafk1scaTIFXcMJlwK8Mw==}
+    dev: true
 
   /@types/minimist/1.2.2:
     resolution: {integrity: sha512-jhuKLIRrhvCPLqwPcx6INqmKeiA5EWrsCOPhrlFSrbrmU4ZMPjj5Ul/oLCMDO98XRUIwVm78xICz4EPCektzeQ==}
@@ -1193,9 +1108,9 @@ packages:
     dependencies:
       '@babel/helper-module-imports': 7.18.6
       '@babel/plugin-syntax-jsx': 7.18.6_@babel+core@7.20.7
-      '@babel/template': 7.18.10
-      '@babel/traverse': 7.20.1
-      '@babel/types': 7.20.2
+      '@babel/template': 7.20.7
+      '@babel/traverse': 7.20.10
+      '@babel/types': 7.20.7
       '@vue/babel-helper-vue-transform-on': 1.0.2
       camelcase: 6.3.0
       html-tags: 3.2.0
@@ -3148,8 +3063,8 @@ packages:
       fsevents: 2.3.2
     dev: true
 
-  /rollup/3.9.0:
-    resolution: {integrity: sha512-nGGylpmblyjTpF4lEUPgmOw6OVxRvnI6Iuuh6Lz4O/X66cVOX1XJSsqP1YamxQ+mPuFE7qJxLFDSCk8rNv5dDw==}
+  /rollup/3.8.1:
+    resolution: {integrity: sha512-4yh9eMW7byOroYcN8DlF9P/2jCpu6txVIHjEqquQVSx7DI0RgyCCN3tjrcy4ra6yVtV336aLBB3v2AarYAxePQ==}
     engines: {node: '>=14.18.0', npm: '>=8.0.0'}
     hasBin: true
     optionalDependencies:
@@ -3443,6 +3358,7 @@ packages:
 
   /tslib/2.4.0:
     resolution: {integrity: sha512-d6xOpEDfsi2CZVlPQzGeux8XMwLT9hssAsaPYExaQMuYskwb+x1x7J371tWlbBdWHroy99KnVB6qIkUbs5X3UQ==}
+    dev: false
 
   /tty-table/4.1.6:
     resolution: {integrity: sha512-kRj5CBzOrakV4VRRY5kUWbNYvo/FpOsz65DzI5op9P+cHov3+IqPbo1JE1ZnQGkHdZgNFDsrEjrfqqy/Ply9fw==}
@@ -3607,7 +3523,7 @@ packages:
       esbuild: 0.16.12
       postcss: 8.4.20
       resolve: 1.22.1
-      rollup: 3.9.0
+      rollup: 3.8.1
     optionalDependencies:
       fsevents: 2.3.2
     dev: true

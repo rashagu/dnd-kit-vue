@@ -117,3 +117,7 @@ export type {
   CollisionDescriptor,
   CollisionDetection,
 } from './utilities';
+
+
+
+export {default as watchRef} from './utilities/watchRef'

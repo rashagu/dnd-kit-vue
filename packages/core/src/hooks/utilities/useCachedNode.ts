@@ -2,11 +2,11 @@ import {useLazyMemo} from '@dnd-kit-vue/utilities';
 
 import type {DraggableNode, DraggableNodes} from '../../store';
 import type {UniqueIdentifier} from '../../types';
-import {computed, ComputedRef, ref} from "vue";
+import {computed, ComputedRef, Ref, ref} from "vue";
 
 export function useCachedNode(
-  draggableNodes: ComputedRef<DraggableNodes>,
-  id: ComputedRef<UniqueIdentifier | null>
+  draggableNodes: ComputedRef<DraggableNodes> | Ref<DraggableNodes>,
+  id: ComputedRef<UniqueIdentifier | null> | Ref<UniqueIdentifier | null>
 ): ComputedRef<DraggableNode['node']['current']> {
 
   const valueRef = ref();

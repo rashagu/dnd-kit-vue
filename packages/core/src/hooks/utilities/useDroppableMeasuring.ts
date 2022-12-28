@@ -3,7 +3,7 @@ import {useLatestValue, useLazyMemo} from '@dnd-kit-vue/utilities';
 import {Rect} from '../../utilities/rect';
 import type {DroppableContainer, RectMap} from '../../store/types';
 import type {ClientRect, UniqueIdentifier} from '../../types';
-import {computed, ComputedRef, ref, watch, watchEffect} from "vue";
+import {computed, ComputedRef, ref, shallowRef, watch, watchEffect} from "vue";
 
 interface Arguments {
   dragging: boolean;
@@ -50,7 +50,7 @@ export function useDroppableMeasuring(
     }
     containerIdsScheduledForMeasurement.value = containerIdsScheduledForMeasurement.value ? containerIdsScheduledForMeasurement.value.concat(ids) : ids
   })
-  const timeoutId = ref<any>(null);
+  const timeoutId = shallowRef<any>(null);
 
   const previousValue = ref()
   const droppableRects = computed(() => {
