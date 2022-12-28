@@ -30,7 +30,7 @@ const SortableDemo1 = defineComponent<Demo1Props>((props, {}) => {
   const slots = useSlots()
 
   const items = ref<any[]>([]);
-  for (let i = 0; i < 10; i++) {
+  for (let i = 0; i < 80; i++) {
     items.value.push(i+1)
   }
 

@@ -234,7 +234,7 @@ const DndContext = defineComponent<Props>((props_) => {
   );
   const autoScrollOptions = getAutoScrollerOptions();
   const initialActiveNodeRect = useInitialRect(
-    activeNode.value,
+    activeNode,
     measuringConfiguration.value.draggable.measure
   );
 
@@ -305,7 +305,10 @@ const DndContext = defineComponent<Props>((props_) => {
 
   // The delta between the previous and new position of the draggable node
   // is only relevant when there is no drag overlay
-  const nodeRectDelta = useRectDelta(usesDragOverlay.value ? null : activeNodeRect.value);
+  const useRectDeltaValue = computed(()=>{
+    return usesDragOverlay.value ? null : activeNodeRect.value
+  })
+  const nodeRectDelta = useRectDelta(useRectDeltaValue);
 
   // Get the window rect of the dragging node
   const windowRect = useWindowRect(
@@ -337,25 +340,23 @@ const DndContext = defineComponent<Props>((props_) => {
     ()=>scrollableAncestors.value,
     ()=>windowRect.value
   ],(value, oldValue, onCleanup)=>{
-    if (!isEqual(value, oldValue)){
-      applyModifiersArgsRef.value = {
-        transform: {
-          x: state.value.draggable.translate.x - nodeRectDelta.x,
-          y: state.value.draggable.translate.y - nodeRectDelta.y,
-          scaleX: 1,
-          scaleY: 1,
-        },
-        activatorEvent: activatorEvent.value,
-        active: active.value,
-        activeNodeRect: activeNodeRect.value,
-        containerNodeRect: containerNodeRect.value,
-        draggingNodeRect: draggingNodeRect?.value,
-        over: sensorContext.value.over,
-        overlayNodeRect: dragOverlay.value.rect.value,
-        scrollableAncestors: scrollableAncestors.value,
-        scrollableAncestorRects,
-        windowRect: windowRect.value,
-      }
+    applyModifiersArgsRef.value = {
+      transform: {
+        x: state.value.draggable.translate.x - nodeRectDelta.x,
+        y: state.value.draggable.translate.y - nodeRectDelta.y,
+        scaleX: 1,
+        scaleY: 1,
+      },
+      activatorEvent: activatorEvent.value,
+      active: active.value,
+      activeNodeRect: activeNodeRect.value,
+      containerNodeRect: containerNodeRect.value,
+      draggingNodeRect: draggingNodeRect?.value,
+      over: sensorContext.value.over,
+      overlayNodeRect: dragOverlay.value.rect.value,
+      scrollableAncestors: scrollableAncestors.value,
+      scrollableAncestorRects,
+      windowRect: windowRect.value,
     }
   }, {immediate:true})
   // Apply modifiers
@@ -625,30 +626,26 @@ const DndContext = defineComponent<Props>((props_) => {
     scrollableAncestors,
     scrollAdjustedTranslate,
   ], (value, oldValue)=>{
-    if (!isEqual(value, oldValue)){
-      // console.log(value, oldValue)
+    sensorContext.value = {
+      activatorEvent: activatorEvent.value,
+      active: active.value,
+      activeNode: activeNode.value,
+      collisionRect: collisionRect.value,
+      collisions: collisions.value,
+      droppableRects: droppableRects.value,
+      draggableNodes: draggableNodes.value,
+      draggingNode: draggingNode.value,
+      draggingNodeRect: draggingNodeRect?.value,
+      droppableContainers: droppableContainers.value,
+      over: over.value,
+      scrollableAncestors: scrollableAncestors.value,
+      scrollAdjustedTranslate:scrollAdjustedTranslate.value,
+    };
 
-      sensorContext.value = {
-        activatorEvent: activatorEvent.value,
-        active: active.value,
-        activeNode: activeNode.value,
-        collisionRect: collisionRect.value,
-        collisions: collisions.value,
-        droppableRects: droppableRects.value,
-        draggableNodes: draggableNodes.value,
-        draggingNode: draggingNode.value,
-        draggingNodeRect: draggingNodeRect?.value,
-        droppableContainers: droppableContainers.value,
-        over: over.value,
-        scrollableAncestors: scrollableAncestors.value,
-        scrollAdjustedTranslate:scrollAdjustedTranslate.value,
-      };
-
-      activeRects.value = {
-        initial: draggingNodeRect?.value,
-        translated: collisionRect.value,
-      };
-    }
+    activeRects.value = {
+      initial: draggingNodeRect?.value,
+      translated: collisionRect.value,
+    };
   }, {immediate: true})
 
 

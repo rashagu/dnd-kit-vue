@@ -149,11 +149,9 @@ export function useSortable({
     ()=>index.value,
     ()=>id.value,
   ], (value, oldValue, onCleanup)=>{
-    if (!isEqual(value, oldValue)){
-      newIndex.value =  isValidIndex(context.value.activeIndex) && isValidIndex(context.value.overIndex)
-        ? getNewIndex({id: id.value, items:context.value.items, activeIndex:context.value.activeIndex, overIndex:context.value.overIndex})
-        : index.value
-    }
+    newIndex.value =  isValidIndex(context.value.activeIndex) && isValidIndex(context.value.overIndex)
+      ? getNewIndex({id: id.value, items:context.value.items, activeIndex:context.value.activeIndex, overIndex:context.value.overIndex})
+      : index.value
   }, {immediate: true})
 
   const activeId = watchRef(()=>internalContext.value.active?.id, [()=>internalContext.value.active?.id])
@@ -199,6 +197,7 @@ export function useSortable({
   ])
 
 
+
   const derivedTransform = useDerivedTransform({
     disabled: shouldAnimateLayoutChanges,
     index,
@@ -223,22 +222,21 @@ export function useSortable({
 
 
   watch([activeId], (value, oldValue, onCleanup) => {
-    if (!isEqual(value, oldValue)){
-      if (activeId.value === previous.value.activeId) {
-        return;
-      }
 
-      if (activeId.value && !previous.value.activeId) {
-        previous.value.activeId = activeId.value;
-        return;
-      }
-
-      const timeoutId = setTimeout(() => {
-        previous.value.activeId = activeId.value;
-      }, 50);
-
-      onCleanup(() => clearTimeout(timeoutId))
+    if (activeId.value === previous.value.activeId) {
+      return;
     }
+
+    if (activeId.value && !previous.value.activeId) {
+      previous.value.activeId = activeId.value;
+      return;
+    }
+
+    const timeoutId = setTimeout(() => {
+      previous.value.activeId = activeId.value;
+    }, 50);
+
+    onCleanup(() => clearTimeout(timeoutId))
 
   });
 

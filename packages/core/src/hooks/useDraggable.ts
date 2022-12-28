@@ -88,7 +88,7 @@ export function useDraggable({
     return {
       role,
       tabIndex,
-      'aria-disabled': disabled.value,
+      'aria-disabled': disabled?.value,
       'aria-pressed': isDragging.value && role === defaultRole ? true : undefined,
       'aria-roledescription': roleDescription,
       'aria-describedby': internalContext.value.ariaDescribedById.draggable,
@@ -97,7 +97,7 @@ export function useDraggable({
 
   watch([
     ()=>isDragging.value,
-    ()=>disabled.value,
+    ()=>disabled?.value,
     ()=>internalContext.value.ariaDescribedById.draggable
   ],()=>{
     memoizedAttributes.value = getMemoizedAttributes()
@@ -107,7 +107,7 @@ export function useDraggable({
     internalContext:internalContext,
     isDragging,
     attributes: memoizedAttributes,
-    listeners: computed(()=>disabled.value ? undefined : listeners.value),
+    listeners: computed(()=>disabled?.value ? undefined : listeners.value),
     node,
     setNodeRef,
     setActivatorNodeRef,

@@ -12,6 +12,7 @@ import type {ClientRect, UniqueIdentifier} from '../types';
 import {useResizeObserver} from './utilities';
 import {computed, ComputedRef, getCurrentInstance, inject, ref, shallowRef, watch, watchEffect} from "vue";
 import {useInternalContext} from "../CreateContextVueVNode/InternalContextConsumer";
+import {isEqual} from "lodash";
 
 interface ResizeObserverConfig {
   /** Whether the ResizeObserver should be disabled entirely */
@@ -156,10 +157,17 @@ export function useDroppable({
   const isOver = computed(()=>{
     return internalContext.value.over?.id === id.value
   })
+  // TODO
+  const rect_ = ref(rect.value)
+  watch(rect, (value, oldValue, onCleanup)=>{
+    if (!isEqual(value, oldValue)){
+      rect_.value = value
+    }
+  })
 
   return {
     // active: internalContext.value.active,
-    rect,
+    rect:rect_,
     isOver: isOver,
     node: nodeRef,
     // over: internalContext.value.over,

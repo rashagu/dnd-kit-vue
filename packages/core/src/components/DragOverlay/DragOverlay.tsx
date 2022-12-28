@@ -85,14 +85,12 @@ const DragOverlay = defineComponent<Props>((props, {}) => {
     ()=>context.value.droppableContainers,
     ()=>context.value.measuringConfiguration
   ], (value, oldValue, onCleanup)=>{
-    if (!isEqual(value, oldValue)){
-      dropAnimation.value = useDropAnimation({
-        config: props.dropAnimation,
-        draggableNodes: context.value.draggableNodes,
-        droppableContainers: context.value.droppableContainers,
-        measuringConfiguration: context.value.measuringConfiguration,
-      })
-    }
+    dropAnimation.value = useDropAnimation({
+      config: props.dropAnimation,
+      draggableNodes: context.value.draggableNodes,
+      droppableContainers: context.value.droppableContainers,
+      measuringConfiguration: context.value.measuringConfiguration,
+    })
   }, {immediate: true})
 
 
@@ -119,21 +117,19 @@ const DragOverlay = defineComponent<Props>((props, {}) => {
     ()=>transform.value,
     ()=>context.value.windowRect,
   ], (value, oldValue, onCleanup)=>{
-    if (!isEqual(value, oldValue)){
-      modifiedTransform.value = applyModifiers(props.modifiers, {
-        activatorEvent: context.value.activatorEvent,
-        active: context.value.active,
-        activeNodeRect: context.value.activeNodeRect,
-        containerNodeRect: context.value.containerNodeRect,
-        draggingNodeRect: context.value.dragOverlay.rect,
-        over: context.value.over,
-        overlayNodeRect: context.value.dragOverlay.rect,
-        scrollableAncestors: context.value.scrollableAncestors,
-        scrollableAncestorRects: context.value.scrollableAncestorRects,
-        transform:transform.value,
-        windowRect: context.value.windowRect,
-      });
-    }
+    modifiedTransform.value = applyModifiers(props.modifiers, {
+      activatorEvent: context.value.activatorEvent,
+      active: context.value.active,
+      activeNodeRect: context.value.activeNodeRect,
+      containerNodeRect: context.value.containerNodeRect,
+      draggingNodeRect: context.value.dragOverlay.rect,
+      over: context.value.over,
+      overlayNodeRect: context.value.dragOverlay.rect,
+      scrollableAncestors: context.value.scrollableAncestors,
+      scrollableAncestorRects: context.value.scrollableAncestorRects,
+      transform:transform.value,
+      windowRect: context.value.windowRect,
+    });
 
   }, {immediate: true})
 
