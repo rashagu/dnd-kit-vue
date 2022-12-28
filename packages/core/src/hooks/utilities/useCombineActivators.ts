@@ -1,5 +1,3 @@
-
-
 import type {SensorActivatorFunction, SensorDescriptor} from '../../sensors';
 import type {
   SyntheticListener,
@@ -16,13 +14,14 @@ export function useCombineActivators(
 ): ComputedRef<SyntheticListener[]> {
   return computed(
     () => sensors.reduce<SyntheticListeners>((accumulator, sensor) => {
-        const {sensor: Sensor} = sensor;
+      const {sensor: Sensor} = sensor;
 
-        const sensorActivators = Sensor.activators.map((activator) => ({
-          eventName: activator.eventName,
-          handler: getSyntheticHandler.value(activator.handler, sensor),
-        }));
+      const sensorActivators = Sensor.activators.map((activator) => ({
+        eventName: activator.eventName,
+        handler: getSyntheticHandler.value(activator.handler, sensor),
+      }));
 
-        return [...accumulator, ...sensorActivators];
-      }, []));
+
+      return [...accumulator, ...sensorActivators];
+    }, []));
 }

@@ -6,8 +6,8 @@ import {isEqual} from "lodash";
 
 interface Arguments {
   rect: Ref<any>;
-  disabled: ComputedRef<boolean>;
-  index: ComputedRef<number>;
+  disabled: Ref<boolean>;
+  index: Ref<number>;
   node: Ref<any>;
 }
 
@@ -25,48 +25,43 @@ export function useDerivedTransform({disabled, index, node, rect}: Arguments) {
   const previousIndex = ref(index.value);
 
   watch([disabled, index, node, rect], (value, oldValue, onCleanup) => {
+    if (!isEqual(value, oldValue)){
+      // console.error(index.value, previousIndex.value)
+      if (disabled.value && index.value !== previousIndex.value && node.value) {
+        const initial = rect.value;
 
-    console.log(123)
+        if (initial) {
+          const current = getClientRect(node.value, {
+            ignoreTransform: true,
+          });
 
-    // console.error(index.value, previousIndex.value)
-    if (disabled.value && index.value !== previousIndex.value && node.value) {
-      const initial = rect.value;
+          const delta = {
+            x: initial.left - current.left,
+            y: initial.top - current.top,
+            scaleX: initial.width / current.width,
+            scaleY: initial.height / current.height,
+          };
 
-      if (initial) {
-        const current = getClientRect(node.value, {
-          ignoreTransform: true,
-        });
-
-        const delta = {
-          x: initial.left - current.left,
-          y: initial.top - current.top,
-
-
-
-
-
-          scaleX: initial.width / current.width,
-          scaleY: initial.height / current.height,
-        };
-
-        if (delta.x || delta.y) {
-          setDerivedtransform(delta);
+          if (delta.x || delta.y) {
+            setDerivedtransform(delta);
+          }
         }
+      }
+
+      if (index.value !== previousIndex.value) {
+        previousIndex.value = index.value;
       }
     }
 
-    if (index.value !== previousIndex.value) {
-      // previousIndex.value = index.value;
-    }
   }, {immediate: true});
 
-  watchEffect(() => {
+  watch(derivedTransform, (value, oldValue, onCleanup) => {
     if (derivedTransform.value) {
       requestAnimationFrame(() => {
         setDerivedtransform(null);
       });
     }
-  });
+  }, {immediate: true});
 
   return derivedTransform;
 }

@@ -10,7 +10,7 @@ import {InternalContext, Action, Data, InternalContextDescriptor, defaultInterna
 import type {ClientRect, UniqueIdentifier} from '../types';
 
 import {useResizeObserver} from './utilities';
-import {computed, ComputedRef, getCurrentInstance, inject, ref, watch, watchEffect} from "vue";
+import {computed, ComputedRef, getCurrentInstance, inject, ref, shallowRef, watch, watchEffect} from "vue";
 import {useInternalContext} from "../CreateContextVueVNode/InternalContextConsumer";
 
 interface ResizeObserverConfig {
@@ -27,8 +27,8 @@ interface ResizeObserverConfig {
 
 export interface UseDroppableArguments {
   id: ComputedRef<UniqueIdentifier>;
-  disabled?: boolean;
-  data?: Data;
+  disabled: ComputedRef<boolean>;
+  data?: ComputedRef<Data>;
   resizeObserverConfig?: ResizeObserverConfig;
 }
 
@@ -40,7 +40,7 @@ const defaultResizeObserverConfig = {
 
 export function useDroppable({
   data,
-  disabled = false,
+  disabled,
   id,
   resizeObserverConfig,
 }: UseDroppableArguments) {
@@ -49,11 +49,11 @@ export function useDroppable({
 
   const internalContext = useInternalContext()
 
-  const previous = ref({disabled});
-  const resizeObserverConnected = ref(false);
-  const rect = ref<ClientRect | null>(null);
+  const previous = shallowRef({disabled:disabled.value});
+  const resizeObserverConnected = shallowRef(false);
+  const rect = shallowRef<ClientRect | null>(null);
 
-  const callbackId = ref<any>(null);
+  const callbackId = shallowRef<any>(null);
   const {
     disabled: resizeObserverDisabled,
     updateMeasurementsFor,
@@ -63,7 +63,10 @@ export function useDroppable({
     ...resizeObserverConfig,
   };
   const id_C = computed(()=>id.value)
-  const ids = useLatestValue(updateMeasurementsFor ?? id_C);
+  const latestValue = computed(()=>{
+    return updateMeasurementsFor?.value ?? id_C.value
+  })
+  const ids = useLatestValue(latestValue);
   const handleResize = () => {
     if (!resizeObserverConnected.value) {
       // ResizeObserver invokes the `handleResize` callback as soon as `observe` is called,
@@ -72,21 +75,23 @@ export function useDroppable({
       return;
     }
 
-    if (callbackId.current != null) {
-      clearTimeout(callbackId.current);
+    if (callbackId.value != null) {
+      clearTimeout(callbackId.value);
     }
 
-    callbackId.current = setTimeout(() => {
+    callbackId.value = setTimeout(() => {
       internalContext.value.measureDroppableContainers(
         Array.isArray(ids.value) ? ids.value : [ids.value]
       );
-      callbackId.current = null;
+      callbackId.value = null;
     }, resizeObserverTimeout);
   };
+
   const resizeObserver = useResizeObserver({
     callback: handleResize,
     disabled: resizeObserverDisabled || !internalContext.value.active,
   });
+
   const handleNodeChange = (newElement: HTMLElement | null, previousElement: HTMLElement | null) => {
       if (!resizeObserver.value) {
         return;
@@ -102,9 +107,9 @@ export function useDroppable({
       }
     };
   const [nodeRef, setNodeRef] = useNodeRef(handleNodeChange);
-  const dataRef = useLatestValue(computed(()=>data));
+  const dataRef = useLatestValue(computed(()=>data?.value));
 
-  watchEffect(() => {
+  watch([nodeRef, resizeObserver], () => {
     if (!resizeObserver.value || !nodeRef.value) {
       return;
     }
@@ -112,7 +117,7 @@ export function useDroppable({
     resizeObserver.value.disconnect();
     resizeObserverConnected.value = false;
     resizeObserver.value.observe(nodeRef.value);
-  });
+  }, {immediate: true});
 
 
   watch(()=>id.value, (value, oldValue, onCleanup) => {
@@ -121,7 +126,7 @@ export function useDroppable({
         element: {
           id: value,
           key,
-          disabled,
+          disabled:disabled.value,
           node: nodeRef,
           rect,
           data: dataRef,
@@ -136,16 +141,16 @@ export function useDroppable({
     }, {immediate: true}
   );
 
-  watch([id, key, ()=>disabled, ()=>internalContext.value.dispatch], () => {
-    if (disabled !== previous.value.disabled) {
+  watch([id, key, ()=>disabled.value, ()=>internalContext.value.dispatch], () => {
+    if (disabled.value !== previous.value.disabled) {
       internalContext.value.dispatch({
         type: Action.SetDroppableDisabled,
         id: id.value,
         key,
-        disabled,
+        disabled: disabled.value,
       });
 
-      previous.value.disabled = disabled;
+      previous.value.disabled = disabled.value;
     }
   });
   const isOver = computed(()=>{

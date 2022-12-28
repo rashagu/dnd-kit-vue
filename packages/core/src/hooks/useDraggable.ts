@@ -17,8 +17,8 @@ import {useInternalContext} from "../CreateContextVueVNode/InternalContextConsum
 
 export interface UseDraggableArguments {
   id: ComputedRef<UniqueIdentifier>;
-  data?: Data;
-  disabled?: boolean;
+  data?: ComputedRef<Data>;
+  disabled: ComputedRef<boolean>;
   attributes?: {
     role?: string;
     roleDescription?: string;
@@ -44,19 +44,23 @@ const ID_PREFIX = 'Droppable';
 export function useDraggable({
   id,
   data,
-  disabled = false,
+  disabled,
   attributes,
 }: UseDraggableArguments) {
   const key = useUniqueId(ID_PREFIX);
   const internalContext = useInternalContext();
 
-
   const dndContext = useDndContext()
   const {role = defaultRole, roleDescription = 'draggable', tabIndex = 0} =
     attributes ?? {};
-  const isDragging = computed(()=>{
-    return internalContext.value.active?.id === id.value
-  });
+  const activeId = computed(()=>internalContext.value.active?.id)
+
+
+  const isDragging = ref(false)
+  watch(activeId, ()=>{
+    isDragging.value = internalContext.value.active?.id === id.value
+  }, {immediate: true})
+
   const transform= computed<Transform | null >(()=>{
     return  isDragging.value ? dndContext.value : null;
   })
@@ -64,7 +68,7 @@ export function useDraggable({
   const [activatorNode, setActivatorNodeRef] = useNodeRef();
   const listeners = useSyntheticListeners(internalContext.value.activators, id);
 
-  const dataRef = useLatestValue(computed(()=>data));
+  const dataRef = useLatestValue(computed(()=>data?.value));
 
   watch([()=>internalContext.value.draggableNodes, ()=>id.value], () => {
       internalContext.value.draggableNodes.set(id.value, {id: id.value, key: key.value, node, activatorNode, data: dataRef});
@@ -76,26 +80,34 @@ export function useDraggable({
           internalContext.value.draggableNodes.delete(id.value);
         }
       };
-    }, {immediate: true}
-  );
+    }, {immediate: true});
 
-  const memoizedAttributes: ComputedRef<DraggableAttributes> = computed(
-    () => {
-      return {
-        role,
-        tabIndex,
-        'aria-disabled': disabled,
-        'aria-pressed': isDragging.value && role === defaultRole ? true : undefined,
-        'aria-roledescription': roleDescription,
-        'aria-describedby': internalContext.value.ariaDescribedById.draggable,
-      }
-    });
+
+  const memoizedAttributes = ref<DraggableAttributes>(getMemoizedAttributes())
+  function getMemoizedAttributes() {
+    return {
+      role,
+      tabIndex,
+      'aria-disabled': disabled.value,
+      'aria-pressed': isDragging.value && role === defaultRole ? true : undefined,
+      'aria-roledescription': roleDescription,
+      'aria-describedby': internalContext.value.ariaDescribedById.draggable,
+    }
+  }
+
+  watch([
+    ()=>isDragging.value,
+    ()=>disabled.value,
+    ()=>internalContext.value.ariaDescribedById.draggable
+  ],()=>{
+    memoizedAttributes.value = getMemoizedAttributes()
+  })
 
   return {
     internalContext:internalContext,
     isDragging,
     attributes: memoizedAttributes,
-    listeners: disabled ? undefined : listeners,
+    listeners: computed(()=>disabled.value ? undefined : listeners.value),
     node,
     setNodeRef,
     setActivatorNodeRef,
