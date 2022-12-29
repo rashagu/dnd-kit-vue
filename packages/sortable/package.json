@@ -27,6 +27,7 @@
   ],
   "dependencies": {
     "@dnd-kit-vue/utilities": "^0.0.2",
+    "@dnd-kit-vue/core": "^0.0.2",
     "tslib": "^2.0.0"
   },
   "peerDependencies": {

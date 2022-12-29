@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build:all": "pnpm -C ./packages/accessibility build && pnpm -C ./packages/core build && pnpm -C ./packages/modifiers build && pnpm -C ./packages/sortable build && pnpm -C ./packages/utilities build",
+    "build:all": "pnpm -C ./packages/accessibility build && pnpm -C ./packages/utilities build && pnpm -C ./packages/core build && pnpm -C ./packages/modifiers build && pnpm -C ./packages/sortable build",
     "preview": "vite preview",
     "change": "pnpm changeset",
     "version": "pnpm changeset version",
