@@ -2,7 +2,6 @@
 import {getClientRect, ClientRect} from '@dnd-kit-vue/core';
 import {Transform, useIsomorphicLayoutEffect} from '@dnd-kit-vue/utilities';
 import {ComputedRef, Ref, ref, watch, watchEffect} from "vue";
-import {isEqual} from "lodash";
 
 interface Arguments {
   rect: Ref<any>;

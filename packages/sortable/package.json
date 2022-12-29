@@ -1,6 +1,6 @@
 {
   "name": "@dnd-kit-vue/sortable",
-  "version": "0.0.1",
+  "version": "0.0.3",
   "description": "Official sortable preset and sensors for dnd kit",
   "author": "Claudéric Demers",
   "license": "MIT",
