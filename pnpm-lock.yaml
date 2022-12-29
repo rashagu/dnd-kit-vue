@@ -5,11 +5,11 @@ importers:
   .:
     specifiers:
       '@changesets/cli': ^2.25.2
-      '@dnd-kit-vue/accessibility': 0.0.1
-      '@dnd-kit-vue/core': 0.0.1
-      '@dnd-kit-vue/modifiers': 0.0.1
-      '@dnd-kit-vue/sortable': 0.0.1
-      '@dnd-kit-vue/utilities': 0.0.1
+      '@dnd-kit-vue/accessibility': 0.0.3
+      '@dnd-kit-vue/core': 0.0.3
+      '@dnd-kit-vue/modifiers': 0.0.3
+      '@dnd-kit-vue/sortable': 0.0.3
+      '@dnd-kit-vue/utilities': 0.0.3
       '@types/node': ^18.11.9
       '@vitejs/plugin-vue': ^4.0.0
       '@vitejs/plugin-vue-jsx': ^3.0.0
@@ -66,8 +66,8 @@ importers:
 
   packages/core:
     specifiers:
-      '@dnd-kit-vue/accessibility': ^0.0.1
-      '@dnd-kit-vue/utilities': ^0.0.1
+      '@dnd-kit-vue/accessibility': ^0.0.3
+      '@dnd-kit-vue/utilities': ^0.0.3
       '@types/lodash': ^4.14.190
       '@types/node': ^18.11.9
       '@vitejs/plugin-vue': ^4.0.0
@@ -97,8 +97,8 @@ importers:
 
   packages/modifiers:
     specifiers:
-      '@dnd-kit-vue/core': ^0.0.1
-      '@dnd-kit-vue/utilities': ^0.0.1
+      '@dnd-kit-vue/core': ^0.0.3
+      '@dnd-kit-vue/utilities': ^0.0.3
       '@types/node': ^18.11.9
       '@vitejs/plugin-vue': ^4.0.0
       '@vitejs/plugin-vue-jsx': ^3.0.0
@@ -124,8 +124,8 @@ importers:
 
   packages/sortable:
     specifiers:
-      '@dnd-kit-vue/core': ^0.0.1
-      '@dnd-kit-vue/utilities': ^0.0.1
+      '@dnd-kit-vue/core': ^0.0.3
+      '@dnd-kit-vue/utilities': ^0.0.3
       '@types/lodash': ^4.14.190
       '@types/node': ^18.11.9
       '@vitejs/plugin-vue': ^4.0.0
@@ -138,12 +138,12 @@ importers:
       vue: ^3.2.45
       vue-tsc: ^1.0.9
     dependencies:
+      '@dnd-kit-vue/core': link:../core
       '@dnd-kit-vue/utilities': link:../utilities
       lodash: 4.17.21
       tslib: 2.4.0
       vue: 3.2.45
     devDependencies:
-      '@dnd-kit-vue/core': link:../core
       '@types/lodash': 4.14.190
       '@types/node': 18.11.9
       '@vitejs/plugin-vue': 4.0.0_vite@4.0.3+vue@3.2.45

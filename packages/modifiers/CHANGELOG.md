@@ -1,5 +1,18 @@
 # @dnd-kit-vue/modifiers
 
+## 0.0.4
+
+### Patch Changes
+
+- fdf35bb: fix build
+- 7c16d6d: a
+- 7ae3e8f: 合并
+- Updated dependencies [fdf35bb]
+- Updated dependencies [7c16d6d]
+- Updated dependencies [7ae3e8f]
+  - @dnd-kit-vue/core@0.0.4
+  - @dnd-kit-vue/utilities@0.0.4
+
 ## 0.0.2
 
 ### Patch Changes

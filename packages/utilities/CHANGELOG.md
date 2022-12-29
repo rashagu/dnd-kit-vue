@@ -1,5 +1,13 @@
 # @dnd-kit-vue/utilities
 
+## 0.0.4
+
+### Patch Changes
+
+- fdf35bb: fix build
+- 7c16d6d: a
+- 7ae3e8f: 合并
+
 ## 0.0.2
 
 ### Patch Changes
