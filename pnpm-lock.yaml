@@ -82,15 +82,15 @@ importers:
     dependencies:
       '@dnd-kit-vue/accessibility': link:../accessibility
       '@dnd-kit-vue/utilities': link:../utilities
-      '@types/lodash': 4.14.190
       lodash: 4.17.21
-      tslib: 2.4.0
       vue: 3.2.45
     devDependencies:
+      '@types/lodash': 4.14.190
       '@types/node': 18.11.9
       '@vitejs/plugin-vue': 4.0.0_vite@4.0.3+vue@3.2.45
       '@vitejs/plugin-vue-jsx': 3.0.0_vite@4.0.3+vue@3.2.45
       rimraf: 3.0.2
+      tslib: 2.4.0
       typescript: 4.9.3
       vite: 4.0.3_@types+node@18.11.9
       vue-tsc: 1.0.9_typescript@4.9.3
@@ -136,11 +136,11 @@ importers:
       vue: ^3.2.45
       vue-tsc: ^1.0.9
     dependencies:
+      '@dnd-kit-vue/core': link:../core
       '@dnd-kit-vue/utilities': link:../utilities
       tslib: 2.4.0
       vue: 3.2.45
     devDependencies:
-      '@dnd-kit-vue/core': link:../core
       '@types/node': 18.11.9
       '@vitejs/plugin-vue': 4.0.0_vite@4.0.3+vue@3.2.45
       '@vitejs/plugin-vue-jsx': 3.0.0_vite@4.0.3+vue@3.2.45
@@ -1077,7 +1077,6 @@ packages:
 
   /@types/lodash/4.14.190:
     resolution: {integrity: sha512-5iJ3FBJBvQHQ8sFhEhJfjUP+G+LalhavTkYyrAYqz5MEJG+erSv0k9KJLb6q7++17Lafk1scaTIFXcMJlwK8Mw==}
-    dev: false
 
   /@types/minimist/1.2.2:
     resolution: {integrity: sha512-jhuKLIRrhvCPLqwPcx6INqmKeiA5EWrsCOPhrlFSrbrmU4ZMPjj5Ul/oLCMDO98XRUIwVm78xICz4EPCektzeQ==}
@@ -3444,7 +3443,6 @@ packages:
 
   /tslib/2.4.0:
     resolution: {integrity: sha512-d6xOpEDfsi2CZVlPQzGeux8XMwLT9hssAsaPYExaQMuYskwb+x1x7J371tWlbBdWHroy99KnVB6qIkUbs5X3UQ==}
-    dev: false
 
   /tty-table/4.1.6:
     resolution: {integrity: sha512-kRj5CBzOrakV4VRRY5kUWbNYvo/FpOsz65DzI5op9P+cHov3+IqPbo1JE1ZnQGkHdZgNFDsrEjrfqqy/Ply9fw==}
