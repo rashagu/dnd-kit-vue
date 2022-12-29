@@ -6,6 +6,7 @@ import {getMeasurableNode} from '../../utilities/nodes';
 import type {PublicContextDescriptor} from '../../store';
 import type {ClientRect} from '../../types';
 import {computed, ComputedRef, Ref, ref} from "vue";
+import {isEqual} from "lodash";
 
 interface Arguments {
   measure(element: HTMLElement): ClientRect;

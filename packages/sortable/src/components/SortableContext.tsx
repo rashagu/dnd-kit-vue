@@ -21,6 +21,7 @@ import {
 } from "vue";
 import Provider from "./context/Provider";
 import Consumer from "./context/Consumer";
+import {isEqual} from "lodash";
 
 export interface Props {
   items: (UniqueIdentifier | {id: UniqueIdentifier})[];
