@@ -26,12 +26,12 @@
     "dist"
   ],
   "dependencies": {
-    "@dnd-kit-vue/utilities": "^0.0.1",
-    "@dnd-kit-vue/core": "^0.0.1",
+    "@dnd-kit-vue/utilities": "^0.0.3",
+    "@dnd-kit-vue/core": "^0.0.3",
     "tslib": "^2.0.0"
   },
   "peerDependencies": {
-    "@dnd-kit-vue/core": "^0.0.1",
+    "@dnd-kit-vue/core": "^0.0.3",
     "vue": "^3.2.45"
   },
   "devDependencies": {

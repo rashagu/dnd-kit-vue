@@ -26,19 +26,19 @@
     "dist"
   ],
   "dependencies": {
-    "@dnd-kit-vue/utilities": "^0.0.1",
+    "@dnd-kit-vue/utilities": "^0.0.3",
+    "@dnd-kit-vue/core": "^0.0.3",
     "lodash": "^4.17.21",
     "tslib": "^2.0.0"
   },
   "peerDependencies": {
     "vue": "^3.2.45",
     "lodash": "^4.17.21",
-    "@dnd-kit-vue/core": "^0.0.1"
+    "@dnd-kit-vue/core": "^0.0.3"
   },
   "devDependencies": {
     "@types/lodash": "^4.14.190",
     "@types/node": "^18.11.9",
-    "@dnd-kit-vue/core": "^0.0.1",
     "@vitejs/plugin-vue": "^4.0.0",
     "@vitejs/plugin-vue-jsx": "^3.0.0",
     "rimraf": "^3.0.2",
