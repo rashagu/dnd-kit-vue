@@ -17,8 +17,7 @@ import {inject, ref, useSlots, h, defineComponent, computed, ExtractPropTypes, w
 import {defaultCoordinates} from "../../utilities";
 import {Transform} from "@dnd-kit-vue/utilities/src";
 import {useDndContext} from "../../CreateContextVueVNode/DndContextConsumer";
-import {ClientRect} from "../../types";
-import {isEqual} from "lodash";
+
 
 export interface Props
   extends Pick<

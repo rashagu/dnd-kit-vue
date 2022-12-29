@@ -7,7 +7,6 @@ import {getClientRect, Rect, useReducer} from '../../utilities';
 import {useMutationObserver} from './useMutationObserver';
 import {useResizeObserver} from './useResizeObserver';
 import {computed, ComputedRef, ref, watch} from "vue";
-import {isEqual} from "lodash";
 
 function defaultMeasure(element: HTMLElement) {
   return new Rect(getClientRect(element), element);

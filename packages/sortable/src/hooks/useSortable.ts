@@ -27,8 +27,6 @@ import type {
 import {useDerivedTransform} from './utilities';
 import {useSortableContext} from "../components/context/Consumer";
 import {computed, ref, shallowRef, watch} from "vue";
-import {isEqual} from "lodash";
-import {UniqueIdentifier} from "@dnd-kit-vue/core/src";
 
 export interface Arguments
   extends Omit<UseDraggableArguments, 'disabled'>,
