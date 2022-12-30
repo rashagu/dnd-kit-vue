@@ -1,5 +1,14 @@
 # @dnd-kit-vue/modifiers
 
+## 0.0.5
+
+### Patch Changes
+
+- 30fce38: scrollableAncestorRects
+- Updated dependencies [30fce38]
+  - @dnd-kit-vue/core@0.0.5
+  - @dnd-kit-vue/utilities@0.0.5
+
 ## 0.0.4
 
 ### Patch Changes

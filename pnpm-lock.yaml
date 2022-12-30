@@ -24,11 +24,11 @@ importers:
       vue-tsc: ^1.0.9
     dependencies:
       '@changesets/cli': 2.25.2
-      '@dnd-kit-vue/accessibility': link:packages/accessibility
-      '@dnd-kit-vue/core': link:packages/core
-      '@dnd-kit-vue/modifiers': link:packages/modifiers
-      '@dnd-kit-vue/sortable': link:packages/sortable
-      '@dnd-kit-vue/utilities': link:packages/utilities
+      '@dnd-kit-vue/accessibility': 0.0.3_vue@3.2.45
+      '@dnd-kit-vue/core': 0.0.3_mzpu26mql5lxzshl6mzlaoybn4
+      '@dnd-kit-vue/modifiers': 0.0.3_er23cpjp2dto4rswrpmizd5rcm
+      '@dnd-kit-vue/sortable': 0.0.3_er23cpjp2dto4rswrpmizd5rcm
+      '@dnd-kit-vue/utilities': 0.0.3_vue@3.2.45
       vue: 3.2.45
     devDependencies:
       '@types/node': 18.11.9
@@ -66,8 +66,8 @@ importers:
 
   packages/core:
     specifiers:
-      '@dnd-kit-vue/accessibility': ^0.0.3
-      '@dnd-kit-vue/utilities': ^0.0.3
+      '@dnd-kit-vue/accessibility': ^0.0.4
+      '@dnd-kit-vue/utilities': ^0.0.4
       '@types/lodash': ^4.14.190
       '@types/node': ^18.11.9
       '@vitejs/plugin-vue': ^4.0.0
@@ -97,8 +97,8 @@ importers:
 
   packages/modifiers:
     specifiers:
-      '@dnd-kit-vue/core': ^0.0.3
-      '@dnd-kit-vue/utilities': ^0.0.3
+      '@dnd-kit-vue/core': ^0.0.4
+      '@dnd-kit-vue/utilities': ^0.0.4
       '@types/node': ^18.11.9
       '@vitejs/plugin-vue': ^4.0.0
       '@vitejs/plugin-vue-jsx': ^3.0.0
@@ -124,8 +124,8 @@ importers:
 
   packages/sortable:
     specifiers:
-      '@dnd-kit-vue/core': ^0.0.3
-      '@dnd-kit-vue/utilities': ^0.0.3
+      '@dnd-kit-vue/core': ^0.0.4
+      '@dnd-kit-vue/utilities': ^0.0.4
       '@types/lodash': ^4.14.190
       '@types/node': ^18.11.9
       '@vitejs/plugin-vue': ^4.0.0
@@ -662,6 +662,60 @@ packages:
       fs-extra: 7.0.1
       human-id: 1.0.2
       prettier: 2.8.0
+    dev: false
+
+  /@dnd-kit-vue/accessibility/0.0.3_vue@3.2.45:
+    resolution: {integrity: sha512-hI65emS/WWc6U8xLUBNu27yuMsmp2n/MNUfQpLyVgoAMgPtR5aVkw6awdUK9gOmY98MvwG+gVxydegitGh9f+w==}
+    peerDependencies:
+      vue: ^3.2.45
+    dependencies:
+      vue: 3.2.45
+    dev: false
+
+  /@dnd-kit-vue/core/0.0.3_mzpu26mql5lxzshl6mzlaoybn4:
+    resolution: {integrity: sha512-Gsv4G7DV5nB5LwHOHsgLtxMk2+C3PXCAnozZwRwpR3ZMGxo5CiFynKrkIvcZAIGCaRTmifQW7cvz80NTU4Mvbw==}
+    peerDependencies:
+      '@dnd-kit-vue/accessibility': ^0.0.3
+      '@dnd-kit-vue/utilities': ^0.0.3
+      lodash: ^4.17.21
+      vue: ^3.2.45
+    dependencies:
+      '@dnd-kit-vue/accessibility': 0.0.3_vue@3.2.45
+      '@dnd-kit-vue/utilities': 0.0.3_vue@3.2.45
+      lodash: 4.17.21
+      vue: 3.2.45
+    dev: false
+
+  /@dnd-kit-vue/modifiers/0.0.3_er23cpjp2dto4rswrpmizd5rcm:
+    resolution: {integrity: sha512-Wyb9C2lfI6TAhXgkRpLVkoOqJxx6FIVc9rAEwjo94ElhWZlUttrRiaUSei24+iLOpvlNJF2+CT7So4MA/5wZBw==}
+    peerDependencies:
+      '@dnd-kit-vue/core': ^0.0.3
+      vue: ^3.2.45
+    dependencies:
+      '@dnd-kit-vue/core': 0.0.3_mzpu26mql5lxzshl6mzlaoybn4
+      '@dnd-kit-vue/utilities': 0.0.3_vue@3.2.45
+      tslib: 2.4.0
+      vue: 3.2.45
+    dev: false
+
+  /@dnd-kit-vue/sortable/0.0.3_er23cpjp2dto4rswrpmizd5rcm:
+    resolution: {integrity: sha512-kklqku2WRrV7I61jKVBRbCfFOfFzqgEhpFDpM1Jr70vKUfVa2TokcpuJMBoWXxvx3O77lNjFuPWBKpFFf80ueg==}
+    peerDependencies:
+      '@dnd-kit-vue/core': ^0.0.3
+      vue: ^3.2.45
+    dependencies:
+      '@dnd-kit-vue/core': 0.0.3_mzpu26mql5lxzshl6mzlaoybn4
+      '@dnd-kit-vue/utilities': 0.0.3_vue@3.2.45
+      tslib: 2.4.0
+      vue: 3.2.45
+    dev: false
+
+  /@dnd-kit-vue/utilities/0.0.3_vue@3.2.45:
+    resolution: {integrity: sha512-e+GCmyhlKs1RwgQuzEXtZbND8rCxxpyMozcL1N0YiSJqEG2s8U+tEF0jlxZTvlYrqlBnwXDbdeSLvc1jP61BcQ==}
+    peerDependencies:
+      vue: ^3.2.45
+    dependencies:
+      vue: 3.2.45
     dev: false
 
   /@esbuild/android-arm/0.15.15:
