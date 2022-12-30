@@ -7,42 +7,55 @@ import {isDocumentScrollingElement, useReducer} from '../../utilities';
 
 import {useResizeObserver} from './useResizeObserver';
 import {useWindowRect} from './useWindowRect';
-import {ref} from "vue";
+import {computed, ComputedRef, ref, watch} from "vue";
 
 const defaultValue: Rect[] = [];
 
 export function useRects(
-  elements: Element[],
+  elements: ComputedRef<Element[]>,
   measure: (element: Element) => ClientRect = getClientRect
 ): ClientRect[] {
-  const [firstElement] = elements;
+  const useWindowRectOption = computed(()=>{
+    const [firstElement] = elements.value;
+    return firstElement ? getWindow(firstElement) : null
+  })
   const windowRect = useWindowRect(
-    firstElement ? getWindow(firstElement) : null
+    useWindowRectOption
   );
+
   const [rects, measureRects] = useReducer(reducer, defaultValue);
   const resizeObserver = useResizeObserver({callback: measureRects});
 
-  if (elements.length > 0 && rects.value === defaultValue) {
-    measureRects();
-  }
 
-  useIsomorphicLayoutEffect(() => {
-    if (elements.length) {
-      elements.forEach((element) => resizeObserver.value?.observe(element));
+
+
+  watch([()=>elements.value], () => {
+
+    if (elements.value.length > 0 && rects.value === defaultValue) {
+      measureRects();
+    }
+
+
+    if (elements.value.length) {
+      elements.value.forEach((element) => resizeObserver.value?.observe(element));
     } else {
       resizeObserver.value?.disconnect();
       measureRects();
     }
-  });
+
+
+
+  }, {immediate: true});
 
   return rects.value;
 
   function reducer() {
-    if (!elements.length) {
+
+    if (!elements.value.length) {
       return defaultValue;
     }
 
-    return elements.map((element) =>
+    return elements.value.map((element) =>
       isDocumentScrollingElement(element)
         ? (windowRect.value as ClientRect)
         : new Rect(measure(element), element)

@@ -37,7 +37,6 @@ const CoreTest = defineComponent<ExampleProps>((props, {slots}) => {
     <DndContext
       onDragEnd={handleDragEnd}
     >
-      {JSON.stringify(coordinates.value)}
       <div style={{position:'absolute', left: coordinates.value.x + 'px', top: coordinates.value.y + 'px'}}>
         <Draggable/>
       </div>

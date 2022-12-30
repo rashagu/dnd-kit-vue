@@ -1,6 +1,5 @@
 
 import {
-  useIsomorphicLayoutEffect,
   useLatestValue,
   useNodeRef,
   useUniqueId,

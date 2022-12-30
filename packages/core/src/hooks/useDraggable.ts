@@ -1,7 +1,6 @@
 import {
   Transform,
   useNodeRef,
-  useIsomorphicLayoutEffect,
   useLatestValue,
   useUniqueId,
 } from '@dnd-kit-vue/utilities';

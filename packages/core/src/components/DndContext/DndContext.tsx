@@ -3,7 +3,6 @@ import {
   getEventCoordinates,
   getWindow,
   useLatestValue,
-  useIsomorphicLayoutEffect,
   useUniqueId,
 } from '@dnd-kit-vue/utilities';
 import type {Transform} from '@dnd-kit-vue/utilities';
@@ -309,17 +308,17 @@ const DndContext = defineComponent<Props>((props_) => {
     return usesDragOverlay.value ? null : activeNodeRect.value
   })
   const nodeRectDelta = useRectDelta(useRectDeltaValue);
-
+  const useWindowRectOption = computed(()=>{
+    return draggingNode.value ? getWindow(draggingNode.value) : null
+  })
   // Get the window rect of the dragging node
-  const windowRect = useWindowRect(
-    draggingNode.value ? getWindow(draggingNode.value) : null
-  );
+  const windowRect = useWindowRect(useWindowRectOption);
 
   // Get scrollable ancestors of the dragging node
   const scrollableAncestors = useScrollableAncestors(
     isInitialized.value ? overNode.value ?? activeNode.value : null
   );
-  const scrollableAncestorRects = useRects(scrollableAncestors.value);
+  const scrollableAncestorRects = useRects(scrollableAncestors);
 
 
   const applyModifiersArgsRef = ref()
@@ -777,7 +776,6 @@ const DndContext = defineComponent<Props>((props_) => {
       <DndMonitorContext.Provider value={registerMonitorListener}>
         <InternalContext.Provider value={internalContext}>
           <PublicContext.Provider value={publicContext}>
-            {JSON.stringify(transform.value)}
             <ActiveDraggableContext.Provider value={transform.value}>
               {{
                 default: slots.default
