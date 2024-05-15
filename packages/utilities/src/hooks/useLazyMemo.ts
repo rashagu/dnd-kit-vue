@@ -1,17 +1,19 @@
-
-import {computed, ComputedRef, ref} from "vue";
+import { type ShallowRef, shallowRef, watch } from "vue";
 
 export function useLazyMemo<T>(
   callback: (prevValue: T | undefined) => T,
   dependencies: any[]
-):ComputedRef {
-  const valueRef = ref<T>();
+): ShallowRef {
+  const valueRef = shallowRef<T>();
 
-  return computed(
+  watch(
+    dependencies,
     () => {
       const newValue = callback(valueRef.value);
       valueRef.value = newValue;
-
       return newValue;
-    });
+    },
+    { immediate: true }
+  );
+  return valueRef;
 }
