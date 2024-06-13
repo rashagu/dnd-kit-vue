@@ -1,6 +1,6 @@
 {
   "name": "@dnd-kit-vue/accessibility",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "A generic toolkit to help with accessibility",
   "author": "Claudéric Demers",
   "license": "MIT",
@@ -34,7 +34,7 @@
     "@vitejs/plugin-vue": "^5.0.5",
     "@vitejs/plugin-vue-jsx": "^4.0.0",
     "rimraf": "^3.0.2",
-    "typescript": "^5.4.5",
+    "typescript": "^5.5.1-rc",
     "vite": "^5.2.13",
     "vue-tsc": "^2.0.21"
   },

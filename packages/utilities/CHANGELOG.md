@@ -1,5 +1,11 @@
 # @dnd-kit-vue/utilities
 
+## 0.1.2
+
+### Patch Changes
+
+- ff2942d: fix 0.1.1 ts5.5.1
+
 ## 0.1.1
 
 ### Patch Changes

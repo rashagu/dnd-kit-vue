@@ -1,5 +1,14 @@
 # @dnd-kit-vue/modifiers
 
+## 0.1.2
+
+### Patch Changes
+
+- ff2942d: fix 0.1.1 ts5.5.1
+- Updated dependencies [ff2942d]
+  - @dnd-kit-vue/utilities@0.1.2
+  - @dnd-kit-vue/core@0.1.2
+
 ## 0.1.1
 
 ### Patch Changes
