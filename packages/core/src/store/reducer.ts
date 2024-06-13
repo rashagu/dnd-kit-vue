@@ -1,4 +1,4 @@
-import {Action, Actions} from './actions';
+import {Action, type Actions} from './actions';
 import {DroppableContainersMap} from './constructors';
 import type {State} from './types';
 

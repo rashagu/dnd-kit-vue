@@ -1,19 +1,14 @@
-
-import {usePrevious} from '@dnd-kit-vue/utilities';
-
-import type {UniqueIdentifier} from '../../../../types';
+import type { UniqueIdentifier } from '../../../../types'
 import {
   cloneVNode,
-  h,
-  ref,
-  useSlots,
-  Fragment,
-  onMounted,
-  watch,
+  type ComponentObjectPropsOptions,
   defineComponent,
-  ExtractPropTypes,
-  withMemo, shallowRef
-} from "vue";
+  Fragment, type PropType,
+  ref,
+  shallowRef,
+  useSlots,
+  watch
+} from 'vue'
 
 export type Animation = (
   key: UniqueIdentifier,
@@ -25,9 +20,9 @@ export interface Props {
   children: any
 }
 
-export const vuePropsType = {
-  animation: Function,
-  children: [Object, Function]
+export const vuePropsType: ComponentObjectPropsOptions<Props> = {
+  animation: Function as PropType<Props['animation']>,
+  children: [Object, Function] as PropType<Props['animation']>,
 }
 const AnimationManager = defineComponent<Props>((props, {}) => {
 
@@ -76,10 +71,11 @@ const AnimationManager = defineComponent<Props>((props, {}) => {
       </Fragment>
     );
   }
+}, {
+  props: vuePropsType,
+  name: 'AnimationManager'
 })
 
-AnimationManager.props = vuePropsType
-AnimationManager.name = 'AnimationManager'
 
 export {
   AnimationManager

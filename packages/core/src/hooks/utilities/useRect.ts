@@ -6,7 +6,7 @@ import {getClientRect, Rect, useReducer} from '../../utilities';
 
 import {useMutationObserver} from './useMutationObserver';
 import {useResizeObserver} from './useResizeObserver';
-import {computed, ComputedRef, ref, watch} from "vue";
+import { computed, type ComputedRef, Ref, ref, watch } from 'vue'
 
 function defaultMeasure(element: HTMLElement) {
   return new Rect(getClientRect(element), element);
@@ -14,7 +14,7 @@ function defaultMeasure(element: HTMLElement) {
 
 
 export function useRect(
-  element: ComputedRef<HTMLElement | null>,
+  element: Ref<HTMLElement | null>,
   measure: ComputedRef<(element: HTMLElement) => ClientRect> = computed(()=>defaultMeasure),
   fallbackRect?: ComputedRef<ClientRect | null>
 ) {

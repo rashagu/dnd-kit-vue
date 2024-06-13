@@ -1,5 +1,5 @@
 
-import {PublicContext, PublicContextDescriptor} from '../store';
+import {PublicContext, type PublicContextDescriptor} from '../store';
 import {inject, ref} from "vue";
 import {defaultPublicContext} from "../store/context";
 

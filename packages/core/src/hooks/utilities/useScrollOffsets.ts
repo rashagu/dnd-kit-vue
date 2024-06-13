@@ -8,11 +8,11 @@ import {
   getScrollOffsets,
 } from '../../utilities';
 import type {Coordinates} from '../../types';
-import {computed, ComputedRef, ref, shallowRef, watch, watchEffect} from "vue";
+import { computed, type ComputedRef, ref, type ShallowRef, shallowRef, watch, watchEffect } from 'vue'
 
 type ScrollCoordinates = Map<HTMLElement | Window, Coordinates>;
 
-export function useScrollOffsets(elements: ComputedRef<Element[]>): ComputedRef<Coordinates> {
+export function useScrollOffsets(elements: ShallowRef<Element[]>): ComputedRef<Coordinates> {
   const scrollCoordinates = ref<ScrollCoordinates | null>(null);
   const prevElements = shallowRef(elements.value);
 

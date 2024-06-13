@@ -2,7 +2,8 @@
 import type {ClientRect} from '../../types';
 
 import type {Collision, CollisionDescriptor} from './types';
-import {computed, ComputedRef} from "vue";
+
+
 
 /**
  * Sort collisions from smallest to greatest value

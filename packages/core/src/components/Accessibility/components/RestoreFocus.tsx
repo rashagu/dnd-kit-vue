@@ -5,7 +5,7 @@ import {
   usePrevious,
 } from '@dnd-kit-vue/utilities';
 
-import {defaultInternalContext, InternalContext, InternalContextDescriptor} from '../../../store';
+import {defaultInternalContext, InternalContext, type InternalContextDescriptor} from '../../../store';
 import {inject, ref, watchEffect} from "vue";
 
 interface Props {

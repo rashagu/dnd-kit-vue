@@ -8,17 +8,18 @@ import {getSortedRects, itemsEqual, normalizeDisabled} from '../utilities';
 import {rectSortingStrategy} from '../strategies';
 import {createContext} from "../createContext";
 import {
+  ComponentObjectPropsOptions,
   computed,
-  ComputedRef,
+  type ComputedRef,
   defineComponent,
   getCurrentInstance,
   h,
-  onRenderTracked,
+  onRenderTracked, PropType,
   ref,
   useSlots,
   watch,
   watchEffect
-} from "vue";
+} from 'vue'
 import Provider from "./context/Provider";
 import Consumer from "./context/Consumer";
 
@@ -50,17 +51,17 @@ export const Context = {
 
 
 
-export const vuePropsType = {
+export const vuePropsType: ComponentObjectPropsOptions<Props> = {
   id: String,
   items: {
     type: [Array],
   },
   strategy: {
-    type: Function,
+    type: Function as PropType<Props['strategy']>,
     default: rectSortingStrategy
   },
   disabled: {
-    type: Boolean,
+    type: Boolean as PropType<Props['disabled']>,
     default: false
   },
 }
@@ -138,10 +139,11 @@ const SortableContext = defineComponent<Props>((props, {}) => {
     }
     return <Context.Provider value={contextValue}>{slots.default?.()}</Context.Provider>;
   }
+}, {
+  props: vuePropsType,
+  name: 'SortableContext'
 })
 
-SortableContext.props = vuePropsType
-SortableContext.name = 'SortableContext'
 
 export {
   SortableContext

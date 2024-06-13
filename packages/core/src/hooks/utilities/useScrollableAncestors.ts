@@ -27,7 +27,7 @@ export function useScrollableAncestors(node: HTMLElement | null) {
 
       return getScrollableAncestors(node);
     },
-    [node]
+    [()=>node]
   );
 
   watchEffect(() => {

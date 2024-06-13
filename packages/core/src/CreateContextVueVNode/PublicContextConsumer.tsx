@@ -1,5 +1,5 @@
 import {defineComponent, ref, h, Fragment, useSlots, inject} from 'vue'
-import {PublicContextDescriptor} from "../store";
+import type {PublicContextDescriptor} from "../store";
 import {defaultPublicContext} from "../store/context";
 
 interface ExampleProps {
@@ -15,9 +15,10 @@ const PublicContextConsumer = defineComponent<ExampleProps>((props, {}) => {
   const slots = useSlots()
   const config = usePublicContext()
   return ()=>slots.default?slots.default(config):null
+}, {
+  props: vuePropsType,
 })
 
-PublicContextConsumer.props = vuePropsType
 
 export default PublicContextConsumer
 

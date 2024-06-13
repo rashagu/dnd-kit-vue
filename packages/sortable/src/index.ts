@@ -1,4 +1,4 @@
-import {Arguments} from "./hooks/useSortable";
+import type {Arguments} from "./hooks/useSortable";
 
 export {SortableContext} from './components';
 export type {SortableContextProps} from './components';

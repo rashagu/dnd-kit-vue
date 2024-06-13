@@ -1,5 +1,5 @@
 import type {SensorDescriptor, SensorOptions} from './types';
-import {computed, ComputedRef} from "vue";
+import {computed, type ComputedRef} from "vue";
 
 export function useSensors(
   ...sensors: ComputedRef<(SensorDescriptor<any> | undefined | null)>[]

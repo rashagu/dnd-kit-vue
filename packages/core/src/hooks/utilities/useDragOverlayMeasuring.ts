@@ -5,7 +5,7 @@ import {useResizeObserver} from './useResizeObserver';
 import {getMeasurableNode} from '../../utilities/nodes';
 import type {PublicContextDescriptor} from '../../store';
 import type {ClientRect} from '../../types';
-import {computed, ComputedRef, Ref, ref} from "vue";
+import {computed, type ComputedRef, type Ref, ref} from "vue";
 
 interface Arguments {
   measure(element: HTMLElement): ClientRect;

@@ -15,10 +15,12 @@ export function createContext<T>(defaultValue:T){
 
     provide('DndContext', props.value || ref<T>(defaultValue))
     return ()=>slots.default?slots.default(props.value):null
+  }, {
+    props: {
+      value:Object
+    }
   })
-  DndContextProvider.props = {
-    value:Object
-  }
+
 
   return {
     Provider: DndContextProvider

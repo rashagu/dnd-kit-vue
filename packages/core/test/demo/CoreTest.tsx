@@ -1,7 +1,7 @@
 import {defineComponent, ref, h, Fragment} from 'vue'
 import {defaultCoordinates, DndContext, useSensors} from "@dnd-kit-vue/core";
 import Draggable from "./Draggable";
-import {Coordinates} from "@dnd-kit-vue/utilities";
+import type {Coordinates} from "@dnd-kit-vue/utilities";
 
 
 
@@ -33,6 +33,7 @@ const CoreTest = defineComponent<ExampleProps>((props, {slots}) => {
     //   y:delta.y
     // }
   }
+
   return ()=>(
     <DndContext
       onDragEnd={handleDragEnd}

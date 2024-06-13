@@ -1,5 +1,26 @@
 # @dnd-kit-vue/sortable
 
+## 0.1.1
+
+### Patch Changes
+
+- 23dd1f2: fix 0.1.0
+- Updated dependencies [23dd1f2]
+  - @dnd-kit-vue/utilities@0.1.1
+  - @dnd-kit-vue/core@0.1.1
+
+## 0.1.0
+
+### Minor Changes
+
+- f221a5c: vue 3.4
+
+### Patch Changes
+
+- Updated dependencies [f221a5c]
+  - @dnd-kit-vue/utilities@0.1.0
+  - @dnd-kit-vue/core@0.1.0
+
 ## 0.0.5
 
 ### Patch Changes

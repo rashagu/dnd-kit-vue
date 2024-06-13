@@ -1,6 +1,6 @@
-import {ComputedRef, Ref, ref, shallowRef, watch } from 'vue';
+import {ref, shallowRef, watch } from 'vue';
+import type {ComputedRef, Ref } from 'vue';
 
-import {useIsomorphicLayoutEffect} from './useIsomorphicLayoutEffect';
 
 export function useLatestValue<T extends ComputedRef>(
   value: T,

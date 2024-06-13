@@ -3,7 +3,7 @@ import {CSS, isKeyboardEvent} from '@dnd-kit-vue/utilities';
 
 import {getRelativeTransformOrigin} from '../../../../utilities';
 import type {ClientRect, UniqueIdentifier} from '../../../../types';
-import {CSSProperties, defineComponent, h, useSlots} from "vue";
+import { type ComponentObjectPropsOptions, type CSSProperties, defineComponent, h, type PropType, useSlots } from 'vue'
 
 type TransitionGetter = (
   activatorEvent: Event | null
@@ -35,17 +35,17 @@ const defaultTransition: TransitionGetter = (activatorEvent) => {
 
 
 
-export const vuePropsType = {
+export const vuePropsType: ComponentObjectPropsOptions<Props> = {
   as: [Object,Function,String],
-  activatorEvent: [Object,Function,],
+  activatorEvent: [Object,Function,] as PropType<Props['activatorEvent']>,
   adjustScale: Boolean,
   className: String,
   id: [String, Number],
   rect: Object,
-  style: [String, Object],
-  transition: [String, Function],
+  style: [String, Object] as PropType<Props['style']>,
+  transition: [String, Function] as PropType<Props['transition']>,
   transform: Object,
-  setRef: [Function, Object]
+  setRef: [Function, Object] as PropType<Props['setRef']>,
 }
 const PositionedOverlay = defineComponent<Props>((props, {}) => {
   const slots = useSlots()
@@ -106,10 +106,11 @@ const PositionedOverlay = defineComponent<Props>((props, {}) => {
       {default: slots.default}
     );
   }
+}, {
+  props: vuePropsType,
+  name: 'PositionedOverlay'
 })
 
-PositionedOverlay.props = vuePropsType
-PositionedOverlay.name = 'PositionedOverlay'
 
 export {
   PositionedOverlay

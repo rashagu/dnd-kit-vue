@@ -1,6 +1,6 @@
 
-import {defineComponent, provide, ref, watch} from "vue";
-import {RegisterListener} from "../components/DndMonitor/types";
+import { defineComponent, type PropType, provide, ref, watch } from 'vue'
+import type {RegisterListener} from "../components/DndMonitor/types";
 
 
 
@@ -15,9 +15,11 @@ const DndMonitorContextProvider = defineComponent<{value:RegisterListener}>((pro
     provide('DndMonitorContext', context)
     return ()=>slots.default?slots.default(context.value):null
 
+}, {
+    props: {
+        value: Function as PropType<RegisterListener>
+    },
+    name: 'DndMonitorContextProvider'
 })
-DndMonitorContextProvider.props = {
-    value: Function
-}
-DndMonitorContextProvider.name = 'DndMonitorContextProvider'
+
 export default DndMonitorContextProvider;

@@ -1,5 +1,17 @@
 # @dnd-kit-vue/utilities
 
+## 0.1.1
+
+### Patch Changes
+
+- 23dd1f2: fix 0.1.0
+
+## 0.1.0
+
+### Minor Changes
+
+- f221a5c: vue 3.4
+
 ## 0.0.5
 
 ### Patch Changes

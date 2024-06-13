@@ -1,5 +1,5 @@
-import {ref, UnwrapRef, watch} from "vue";
-import type {WatchSource} from "vue";
+import type { WatchSource } from 'vue'
+import { ref, watch } from 'vue'
 
 
 export default function watchRef<T>(callback: ()=> T, dependencies: (WatchSource<unknown> | object)[]){

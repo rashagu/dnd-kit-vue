@@ -1,17 +1,12 @@
+import { useLatestValue, useNodeRef, useUniqueId } from '@dnd-kit-vue/utilities'
 
-import {
-  useLatestValue,
-  useNodeRef,
-  useUniqueId,
-} from '@dnd-kit-vue/utilities';
+import { Action, type Data } from '../store'
+import type { ClientRect, UniqueIdentifier } from '../types'
 
-import {InternalContext, Action, Data, InternalContextDescriptor, defaultInternalContext} from '../store';
-import type {ClientRect, UniqueIdentifier} from '../types';
-
-import {useResizeObserver} from './utilities';
-import {computed, ComputedRef, getCurrentInstance, inject, ref, shallowRef, watch, watchEffect} from "vue";
-import {useInternalContext} from "../CreateContextVueVNode/InternalContextConsumer";
-import {isEqual} from "lodash";
+import { useResizeObserver } from './utilities'
+import { computed, type ComputedRef, ref, shallowRef, watch } from 'vue'
+import { useInternalContext } from '../CreateContextVueVNode/InternalContextConsumer'
+import { isEqual } from 'lodash'
 
 interface ResizeObserverConfig {
   /** Whether the ResizeObserver should be disabled entirely */

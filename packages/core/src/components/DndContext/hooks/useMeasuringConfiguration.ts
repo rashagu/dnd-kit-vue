@@ -3,7 +3,7 @@ import type {DeepRequired} from '@dnd-kit-vue/utilities';
 
 import {defaultMeasuringConfiguration} from '../defaults';
 import type {MeasuringConfiguration} from '../types';
-import {computed, ComputedRef} from "vue";
+import {computed, type ComputedRef} from "vue";
 
 export function useMeasuringConfiguration(
   config: MeasuringConfiguration | undefined

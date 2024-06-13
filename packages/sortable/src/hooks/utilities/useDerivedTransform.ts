@@ -1,7 +1,7 @@
 
-import {getClientRect, ClientRect} from '@dnd-kit-vue/core';
-import {Transform, useIsomorphicLayoutEffect} from '@dnd-kit-vue/utilities';
-import {ComputedRef, Ref, ref, watch, watchEffect} from "vue";
+import {getClientRect, type ClientRect} from '@dnd-kit-vue/core';
+import {type Transform, useIsomorphicLayoutEffect} from '@dnd-kit-vue/utilities';
+import {type ComputedRef, type Ref, ref, watch, watchEffect} from "vue";
 
 interface Arguments {
   rect: Ref<any>;
@@ -29,7 +29,7 @@ export function useDerivedTransform({disabled, index, node, rect}: Arguments) {
     if (disabled.value && index.value !== previousIndex.value && node.value) {
       const initial = rect.value;
 
-      if (initial) {
+      if (initial && node.value) {
         const current = getClientRect(node.value, {
           ignoreTransform: true,
         });

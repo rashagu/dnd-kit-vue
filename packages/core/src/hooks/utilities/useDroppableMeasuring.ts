@@ -3,7 +3,7 @@ import {useLatestValue, useLazyMemo} from '@dnd-kit-vue/utilities';
 import {Rect} from '../../utilities/rect';
 import type {DroppableContainer, RectMap} from '../../store/types';
 import type {ClientRect, UniqueIdentifier} from '../../types';
-import {computed, ComputedRef, ref, shallowRef, watch, watchEffect} from "vue";
+import { computed, type ComputedRef, Ref, ref, shallowRef, watch, watchEffect } from 'vue'
 
 interface Arguments {
   dragging: boolean;
@@ -33,8 +33,9 @@ const defaultValue: RectMap = new Map();
 
 export function useDroppableMeasuring(
   containers: ComputedRef<DroppableContainer[]>,
-  arg: ComputedRef<Arguments>
+  arg: Ref<Arguments>
 ) {
+  const queue = ref<UniqueIdentifier[] | null>(null);
   const containerIdsScheduledForMeasurement = ref<UniqueIdentifier[] | null>(null);
   const measuringScheduled = computed(() => {
     return containerIdsScheduledForMeasurement.value != null
@@ -46,14 +47,17 @@ export function useDroppableMeasuring(
   const disabledRef = useLatestValue(disabled);
   const measureDroppableContainers = computed(()=>(ids: UniqueIdentifier[] = []) => {
     if (disabledRef.value) {
-      return;
+    return;
+  }
+    if (queue.value === null) {
+      return ids;
     }
-    containerIdsScheduledForMeasurement.value = containerIdsScheduledForMeasurement.value ? containerIdsScheduledForMeasurement.value.concat(ids) : ids
+
+    queue.value =  queue.value.concat(ids.filter((id) => !queue.value?.includes(id)));
   })
   const timeoutId = shallowRef<any>(null);
 
-  const previousValue = ref()
-  const droppableRects = computed(() => {
+  const droppableRects = useLazyMemo((previousValue) => {
     if (disabled.value && !arg.value.dragging) {
       return defaultValue;
     }
@@ -62,7 +66,7 @@ export function useDroppableMeasuring(
 
     if (
       !previousValue ||
-      previousValue.value === defaultValue ||
+      previousValue === defaultValue ||
       containersRef.value !== containers.value ||
       ids != null
     ) {
@@ -93,12 +97,13 @@ export function useDroppableMeasuring(
           map.set(container.id, rect);
         }
       }
-      previousValue.value = map
       return map;
     }
 
-    return previousValue.value;
-  })
+    return previousValue;
+  },
+      [containers, queue, ()=>arg.value.dragging, disabled, ()=>arg.value.config.measure]
+  )
 
 
   watchEffect(() => {

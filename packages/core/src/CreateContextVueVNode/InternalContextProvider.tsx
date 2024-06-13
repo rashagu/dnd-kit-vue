@@ -1,6 +1,6 @@
 
 import {defineComponent, provide, ref, watch} from "vue";
-import {InternalContextDescriptor} from "../store";
+import type {InternalContextDescriptor} from "../store";
 
 
 
@@ -16,9 +16,11 @@ const InternalContextProvider = defineComponent<{value:InternalContextDescriptor
     provide('InternalContext', context)
     return ()=>slots.default?slots.default(context.value):null
 
+}, {
+    props: {
+        value:Object
+    },
+    name: 'InternalContextProvider'
 })
-InternalContextProvider.props = {
-    value:Object
-}
-InternalContextProvider.name = 'InternalContextProvider'
+
 export default InternalContextProvider;

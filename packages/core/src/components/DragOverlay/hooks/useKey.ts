@@ -1,6 +1,6 @@
 
 import type {UniqueIdentifier} from '../../../types';
-import {computed, ComputedRef, ref, watch} from "vue";
+import {computed, type ComputedRef, ref, watch} from "vue";
 
 let key = 0;
 
