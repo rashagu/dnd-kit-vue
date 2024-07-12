@@ -1,6 +1,6 @@
 
 import type {SyntheticEventName, UniqueIdentifier} from '../../types';
-import {computed, ComputedRef} from "vue";
+import {computed, type ComputedRef} from "vue";
 
 export type SyntheticListener = {
   eventName: SyntheticEventName;

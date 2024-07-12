@@ -5,15 +5,14 @@ import {
   useLatestValue,
   useUniqueId,
 } from '@dnd-kit-vue/utilities';
-import type {Transform} from '@dnd-kit-vue/utilities';
-import { isEqual } from "lodash"
+
 
 import {
   Action,
   PublicContext,
   InternalContext,
-  PublicContextDescriptor,
-  InternalContextDescriptor,
+  type PublicContextDescriptor,
+  type InternalContextDescriptor,
   getInitialState,
   reducer,
 } from '../../store';
@@ -44,13 +43,13 @@ import type {
 } from '../../sensors';
 import {
   adjustScale,
-  CollisionDetection,
+  type CollisionDetection,
   defaultCoordinates,
   getAdjustedRect,
   getFirstCollision,
   rectIntersection, useReducer,
 } from '../../utilities';
-import {applyModifiers, Modifiers} from '../../modifiers';
+import {applyModifiers, type Modifiers} from '../../modifiers';
 import type {Active, Over} from '../../store/types';
 import type {
   DragStartEvent,
@@ -62,9 +61,9 @@ import type {
 } from '../../types';
 import {
   Accessibility,
-  Announcements,
+  type Announcements,
   RestoreFocus,
-  ScreenReaderInstructions,
+  type ScreenReaderInstructions,
 } from '../Accessibility';
 
 import {defaultData, defaultSensors} from './defaults';
@@ -74,7 +73,16 @@ import {
 } from './hooks';
 import type {MeasuringConfiguration} from './types';
 import DndContextProvider from "../../CreateContextVueVNode/DndContextProvider";
-import {computed, defineComponent, ref, useSlots, watch, h} from "vue";
+import {
+  computed,
+  defineComponent,
+  ref,
+  useSlots,
+  watch,
+  h,
+  type ComponentObjectPropsOptions,
+  type PropType
+} from 'vue'
 import {watchRef} from "../../index";
 
 export interface Props {
@@ -126,25 +134,25 @@ enum Status {
   Initialized,
 }
 
-export const vuePropsType = {
+export const vuePropsType: ComponentObjectPropsOptions<Props> = {
   id: String,
   accessibility: Object,
-  autoScroll: [Object, Array, Boolean],
-  cancelDrop: [Object, Array,],
-  collisionDetection: [Object, Array, Function],
-  measuring: [Object, Array,],
+  autoScroll: [Object, Array, Boolean] as PropType<Props['autoScroll']>,
+  cancelDrop: [Object, Array,] as PropType<Props['cancelDrop']>,
+  collisionDetection: [Object, Array, Function] as PropType<Props['collisionDetection']>,
+  measuring: [Object, Array,] as PropType<Props['measuring']>,
   modifiers: [Object, Array,],
   sensors: Object,
 
-  onDragStart: Function,
+  onDragStart: Function as PropType<Props['onDragStart']>,
 
-  onDragMove: Function,
+  onDragMove: Function as PropType<Props['onDragMove']>,
 
-  onDragOver: Function,
+  onDragOver: Function as PropType<Props['onDragOver']>,
 
-  onDragEnd: Function,
+  onDragEnd: Function as PropType<Props['onDragEnd']>,
 
-  onDragCancel: Function,
+  onDragCancel: Function as PropType<Props['onDragCancel']>,
 }
 const DndContext = defineComponent<Props>((props_) => {
   const {
@@ -175,9 +183,12 @@ const DndContext = defineComponent<Props>((props_) => {
 
 
 
-  const node = computed(()=>{
+  const node = watchRef(()=>{
     return activeId.value ? draggableNodes.value.get(activeId.value) : null
-  });
+  }, [
+    activeId,
+    draggableNodes,
+  ]);
   const activeRects = ref<Active['rect']['current']>({
     initial: null,
     translated: null,
@@ -212,13 +223,18 @@ const DndContext = defineComponent<Props>((props_) => {
     () => state.value.droppable.containers.getEnabled(),
   );
   const measuringConfiguration = useMeasuringConfiguration(measuring);
-  const useDroppableMeasuringArg = computed(()=>{
+  const useDroppableMeasuringArg = watchRef(()=>{
     return {
       dragging: isInitialized.value,
       dependencies: [state.value.draggable.translate.x, state.value.draggable.translate.y],
       config: measuringConfiguration.value.droppable,
     }
-  })
+  }, [
+    isInitialized,
+    ()=>state.value.draggable.translate.x,
+    ()=>state.value.draggable.translate.y,
+    ()=>measuringConfiguration.value.droppable,
+  ])
   const {
     droppableRects,
     measureDroppableContainers,
@@ -228,8 +244,13 @@ const DndContext = defineComponent<Props>((props_) => {
     useDroppableMeasuringArg
   );
   const activeNode = useCachedNode(draggableNodes, activeId);
-  const activationCoordinates = computed(
-    () => (activatorEvent.value ? getEventCoordinates(activatorEvent.value) : null)
+  const activationCoordinates = watchRef(
+    () => {
+      return (activatorEvent.value ? getEventCoordinates(activatorEvent.value) : null)
+    },
+    [
+      activatorEvent
+    ]
   );
   const autoScrollOptions = getAutoScrollerOptions();
   const initialActiveNodeRect = useInitialRect(
@@ -255,9 +276,12 @@ const DndContext = defineComponent<Props>((props_) => {
     initialActiveNodeRect
   )
 
-  const containerNode  = computed(()=>{
+  const containerNode  = watchRef(()=>{
     return activeNode.value ? activeNode.value.parentElement : null
-  })
+  }, [
+    activeNode,
+    ()=>activeNode.value?.parentElement
+  ])
   const containerNodeRect = useRect(
     containerNode
   )
@@ -277,40 +301,57 @@ const DndContext = defineComponent<Props>((props_) => {
     scrollAdjustedTranslate: null,
   });
 
-  const overNode = computed(()=>{
+  const overNode = watchRef(()=>{
     return droppableContainers.value.getNodeFor(
       sensorContext.value.over?.id
     )
-  });
+  }, [
+    droppableContainers,
+    ()=>sensorContext.value.over?.id
+  ]);
 
   const dragOverlay = useDragOverlayMeasuring({
     measure: measuringConfiguration.value.dragOverlay.measure,
   });
 
   // Use the rect of the drag overlay if it is mounted
-  const draggingNode = computed(()=>{
+  const draggingNode = watchRef(()=>{
     return dragOverlay.value.nodeRef.value ?? activeNode.value
-  });
+  }, [
+    dragOverlay.value.nodeRef,
+    activeNode,
+  ]);
 
-  const draggingNodeRect = computed(()=>{
+  const draggingNodeRect = watchRef(()=>{
     return isInitialized.value
       ? dragOverlay.value.rect.value ?? activeNodeRect.value
       : null
-  });
-  const usesDragOverlay = computed(()=>Boolean(
-    dragOverlay.value.nodeRef.value && dragOverlay.value.rect
-  ));
+  }, [
+    isInitialized,
+    dragOverlay.value.rect,
+    activeNodeRect,
+  ]);
+  const usesDragOverlay = watchRef(()=>Boolean(
+    dragOverlay.value.nodeRef.value && dragOverlay.value.rect.value
+  ), [
+    dragOverlay.value.nodeRef,
+    dragOverlay.value.rect,
+  ]);
 
 
   // The delta between the previous and new position of the draggable node
   // is only relevant when there is no drag overlay
-  const useRectDeltaValue = computed(()=>{
+  const useRectDeltaValue = watchRef(()=>{
     return usesDragOverlay.value ? null : activeNodeRect.value
-  })
+  }, [
+    usesDragOverlay
+  ])
   const nodeRectDelta = useRectDelta(useRectDeltaValue);
-  const useWindowRectOption = computed(()=>{
+  const useWindowRectOption = watchRef(()=>{
     return draggingNode.value ? getWindow(draggingNode.value) : null
-  })
+  }, [
+    draggingNode
+  ])
   // Get the window rect of the dragging node
   const windowRect = useWindowRect(useWindowRectOption);
 
@@ -359,15 +400,20 @@ const DndContext = defineComponent<Props>((props_) => {
     }
   }, {immediate:true})
   // Apply modifiers
-  const modifiedTranslate = computed(()=>{
+  const modifiedTranslate = watchRef(()=>{
     return applyModifiers(modifiers, applyModifiersArgsRef.value)
-  });
+  }, [
+    applyModifiersArgsRef
+  ]);
 
-  const pointerCoordinates = computed(()=>{
+  const pointerCoordinates = watchRef(()=>{
     return activationCoordinates.value
       ? add(activationCoordinates.value, state.value.draggable.translate)
       : null
-  });
+  }, [
+    activationCoordinates,
+    ()=>state.value.draggable.translate
+  ]);
 
   const scrollOffsets = useScrollOffsets(scrollableAncestors);
   // Represents the scroll delta since dragging was initiated
@@ -377,16 +423,22 @@ const DndContext = defineComponent<Props>((props_) => {
     ()=> activeNodeRect.value,
   ]);
 
-  const scrollAdjustedTranslate = computed(()=>{
+  const scrollAdjustedTranslate = watchRef(()=>{
     return add(modifiedTranslate.value, scrollAdjustment.value)
-  });
-  const collisionRect = computed(()=>{
+  }, [
+    modifiedTranslate,
+    scrollAdjustment
+  ]);
+  const collisionRect = watchRef(()=>{
     return draggingNodeRect?.value
       ? getAdjustedRect(draggingNodeRect.value, modifiedTranslate.value)
       : null
-  });
+  }, [
+    draggingNodeRect,
+    modifiedTranslate,
+  ]);
 
-  const collisions = computed(()=>{
+  const collisions = watchRef(()=>{
     return active.value && collisionRect.value
       ? collisionDetection({
         active: active.value,
@@ -396,7 +448,13 @@ const DndContext = defineComponent<Props>((props_) => {
         pointerCoordinates: pointerCoordinates.value,
       })
       : null
-  });
+  }, [
+    active,
+    collisionRect,
+    droppableRects,
+    enabledDroppableContainers,
+    pointerCoordinates
+  ]);
 
   const over = ref<Over | null>(null);
 
@@ -406,22 +464,29 @@ const DndContext = defineComponent<Props>((props_) => {
 
   // When there is no drag overlay used, we need to account for the
   // window scroll delta
-  const appliedTranslate = computed(()=>{
+  const appliedTranslate = watchRef(()=>{
     return usesDragOverlay.value
       ? modifiedTranslate.value
       : add(modifiedTranslate.value, activeNodeScrollDelta.value)
-  });
+  }, [
+    usesDragOverlay,
+    modifiedTranslate,
+    activeNodeScrollDelta
+  ]);
 
 
-  const transform = computed(()=>{
+  const transform = watchRef(()=>{
     return adjustScale(
       appliedTranslate.value,
       over.value?.rect ?? null,
       activeNodeRect.value
     )
-  });
+  }, [
+    appliedTranslate,
+    ()=>over.value?.rect,
+  ]);
 
-  const instantiateSensor = computed(() => (event: any, {sensor: Sensor, options}: SensorDescriptor<any>) => {
+  const instantiateSensor = watchRef(() => (event: any, {sensor: Sensor, options}: SensorDescriptor<any>) => {
     if (activeRef.value == null) {
       return;
     }
@@ -526,10 +591,16 @@ const DndContext = defineComponent<Props>((props_) => {
         }
       };
     }
-  })
+  }, [
+    activeRef,
+    draggableNodes,
+    sensorContext,
+    latestProps,
+    activeRects,
+  ])
 
 
-  const bindActivatorToSensorInstantiator = computed(() => (handler: SensorActivatorFunction<any>, sensor: SensorDescriptor<any>): SyntheticListener['handler'] => {
+  const bindActivatorToSensorInstantiator = watchRef(() => (handler: SensorActivatorFunction<any>, sensor: SensorDescriptor<any>): SyntheticListener['handler'] => {
     return (event, active) => {
       const nativeEvent = event as DndEvent;
       const activeDraggableNode = draggableNodes.value.get(active);
@@ -564,7 +635,11 @@ const DndContext = defineComponent<Props>((props_) => {
         instantiateSensor.value(event, sensor);
       }
     };
-  })
+  }, [
+    draggableNodes,
+    activeRef,
+    instantiateSensor,
+  ])
 
   const activators = useCombineActivators(
     sensors,
@@ -573,7 +648,7 @@ const DndContext = defineComponent<Props>((props_) => {
 
   useSensorSetup(sensors);
 
-  watch([activeNodeRect, status], () => {
+  watch([activeNodeRect, status], (value, oldValue, onCleanup) => {
     if (activeNodeRect.value && status.value === Status.Initializing) {
       status.value = Status.Initialized
     }
@@ -603,7 +678,6 @@ const DndContext = defineComponent<Props>((props_) => {
       },
       over,
     };
-    // console.log(scrollAdjustedTranslate.value)
     onDragMove?.(event);
     dispatchMonitorEvent({type: 'onDragMove', event});
   });
@@ -791,10 +865,12 @@ const DndContext = defineComponent<Props>((props_) => {
       </DndMonitorContext.Provider>
     )
   };
+}, {
+  props: vuePropsType,
+  name: 'DndContext'
 })
 
-DndContext.props = vuePropsType
-DndContext.name = 'DndContext'
+
 export {
   DndContext
 }

@@ -1,7 +1,7 @@
-import {Coordinates, subtract} from '@dnd-kit-vue/utilities';
+import {type Coordinates, subtract} from '@dnd-kit-vue/utilities';
 
 import {defaultCoordinates} from '../../utilities';
-import {computed, ComputedRef, ref, shallowRef, watch, watchEffect} from "vue";
+import {computed, type ComputedRef, ref, shallowRef, watch, watchEffect} from "vue";
 
 export function useScrollOffsetsDelta(
   scrollOffsets: ComputedRef<Coordinates>,

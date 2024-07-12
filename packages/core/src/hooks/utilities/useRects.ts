@@ -7,12 +7,12 @@ import {isDocumentScrollingElement, useReducer} from '../../utilities';
 
 import {useResizeObserver} from './useResizeObserver';
 import {useWindowRect} from './useWindowRect';
-import {computed, ComputedRef, ref, watch} from "vue";
+import { computed, type ComputedRef, ref, type ShallowRef, watch } from 'vue'
 
 const defaultValue: Rect[] = [];
 
 export function useRects(
-  elements: ComputedRef<Element[]>,
+  elements: ShallowRef<Element[]>,
   measure: (element: Element) => ClientRect = getClientRect
 ): ClientRect[] {
   const useWindowRectOption = computed(()=>{

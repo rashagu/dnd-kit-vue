@@ -1,18 +1,11 @@
-import {
-  Transform,
-  useNodeRef,
-  useLatestValue,
-  useUniqueId,
-} from '@dnd-kit-vue/utilities';
+import { type Transform, useLatestValue, useNodeRef, useUniqueId } from '@dnd-kit-vue/utilities'
 
-import {InternalContext, Data, InternalContextDescriptor, defaultInternalContext} from '../store';
-import type {UniqueIdentifier} from '../types';
-import {ActiveDraggableContext} from '../components/DndContext';
-import {useSyntheticListeners, SyntheticListenerMap} from './utilities';
-import {computed, ComputedRef, inject, ref, watch} from "vue";
-import {defaultCoordinates} from "../utilities";
-import {useDndContext} from "../CreateContextVueVNode/DndContextConsumer";
-import {useInternalContext} from "../CreateContextVueVNode/InternalContextConsumer";
+import { type Data } from '../store'
+import type { UniqueIdentifier } from '../types'
+import { type SyntheticListenerMap, useSyntheticListeners } from './utilities'
+import { computed, type ComputedRef, ref, watch } from 'vue'
+import { useDndContext } from '../CreateContextVueVNode/DndContextConsumer'
+import { useInternalContext } from '../CreateContextVueVNode/InternalContextConsumer'
 
 export interface UseDraggableArguments {
   id: ComputedRef<UniqueIdentifier>;
@@ -59,6 +52,7 @@ export function useDraggable({
   watch(activeId, ()=>{
     isDragging.value = internalContext.value.active?.id === id.value
   }, {immediate: true})
+
 
   const transform= computed<Transform | null >(()=>{
     return  isDragging.value ? dndContext.value : null;

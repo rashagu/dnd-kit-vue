@@ -4,7 +4,7 @@ import {useInterval, useLazyMemo, usePrevious} from '@dnd-kit-vue/utilities';
 import {getScrollDirectionAndSpeed} from '../../utilities';
 import {Direction} from '../../types';
 import type {Coordinates, ClientRect} from '../../types';
-import {computed, ComputedRef, ref, watchEffect} from "vue";
+import { computed, type ComputedRef, ref, type ShallowRef, watchEffect } from 'vue'
 
 export type ScrollAncestorSortingFn = (ancestors: Element[]) => Element[];
 
@@ -174,7 +174,7 @@ function useScrollIntent({
 }: {
   delta: Coordinates;
   disabled: boolean;
-}): ComputedRef {
+}): ShallowRef {
   const previousDelta = usePrevious(delta);
 
   return useLazyMemo<ScrollIntent>(
@@ -205,6 +205,6 @@ function useScrollIntent({
         },
       };
     },
-    [disabled, delta, previousDelta]
+    [()=>disabled, ()=>delta, previousDelta]
   );
 }

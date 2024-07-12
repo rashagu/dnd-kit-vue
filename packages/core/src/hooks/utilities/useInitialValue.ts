@@ -1,10 +1,10 @@
 import {useLazyMemo} from '@dnd-kit-vue/utilities';
-import {computed, ComputedRef, ref} from "vue";
+import { computed, type ComputedRef, Ref, ref } from 'vue'
 
 type AnyFunction = (...args: any) => any;
 
 export function useInitialValue<
-  T extends ComputedRef,
+  T extends Ref,
   U extends AnyFunction | undefined = undefined
 >(
   value: T | null,

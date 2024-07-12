@@ -1,7 +1,5 @@
-import {defineComponent, ref, h, Fragment, useSlots, inject} from 'vue'
-import type {Transform} from '@dnd-kit-vue/utilities';
-import {defaultCoordinates} from "../utilities";
-import {RegisterListener} from "../components/DndMonitor/types";
+import { defineComponent, inject, ref, useSlots } from 'vue'
+import type { RegisterListener } from '../components/DndMonitor/types'
 
 interface ExampleProps {
 }
@@ -16,9 +14,10 @@ const DndMonitorContextConsumer = defineComponent<ExampleProps>((props, {}) => {
   const slots = useSlots()
   const config = useDndMonitorContext()
   return ()=>slots.default?slots.default(config):null
+}, {
+  props: vuePropsType
 })
 
-DndMonitorContextConsumer.props = vuePropsType
 
 export default DndMonitorContextConsumer
 

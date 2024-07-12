@@ -1,22 +1,15 @@
+import { applyModifiers, type Modifiers } from '../../modifiers'
+import { useDndContext as usePublicContext } from '../../hooks'
+import { useInitialValue } from '../../hooks/utilities'
 
-import {applyModifiers, Modifiers} from '../../modifiers';
-import {ActiveDraggableContext} from '../DndContext';
-import {useDndContext as usePublicContext} from '../../hooks';
-import {useInitialValue} from '../../hooks/utilities';
+import type { PositionedOverlayProps } from './components'
+import { AnimationManager, NullifiedContextProvider, PositionedOverlay } from './components'
 
-import {
-  AnimationManager,
-  NullifiedContextProvider,
-  PositionedOverlay,
-} from './components';
-import type {PositionedOverlayProps} from './components';
-
-import {useDropAnimation, useKey} from './hooks';
-import type {DropAnimation} from './hooks';
-import {inject, ref, useSlots, h, defineComponent, computed, ExtractPropTypes, watch} from "vue";
-import {defaultCoordinates} from "../../utilities";
-import {Transform} from "@dnd-kit-vue/utilities/src";
-import {useDndContext} from "../../CreateContextVueVNode/DndContextConsumer";
+import type { DropAnimation } from './hooks'
+import { useDropAnimation, useKey } from './hooks'
+import { type ComponentObjectPropsOptions, computed, defineComponent, type PropType, ref, useSlots, watch } from 'vue'
+import { useDndContext } from '../../CreateContextVueVNode/DndContextConsumer'
+import type { DroppableContainersMap } from '../../store/constructors'
 
 
 export interface Props
@@ -26,11 +19,11 @@ export interface Props
   > {
   dropAnimation?: DropAnimation | null | undefined;
   modifiers?: Modifiers;
-  wrapperElement?: keyof JSX.IntrinsicElements;
+  wrapperElement?: any;
   zIndex?: number;
 }
 
-export const vuePropsType = {
+export const vuePropsType: ComponentObjectPropsOptions<Props> = {
   adjustScale: {
     type: Boolean,
     default: false
@@ -48,7 +41,7 @@ export const vuePropsType = {
     type: Array
   },
   wrapperElement:{
-    type: String,
+    type: String as PropType<Props['wrapperElement']>,
     default: 'div'
   },
   className:{
@@ -87,7 +80,7 @@ const DragOverlay = defineComponent<Props>((props, {}) => {
     dropAnimation.value = useDropAnimation({
       config: props.dropAnimation,
       draggableNodes: context.value.draggableNodes,
-      droppableContainers: context.value.droppableContainers,
+      droppableContainers: context.value.droppableContainers as DroppableContainersMap,
       measuringConfiguration: context.value.measuringConfiguration,
     })
   }, {immediate: true})
@@ -177,10 +170,11 @@ const DragOverlay = defineComponent<Props>((props, {}) => {
       </NullifiedContextProvider>
     );
   }
+}, {
+  props: vuePropsType,
+  name: 'DragOverlay'
 })
 
-DragOverlay.props = vuePropsType
-DragOverlay.name = 'DragOverlay'
 
 export {DragOverlay}
 

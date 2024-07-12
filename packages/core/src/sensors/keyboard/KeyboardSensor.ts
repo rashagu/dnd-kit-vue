@@ -22,7 +22,7 @@ import type {
   SensorOptions,
 } from '../types';
 
-import {KeyboardCoordinateGetter, KeyboardCode, KeyboardCodes} from './types';
+import {type KeyboardCoordinateGetter, KeyboardCode, type KeyboardCodes} from './types';
 import {
   defaultKeyboardCodes,
   defaultKeyboardCoordinateGetter,

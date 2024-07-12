@@ -19,9 +19,10 @@ const DndContextConsumer = defineComponent<ExampleProps>((props, {}) => {
   const slots = useSlots()
   const config = useDndContext()
   return ()=>slots.default?slots.default(config):null
+}, {
+  props: vuePropsType,
 })
 
-DndContextConsumer.props = vuePropsType
 
 export default DndContextConsumer
 

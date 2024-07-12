@@ -2,8 +2,8 @@
 import {
   useDraggable,
   useDroppable,
-  UseDraggableArguments,
-  UseDroppableArguments, watchRef,
+  type UseDraggableArguments,
+  type UseDroppableArguments, watchRef,
 } from '@dnd-kit-vue/core';
 import type {Data} from '@dnd-kit-vue/core';
 import {CSS, isKeyboardEvent, useCombinedRefs} from '@dnd-kit-vue/utilities';

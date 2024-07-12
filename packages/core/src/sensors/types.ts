@@ -1,5 +1,5 @@
 // import type {MutableRefObject} from 'react';
-import {ComputedRef} from "vue";
+import type {ComputedRef} from "vue";
 
 type MutableRefObject<T> = any
 import type {

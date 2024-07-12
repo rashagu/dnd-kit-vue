@@ -1,5 +1,5 @@
 import {defineComponent, ref, h, Fragment, useSlots, inject} from 'vue'
-import {defaultInternalContext, InternalContextDescriptor} from "../store";
+import {defaultInternalContext, type InternalContextDescriptor} from "../store";
 
 interface ExampleProps {
 }
@@ -13,9 +13,10 @@ const InternalContextConsumer = defineComponent<ExampleProps>((props, {}) => {
   const slots = useSlots()
   const config = useInternalContext()
   return ()=>slots.default?slots.default(config):null
+}, {
+  props: vuePropsType,
 })
 
-InternalContextConsumer.props = vuePropsType
 
 export default InternalContextConsumer
 

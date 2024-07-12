@@ -1,5 +1,5 @@
-import {defineComponent, h, inject, Ref, ref, UnwrapRef, useSlots} from 'vue'
-import {ContextDescriptor, ID_PREFIX} from "../SortableContext";
+import {defineComponent, h, inject, type Ref, ref, type UnwrapRef, useSlots} from 'vue'
+import { type ContextDescriptor, ID_PREFIX} from "../SortableContext";
 import {rectSortingStrategy} from "../../strategies";
 
 
@@ -30,10 +30,11 @@ const Consumer = defineComponent(() => {
   const slots = useSlots()
   const {context} = useSortableContext()
   return () => slots.default ? slots.default(context) : null
+}, {
+  props: vuePropsType,
+  name: 'SortableConsumer'
 })
 
-Consumer.props = vuePropsType
-Consumer.name = 'SortableConsumer'
 
 export default Consumer
 

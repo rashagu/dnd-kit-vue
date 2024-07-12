@@ -1,4 +1,4 @@
-import {Direction, ClientRect} from '../../types';
+import {Direction, type ClientRect} from '../../types';
 import {getScrollPosition} from './getScrollPosition';
 
 interface PositionalCoordinates

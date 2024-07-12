@@ -1,7 +1,7 @@
 import {useUniqueId} from '@dnd-kit-vue/utilities';
 import {HiddenText, LiveRegion, useAnnouncement} from '@dnd-kit-vue/accessibility';
 
-import {DndMonitorListener, useDndMonitor} from '../DndMonitor';
+import {useDndMonitor} from '../DndMonitor';
 
 import type {Announcements, ScreenReaderInstructions} from './types';
 import {

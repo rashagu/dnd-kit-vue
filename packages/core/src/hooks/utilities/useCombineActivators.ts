@@ -3,11 +3,11 @@ import type {
   SyntheticListener,
   SyntheticListeners,
 } from './useSyntheticListeners';
-import {computed, ComputedRef} from "vue";
+import { computed, type ComputedRef, Ref } from 'vue'
 
 export function useCombineActivators(
   sensors: SensorDescriptor<any>[],
-  getSyntheticHandler: ComputedRef<(
+  getSyntheticHandler: Ref<(
     handler: SensorActivatorFunction<any>,
     sensor: SensorDescriptor<any>
   ) => SyntheticListener['handler']>

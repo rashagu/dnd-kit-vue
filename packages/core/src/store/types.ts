@@ -1,5 +1,5 @@
 // import type {MutableRefObject} from 'react';
-import {Ref} from "vue";
+import type {Ref} from "vue";
 
 type MutableRefObject<T> = any
 import type {DeepRequired} from '@dnd-kit-vue/utilities';

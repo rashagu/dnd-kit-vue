@@ -1,9 +1,9 @@
 
 import {
   AbstractPointerSensor,
-  PointerSensorProps,
-  PointerEventHandlers,
-  PointerSensorOptions,
+  type PointerSensorProps,
+  type PointerEventHandlers,
+  type PointerSensorOptions,
 } from '../pointer';
 import type {SensorProps} from '../types';
 

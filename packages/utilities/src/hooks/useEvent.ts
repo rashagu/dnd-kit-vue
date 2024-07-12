@@ -1,7 +1,5 @@
-import {ref, computed, shallowRef} from 'vue';
+import { type ShallowRef, shallowRef } from 'vue'
 
-import {useIsomorphicLayoutEffect} from './useIsomorphicLayoutEffect';
-
-export function useEvent<T extends Function>(handler: T | undefined) {
-  return  shallowRef<T | undefined>(handler);
+export function useEvent<T extends Function>(handler: T | undefined):ShallowRef<T | undefined> {
+  return shallowRef<T | undefined>(handler)
 }

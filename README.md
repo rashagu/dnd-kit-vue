@@ -1,46 +1,45 @@
-# This is a Vue adaptation based on [@dnd-kit](https://github.com/clauderic/dnd-kit)
+# dnd-kit-vue
 
-### TODO
-- [ ] Performance optimization
-- [ ] auto scroll
-- [ ] ...
+This template should help get you started developing with Vue 3 in Vite.
 
----
-<p align="center">
-  <a href="https://dndkit.com">
-    <img alt="@dnd-kit – the modern drag & drop toolkit for React" src=".github/assets/dnd-kit-hero-banner.svg">
-  </a>
-</p>
+## Recommended IDE Setup
 
-<p align="left">
-  <a href="https://www.npmjs.com/package/@dnd-kit-vue/core"><img src="https://img.shields.io/npm/v/@dnd-kit-vue/core.svg" alt="Stable Release" /></a>
-</p>
+[VSCode](https://code.visualstudio.com/) + [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar) (and disable Vetur).
 
+## Type Support for `.vue` Imports in TS
 
-## Working in the `@dnd-kit-vue` repository
+TypeScript cannot handle type information for `.vue` imports by default, so we replace the `tsc` CLI with `vue-tsc` for type checking. In editors, we need [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar) to make the TypeScript language service aware of `.vue` types.
 
-### Packages contained within this repository
+## Customize configuration
 
-- `@dnd-kit-vue/core`
-- `@dnd-kit-vue/accessibility`
-- `@dnd-kit-vue/sortable`
-- `@dnd-kit-vue/modifiers`
-- `@dnd-kit-vue/utilities`
+See [Vite Configuration Reference](https://vitejs.dev/config/).
 
-### Installing dependencies
-
-You'll need to install all the dependencies in the root directory.
+## Project Setup
 
 ```sh
-pnpm install && pnpm build:all
+pnpm install
 ```
 
-This will install all dependencies in each project, build them
-
-### Development workflow
-
-In one terminal, run `pnpm dev` in parallel:
+### Compile and Hot-Reload for Development
 
 ```sh
 pnpm dev
+```
+
+### Type-Check, Compile and Minify for Production
+
+```sh
+pnpm build
+```
+
+### Run Unit Tests with [Vitest](https://vitest.dev/)
+
+```sh
+pnpm test:unit
+```
+
+### Lint with [ESLint](https://eslint.org/)
+
+```sh
+pnpm lint
 ```

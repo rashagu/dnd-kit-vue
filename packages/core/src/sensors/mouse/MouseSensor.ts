@@ -4,8 +4,8 @@ import {getOwnerDocument} from '@dnd-kit-vue/utilities';
 import type {SensorProps} from '../types';
 import {
   AbstractPointerSensor,
-  PointerEventHandlers,
-  AbstractPointerSensorOptions,
+  type PointerEventHandlers,
+  type AbstractPointerSensorOptions,
 } from '../pointer';
 
 const events: PointerEventHandlers = {

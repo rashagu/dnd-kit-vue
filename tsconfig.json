@@ -1,46 +1,32 @@
 {
+  "exclude": ["./**/*.spec.*","./**/_stories/.*","./**/_stories/.*","./**/__stories__/.*",
+    "./main.ts", "../script/*",
+    "./Comp1",
+    "./App.tsx",
+    "./**/__test__",
+    "./test/*",
+    "./*.ts"
+  ],
   "compilerOptions": {
-    "target": "ESNext",
+    "rootDir": "./src",
+    "outDir": "./dist/types",
+    "target": "esnext",
     "useDefineForClassFields": true,
-    "module": "ESNext",
-    "moduleResolution": "Node",
+    "module": "esnext",
+    "moduleResolution": "node",
     "strict": true,
     "jsx": "preserve",
+    "jsxImportSource": "vue",
     "jsxFactory": "h",
     "jsxFragmentFactory": "Fragment",
+    "strictNullChecks": false,
     "sourceMap": true,
+    "declaration": true,
+    "emitDeclarationOnly": true,
     "resolveJsonModule": true,
-    "isolatedModules": true,
     "esModuleInterop": true,
-    "paths": {
-      "@dnd-kit-vue/core": [
-        "/packages/core/src/"
-      ],
-      "@dnd-kit-vue/modifiers": [
-        "/packages/modifiers/src/"
-      ],
-      "@dnd-kit-vue/sortable": [
-        "/packages/sortable/src/"
-      ],
-      "@dnd-kit-vue/utilities": [
-        "/packages/utilities/src/"
-      ],
-      "@dnd-kit-vue/accessibility": [
-        "/packages/accessibility/src/"
-      ]
-    },
-    "lib": ["ESNext", "DOM"],
-    "skipLibCheck": true
-  },
-  "include": [
-    "packages/**/*.ts",
-    "packages/**/*.d.ts",
-    "packages/**/*.tsx",
-    "packages/**/*.vue",
-    "src/**/*.ts",
-    "src/**/*.d.ts",
-    "src/**/*.tsx",
-    "src/**/*.vue"
-  ],
-  "references": [{ "path": "./tsconfig.node.json" }]
+    "types": ["vite/client", "node"],
+    "lib": ["esnext", "dom"],
+    "noImplicitAny": false
+  }
 }

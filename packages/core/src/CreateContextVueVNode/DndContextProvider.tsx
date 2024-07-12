@@ -15,8 +15,10 @@ const DndContextProvider = defineComponent<{value:Transform}>((props, {slots}) =
     }, { deep: true})
     provide('DndContext', context)
     return ()=>slots.default?slots.default(context.value):null
+}, {
+    props: {
+        value:Object
+    }
 })
-DndContextProvider.props = {
-    value:Object
-}
+
 export default DndContextProvider;

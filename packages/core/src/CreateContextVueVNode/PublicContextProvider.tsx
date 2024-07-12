@@ -1,6 +1,6 @@
 
 import {defineComponent, provide, ref, watch} from "vue";
-import {PublicContextDescriptor} from "../store";
+import type {PublicContextDescriptor} from "../store";
 
 
 
@@ -16,8 +16,10 @@ const PublicContextProvider = defineComponent<{value:PublicContextDescriptor}>((
     }, { deep: true})
     provide('PublicContext', context)
     return ()=>slots.default?slots.default(context.value):null
+}, {
+    props: {
+        value:Object
+    }
 })
-PublicContextProvider.props = {
-    value:Object
-}
+
 export default PublicContextProvider;
