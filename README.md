@@ -1,3 +1,21 @@
+# 官方即将推出无关框架的版本
+> [https://next.dndkit.com/overview](https://next.dndkit.com/overview)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 # dnd-kit-vue
 
 This template should help get you started developing with Vue 3 in Vite.
